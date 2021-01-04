@@ -30,15 +30,13 @@ public final class PropsUtil {
     private PropsUtil() {
     }
 
-    private static final Properties NULL_PROPS = new Properties();
-
     /**
      * 加载文件
      *
      * @param filename 资源文件路径及文件名
      * @return 加载文件之后创建的实例对象
      */
-    public static Properties loadProps(@NonNull String filename) {
+    public static Properties loadProps(@NonNull String filename) throws IOException {
         return loadProps(filename, Charset.defaultCharset());
     }
 
@@ -49,7 +47,7 @@ public final class PropsUtil {
      * @param charset  按照指定文件格式加载 Properties 文件
      * @return 加载文件之后创建的实例对象
      */
-    public static Properties loadProps(@NonNull String filename, Charset charset) {
+    public static Properties loadProps(@NonNull String filename, Charset charset) throws IOException {
         Properties props = null;
         try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename)) {
             if (is == null) {
@@ -59,10 +57,10 @@ public final class PropsUtil {
             try (final InputStreamReader inputStreamReader = new InputStreamReader(is, charset)) {
                 props.load(inputStreamReader);
             }
+            return props;
         } catch (IOException e) {
-            log.error(filename + " file load failure", e);
+            throw new IOException(filename + " file load failure", e);
         }
-        return props == null ? NULL_PROPS : props;
     }
 
     /**
@@ -73,7 +71,7 @@ public final class PropsUtil {
      * @param defaultValue 获取失败的默认值.
      * @return 从 filename 中提取的键为 key 的字符串, 如果为空, 则返回 defaultValue
      */
-    public static String getString(String filename, String key, String defaultValue) {
+    public static String getString(String filename, String key, String defaultValue) throws IOException {
         return loadProps(filename).getProperty(key, defaultValue);
     }
 
@@ -84,7 +82,7 @@ public final class PropsUtil {
      * @param key      键.
      * @return 从 filename 中提取的键为 key 的字符串
      */
-    public static String getString(String filename, String key) {
+    public static String getString(String filename, String key) throws IOException {
         return loadProps(filename).getProperty(key);
     }
 

@@ -143,7 +143,7 @@ public class IoUtils {
      * @param filePath 文件路径
      * @return 文件字符串
      */
-    public static String readFile(String filePath) {
+    public static String readFile(String filePath) throws IOException {
         final File file = new File(filePath);
         Validate.isTrue(file.exists(), "文件不存在");
         final long length = file.length();
@@ -152,7 +152,7 @@ public class IoUtils {
             final int read = reader.read(chars);
             log.info("read success length " + read);
         } catch (IOException e) {
-            log.error("读取文件失败", e);
+            throw new IOException("文件读取失败: filePath", e);
         }
         return new String(chars);
     }

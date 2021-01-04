@@ -10,11 +10,10 @@ import java.util.Map;
  * <b>Description : </b>
  *
  * @author CPF
- * @date 2020/12/24 16:00
  **/
 public class BeanUtilsTest {
 
-    public static void main(String[] args) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public static void main(String[] args) {
         Bean1 bean1 = new Bean1();
         bean1.setStr1("str11");
         bean1.setStr2("str22");

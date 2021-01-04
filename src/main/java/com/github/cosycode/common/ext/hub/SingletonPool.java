@@ -70,6 +70,7 @@ public class SingletonPool {
      * 判断 单例池里面是否存在指定 key
      *
      * @param key key
+     * @return true: 包含, false: 不包含
      */
     public static synchronized boolean containsKey(String key) {
         return pool.containsKey(key);

@@ -4,7 +4,6 @@ package cn.cpf.test.temp;
  * <b>Description : </b>
  *
  * @author CPF
- * @date 2020/12/11 15:47
  **/
 public class TemplateClazz{
 

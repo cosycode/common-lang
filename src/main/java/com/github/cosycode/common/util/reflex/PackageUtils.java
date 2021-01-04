@@ -36,7 +36,7 @@ public class PackageUtils {
 
     public static final String CLASS_SUFFIX = ".class";
 
-    public static void disposeClassesFromJar(Class<?> clazz, Predicate<JarEntry> predicate, Consumer<Class<?>> classConsumer) {
+    public static void disposeClassesFromJar(Class<?> clazz, Predicate<JarEntry> predicate, Consumer<Class<?>> classConsumer) throws IOException {
         List<Class<?>> classFromJar = getClassesFromJar(clazz, predicate);
         classFromJar.forEach(classConsumer);
     }
@@ -48,7 +48,7 @@ public class PackageUtils {
      * @param filter 过滤器
      * @return clazz 所在 package 中的 经过 filter过滤后的 class 对象
      */
-    public static List<Class<?>> getClassesFromJar(Class<?> clazz, Predicate<JarEntry> filter) {
+    public static List<Class<?>> getClassesFromJar(Class<?> clazz, Predicate<JarEntry> filter) throws IOException {
         if (clazz == null) {
             return Collections.emptyList();
         }
@@ -63,9 +63,8 @@ public class PackageUtils {
                     .map(jarEntry -> ClassUtils.loadClass(jarEntry.getName().replace(CLASS_SUFFIX, "").replace(File.separatorChar, '.')))
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            log.error("获取路径出错", e);
+            throw new IOException("String.format(\"获取路径出错, clazz: %s, jarPath: %s, packagePath: %s\", clazz.getName(), jarPath, packagePath)", e);
         }
-        return Collections.emptyList();
     }
 
     /**

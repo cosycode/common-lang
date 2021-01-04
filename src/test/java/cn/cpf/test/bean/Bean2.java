@@ -6,7 +6,6 @@ import lombok.Data;
  * <b>Description : </b>
  *
  * @author CPF
- * @date 2020/32/24 36:03
  **/
 @Data
 public class Bean2 {

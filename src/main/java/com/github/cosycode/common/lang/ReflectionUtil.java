@@ -29,8 +29,7 @@ public class ReflectionUtil {
         try {
             instance = cls.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            log.error("new Instance failure", e);
-            throw new RuntimeException(e);
+            throw new ActionExecException("new Instance failure", e);
         }
         return instance;
     }

@@ -1,5 +1,6 @@
 package com.github.cosycode.common.util.common;
 
+import com.github.cosycode.common.lang.ActionExecException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
@@ -59,7 +60,7 @@ public class ObjUtils {
             try {
                 o = DateUtils.parseDate("yyyy-MM-dd HH:mm:ss", "yyyyMMdd", "yyyyMMdd HH:mm:ss", "yyyy/MM/dd HH:mm:ss");
             } catch (ParseException e) {
-                log.error("date parse error: while convert {} to Date.", str);
+                throw new ActionExecException("date parse error: while convert " + str + " to Date.", e);
             }
         } else if (clazz == BigDecimal.class) {
             o = new BigDecimal(str);
@@ -92,7 +93,7 @@ public class ObjUtils {
             oo.writeObject(obj);
             bytes = bo.toByteArray();
         } catch (IOException e) {
-            log.error("将对象序列化为 byte[] 失败 对象: " + obj, e);
+            throw new ActionExecException("将对象序列化为 byte[] 失败 对象: " + obj, e);
         }
         return bytes;
     }
