@@ -7,10 +7,11 @@ import java.util.Map;
 
 /**
  * <b>Description : </b> 用于命令行参数的解析
+ * <p>
+ * <b>created in </b> 2019/12/13
  *
  * @author CPF
  * @since 1.0
- * @date 2019/12/13 10:43
  **/
 public class CommandLineHelper {
 
@@ -45,6 +46,7 @@ public class CommandLineHelper {
      * 解析命令行的参数
      *
      * @param args program arguments
+     * @return 创建的 CommandLineHelper 实例对象
      */
     public static CommandLineHelper parse(String[] args) {
         return new CommandLineHelper(args);
@@ -122,6 +124,8 @@ public class CommandLineHelper {
 
     /**
      * 获取解析后的参数list
+     *
+     * @return CommandLineHelper 中的 noKeyParams Map对象
      */
     public List<String> getNoKeyParams() {
         if (noKeyParams == null) {
@@ -132,6 +136,8 @@ public class CommandLineHelper {
 
     /**
      * 获取解析后的参数map
+     *
+     * @return CommandLineHelper 中的 keyParams Map对象
      */
     public Map<String, String> getKeyParams() {
         if (keyParams == null) {

@@ -6,18 +6,23 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * <b>Description : </b> 用于通用异常检查报错抛出
+ * <p>
+ * <b>created in </b> 2020/3/24
  *
  * @author CPF
  * @since 1.0
- * @date 2020/3/24
  */
 @Slf4j
 public class ReflectionUtil {
 
-    private ReflectionUtil(){}
+    private ReflectionUtil() {
+    }
 
     /**
      * 创建一个实例
+     *
+     * @param cls 待创建的cls对象
+     * @return 创建的实例
      */
     public static Object newInstance(Class<?> cls) {
         Object instance;

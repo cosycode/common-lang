@@ -5,16 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> Swing 工具类
+ * <p>
+ * <b>created in </b> 2020/5/12
  *
  * @author CPF
  * @since 1.0
- * @date 2020/5/12 17:39
  */
 @Slf4j
 public class SwingUtils {
 
-    private SwingUtils() {}
+    private SwingUtils() {
+    }
 
     /**
      * (默认)频率, 每隔多少毫秒移动一次
@@ -57,7 +59,7 @@ public class SwingUtils {
         // 基本倍率
         double sqrt = Math.sqrt((Math.sqrt(Math.pow(xSub, 2) + Math.pow(ySub, 2)) / pxOneTime * interval) / baseTime);
         // 移动次数
-        int times = (int)(baseTime * sqrt / interval);
+        int times = (int) (baseTime * sqrt / interval);
         moveComp(component, toPoint, times, interval);
     }
 
@@ -73,7 +75,7 @@ public class SwingUtils {
         int ySub = toPoint.y - fromPoint.y;
         for (int i = 0; i < times; i++) {
             double p = (double) i / times;
-            component.setLocation((int)(fromPoint.x + xSub * p), (int)(fromPoint.y + ySub * p));
+            component.setLocation((int) (fromPoint.x + xSub * p), (int) (fromPoint.y + ySub * p));
             try {
                 Thread.sleep(interval);
             } catch (InterruptedException e) {

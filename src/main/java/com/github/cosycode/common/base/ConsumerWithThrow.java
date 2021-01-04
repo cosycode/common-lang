@@ -3,11 +3,13 @@ package com.github.cosycode.common.base;
 import java.util.Objects;
 
 /**
- * <b>Description : </b>
+ * 带有 Throw 的 Consumer 函数式接口
+ * <p>
+ * <b>created in </b> 2020/5/12
  *
  * @author CPF
+ * @see java.util.function.Consumer
  * @since 1.0
- * @date 2020/5/12
  */
 @FunctionalInterface
 public interface ConsumerWithThrow<T, E extends Throwable> {
@@ -16,6 +18,7 @@ public interface ConsumerWithThrow<T, E extends Throwable> {
      * Performs this operation on the given argument.
      *
      * @param t the input argument
+     * @throws E accept 中需要抛出的异常
      */
     void accept(T t) throws E;
 
@@ -33,7 +36,10 @@ public interface ConsumerWithThrow<T, E extends Throwable> {
      */
     default ConsumerWithThrow<T, E> andThen(java.util.function.Consumer<? super T> after) {
         Objects.requireNonNull(after);
-        return (T t) -> { accept(t); after.accept(t); };
+        return (T t) -> {
+            accept(t);
+            after.accept(t);
+        };
     }
 
     /**
@@ -50,6 +56,9 @@ public interface ConsumerWithThrow<T, E extends Throwable> {
      */
     default ConsumerWithThrow<T, E> andThen(ConsumerWithThrow<? super T, ? extends E> after) {
         Objects.requireNonNull(after);
-        return (T t) -> { accept(t); after.accept(t); };
+        return (T t) -> {
+            accept(t);
+            after.accept(t);
+        };
     }
 }

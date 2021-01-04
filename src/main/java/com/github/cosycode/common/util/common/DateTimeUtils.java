@@ -5,11 +5,12 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 日期时间工具类
+ * <p>
+ * <b>created in </b> 2020/6/22
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/22 14:10
  */
 public class DateTimeUtils {
 

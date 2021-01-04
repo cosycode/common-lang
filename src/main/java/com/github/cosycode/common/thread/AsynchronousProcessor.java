@@ -12,10 +12,11 @@ import java.util.function.Predicate;
 
 /**
  * <b>Description : </b> 异步处理器
+ * <p>
+ * <b>created in </b> 2018/9/19
  *
  * @author CPF
  * @since 1.0
- * @date 2018/9/19 16:48
  **/
 @Slf4j
 public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
@@ -24,24 +25,25 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
      * 有消息的消息函数处理接口
      */
     @Getter
-    private Predicate<T> thenFun;
+    protected final Predicate<T> thenFun;
 
     /**
      * 出错时的消费函数接口
      */
     @Getter
-    private Consumer<T> catchFun;
+    protected final Consumer<T> catchFun;
 
     /**
      * 存放待处理的消息
      */
     @Getter
-    private BlockingQueue<T> blockingQueue;
+    protected final BlockingQueue<T> blockingQueue;
 
     /**
-     * @param thenFun     消息的消息函数处理接口(不可为空)
-     * @param catchFun    出错时的消费函数接口
-     * @param millisecond 线程多久处理一次(毫米), 为0, 表示不 sleep
+     * @param blockingQueue 阻塞缓存队列
+     * @param thenFun       消息的消息函数处理接口(不可为空)
+     * @param catchFun      出错时的消费函数接口
+     * @param millisecond   线程多久处理一次(毫米), 为0, 表示不 sleep
      */
     public AsynchronousProcessor(@NonNull BlockingQueue<T> blockingQueue, @NonNull Predicate<T> thenFun, Consumer<T> catchFun, int millisecond) {
         super(null, true, millisecond);
@@ -53,6 +55,8 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
 
     /**
      * @param thenFun 消息的消息函数处理接口(不可为空)
+     * @param <T>     AsynchronousProcessor对象中的模板T
+     * @return AsynchronousProcessor 的实例对象
      */
     public static <T> AsynchronousProcessor<T> ofConsumer(@NonNull Consumer<T> thenFun) {
         return new AsynchronousProcessor<>(new LinkedBlockingQueue<>(), t -> {
@@ -63,6 +67,8 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
 
     /**
      * @param thenFun 消息的消息函数处理接口(不可为空)
+     * @param <T>     AsynchronousProcessor对象中的模板T
+     * @return AsynchronousProcessor 的实例对象
      */
     public static <T> AsynchronousProcessor<T> ofPredicate(@NonNull Predicate<T> thenFun) {
         return new AsynchronousProcessor<>(new LinkedBlockingQueue<>(), thenFun, null, 0);
@@ -103,4 +109,46 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
         }
         blockingQueue.add(t);
     }
+
+    /**
+     * 如果发生异常是否继续
+     *
+     * @param continueIfException 发生异常是否继续
+     * @return 当前实例对象
+     */
+    @Override
+    public AsynchronousProcessor<T> setContinueIfException(boolean continueIfException) {
+        super.setContinueIfException(continueIfException);
+        return this;
+    }
+
+    /**
+     * 多长时间运行一次(while true 中的一个执行sleep多久)
+     *
+     * @param millisecond 每次循环后睡眠时间
+     * @return 当前实例对象
+     */
+    @Override
+    public AsynchronousProcessor<T> setMillisecond(int millisecond) {
+        super.setMillisecond(millisecond);
+        return this;
+    }
+
+    /**
+     * @param name 线程名称
+     * @return 当前实例对象
+     */
+    @Override
+    public AsynchronousProcessor<T> setName(String name) {
+        super.setName(name);
+        return this;
+    }
+
+    /**
+     * @return 当前异步队列中的数据大小
+     */
+    public int getSize() {
+        return blockingQueue.size();
+    }
+
 }

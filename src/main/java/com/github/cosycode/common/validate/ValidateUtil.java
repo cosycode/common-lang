@@ -4,15 +4,17 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 验证工具类, 对对象进行验证, 返回验证结果
+ * <p>
+ * <b>created in </b> 2019/4/12
  *
  * @author CPF
  * @since 1.0
- * @date 2019/4/12 17:19
  */
 public class ValidateUtil {
 
-    private ValidateUtil() {}
+    private ValidateUtil() {
+    }
 
     public static boolean isNull(Object obj) {
         return obj == null;

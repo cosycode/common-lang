@@ -13,16 +13,18 @@ import java.nio.charset.Charset;
 import java.util.function.Consumer;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> Io 工具类
+ * <p>
+ * <b>created in </b> 2019/8/28
  *
  * @author CPF
  * @since 1.0
- * @date 2019/8/28 10:35
  **/
 @Slf4j
 public class IoUtils {
 
-    private IoUtils(){}
+    private IoUtils() {
+    }
 
     /**
      * 关闭流
@@ -39,7 +41,7 @@ public class IoUtils {
                 }
             } catch (IOException e) {
                 flag = false;
-                log.error("ioUtils close stream error1" , e);
+                log.error("ioUtils close stream error1", e);
             }
         }
         return flag;
@@ -47,9 +49,9 @@ public class IoUtils {
 
 
     /**
-     *
      * @param outputStream 输出流
-     * @param string        传入的数据
+     * @param string       传入的数据
+     * @throws IOException 写入到流中的异常
      */
     public static void writeStringToOutputStream(@NonNull OutputStream outputStream, @NonNull String string) throws IOException {
         writeStringToOutputStream(outputStream, string, null);
@@ -59,8 +61,9 @@ public class IoUtils {
      * 将字符串写入流
      *
      * @param outputStream 输出流
-     * @param string        传入的数据
-     * @param charset     编码
+     * @param string       传入的数据
+     * @param charset      编码
+     * @throws IOException 写入到流中的异常
      */
     public static void writeStringToOutputStream(@NonNull OutputStream outputStream, @NonNull String string, Charset charset) throws IOException {
         string = string.trim();
@@ -80,6 +83,7 @@ public class IoUtils {
      *
      * @param inputStream 输入流
      * @return 转换的字符串
+     * @throws IOException 读取流数据异常
      */
     public static String readStringFromInputStream(InputStream inputStream) throws IOException {
         return readStringFromInputStream(inputStream, null);
@@ -89,8 +93,9 @@ public class IoUtils {
      * 输入流转String
      *
      * @param inputStream 输入流
-     * @param charset 编码
+     * @param charset     编码
      * @return 转换的字符串
+     * @throws IOException 读取流数据异常
      */
     public static String readStringFromInputStream(InputStream inputStream, Charset charset) throws IOException {
         try (InputStreamReader inputStreamReader = charset == null ?
@@ -101,7 +106,7 @@ public class IoUtils {
             StringBuilder stringBuilder = new StringBuilder();
             String len;
             //按行读
-            while((len=bufferedReader.readLine()) != null){
+            while ((len = bufferedReader.readLine()) != null) {
                 //追加到字符串缓冲区存放
                 stringBuilder.append(len);
             }
@@ -111,10 +116,12 @@ public class IoUtils {
     }
 
     /**
-     * 输入流转String
+     * 按行读取流, 由 consumer 对行进行消费
      *
      * @param inputStream 输入流
-     * @param charset 编码
+     * @param charset     编码
+     * @param consumer    按行读取流的消费函数
+     * @throws IOException 读取流数据异常
      */
     public static void readStringFromInputStream(InputStream inputStream, Charset charset, Consumer<String> consumer) throws IOException {
         try (InputStreamReader inputStreamReader = charset == null ?
@@ -123,7 +130,7 @@ public class IoUtils {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String len;
             //按行读
-            while((len=bufferedReader.readLine()) != null){
+            while ((len = bufferedReader.readLine()) != null) {
                 //追加到字符串缓冲区存放
                 consumer.accept(len);
             }
@@ -134,15 +141,14 @@ public class IoUtils {
      * 读取文件
      *
      * @param filePath 文件路径
-     *
      * @return 文件字符串
      */
     public static String readFile(String filePath) {
         final File file = new File(filePath);
         Validate.isTrue(file.exists(), "文件不存在");
         final long length = file.length();
-        char[] chars = new char[(int)length];
-        try (final FileReader reader = new FileReader(file)){
+        char[] chars = new char[(int) length];
+        try (final FileReader reader = new FileReader(file)) {
             final int read = reader.read(chars);
             log.info("read success length " + read);
         } catch (IOException e) {
@@ -155,15 +161,16 @@ public class IoUtils {
      * 往 savePath 路径 写入文件, 如果没有则新增
      *
      * @param savePath 写入路径
-     * @param content 内容
-     *
+     * @param content  内容
+     * @throws FileNotFoundException 文件未发现异常
+     * @throws IOException           写入流异常
      */
     public static void writeFile(@NonNull String savePath, @NonNull byte[] content) throws IOException {
         final File file = new File(savePath);
         insureFileExist(file);
 
         // 写入文件
-        try (final FileOutputStream writer = new FileOutputStream(file)){
+        try (final FileOutputStream writer = new FileOutputStream(file)) {
             writer.write(content);
         }
     }
@@ -173,7 +180,8 @@ public class IoUtils {
      * 文件拷贝
      *
      * @param sourceFilePath 源文件路径
-     * @param savePath 存储路径
+     * @param savePath       存储路径
+     * @throws IOException 文件写入异常
      */
     public static void copyFile(String sourceFilePath, String savePath) throws IOException {
         try (FileInputStream in = new FileInputStream(sourceFilePath); FileOutputStream out = new FileOutputStream(savePath)) {
@@ -182,12 +190,17 @@ public class IoUtils {
             while ((bytes = in.read(buf, 0, buf.length)) != -1) {
                 out.write(buf, 0, bytes);
             }
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e) {
+            throw new IOException("文件读取或写入异常==> readPath: " + sourceFilePath + ", writePath: " + savePath, e);
         }
     }
 
 
     /**
      * 确保文件夹存在, 不存在则创建文件夹
+     *
      * @param dir 文件夹
      */
     public static void insureFileDirExist(@NonNull final File dir) {
@@ -205,6 +218,7 @@ public class IoUtils {
      * 如果不存在则创建文件(包括文件夹)
      *
      * @param file 文件
+     * @return 是否创建了文件
      */
     public static boolean insureFileExist(@NonNull final File file) {
         final boolean exists = file.exists();
@@ -230,8 +244,8 @@ public class IoUtils {
     /**
      * 往 savePath 路径 写入文件, 如果没有则新增
      *
-     * @param image    图片
-     * @param file 写入文件的路径
+     * @param image 图片
+     * @param file  写入文件的路径
      */
     public static void savePic(Image image, @NonNull final File file) {
         final String fileName = file.getName();
@@ -241,7 +255,7 @@ public class IoUtils {
     /**
      * 往 savePath 路径 写入文件, 如果没有则新增
      *
-     * @param image    图片
+     * @param image      图片
      * @param file       文件
      * @param formatName 文件格式
      */

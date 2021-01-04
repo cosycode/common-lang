@@ -4,11 +4,12 @@ import java.util.Date;
 import java.util.function.Function;
 
 /**
- * <b>Description : </b>
+ * get方法的增强扩展接口
+ * <p>
+ * <b>created in </b> 2020/12/5
  *
  * @author CPF
  * @since 1.0
- * @date 2020/12/5
  **/
 public interface IGetter<K> {
 
@@ -38,7 +39,7 @@ public interface IGetter<K> {
         return o;
     }
 
-    default <T> T getDefault(K key, Class<T> returnClass, T defaultObj){
+    default <T> T getDefault(K key, Class<T> returnClass, T defaultObj) {
         Object o = get(key);
         if (o == null) {
             return defaultObj;
@@ -46,7 +47,7 @@ public interface IGetter<K> {
         return returnClass.cast(o);
     }
 
-    default <R> R get(K key, Function<Object, R> function){
+    default <R> R get(K key, Function<Object, R> function) {
         Object o = get(key);
         return function.apply(o);
     }

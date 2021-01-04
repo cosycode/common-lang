@@ -1,11 +1,12 @@
 package com.github.cosycode.common.ext.mapping;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> Mapping映射接口, 用于从枚举种获取对象
+ * <p>
+ * <b>created in </b> 2020/3/16
  *
  * @author CPF
  * @since 1.0
- * @date 2020/3/16
  **/
 public interface IMapping<K, V> {
 
@@ -13,8 +14,10 @@ public interface IMapping<K, V> {
      * 通过key来获取enumClass中匹配的枚举对象
      *
      * @param enumClass 枚举类
-     * @param key 代码
-     * @param <T> 模板类型
+     * @param key       代码
+     * @param <K1>      待映射 Map 的 key 的类型
+     * @param <V1>      待映射 Map 的 value 的类型
+     * @param <T>       模板类型
      * @return 如果 enumClass为空, 返回 null, 否则返回枚举类中第一个匹配key的枚举对象
      */
     static <K1, V1, T extends IMapping<K1, V1>> T getByKey(Class<T> enumClass, K1 key) {
@@ -35,8 +38,10 @@ public interface IMapping<K, V> {
      * 通过val来获取enumClass中匹配的枚举对象
      *
      * @param enumClass 枚举类
-     * @param val 值
-     * @param <T> 模板类型
+     * @param val       值
+     * @param <K1>      待映射 Map 的 key 的类型
+     * @param <V1>      待映射 Map 的 value 的类型
+     * @param <T>       模板类型
      * @return 如果 enumClass为空, 返回 null, 否则返回枚举类中第一个匹配val的枚举对象.
      */
     static <K1, V1, T extends IMapping<K1, V1>> T getByVal(Class<T> enumClass, V1 val) {
@@ -57,8 +62,10 @@ public interface IMapping<K, V> {
      * 通过 key 来获取 val
      *
      * @param enumClass 枚举类
-     * @param key 枚举代码
-     * @param <T> 模板类型
+     * @param key       枚举代码
+     * @param <K1>      待映射 Map 的 key 的类型
+     * @param <V1>      待映射 Map 的 value 的类型
+     * @param <T>       模板类型
      * @return 如果 key为空
      */
     static <K1, V1, T extends IMapping<K1, V1>> V1 getValByKey(Class<T> enumClass, K1 key) {
@@ -76,8 +83,10 @@ public interface IMapping<K, V> {
      * 通过 val 来获取 key
      *
      * @param enumClass 枚举类
-     * @param val 枚举代码
-     * @param <T> 模板类型
+     * @param val       枚举代码
+     * @param <T>       模板类型
+     * @param <K1>      待映射 Map 的 key 的类型
+     * @param <V1>      待映射 Map 的 value 的类型
      * @return 如果 key为空
      */
     static <K1, V1, T extends IMapping<K1, V1>> K1 getKeyByVal(Class<T> enumClass, V1 val) {
@@ -99,11 +108,11 @@ public interface IMapping<K, V> {
         return getBean().getVal();
     }
 
-    default MappingBean<K, V> getBean(){
+    default MappingBean<K, V> getBean() {
         return MappingBeanPool.get(this);
     }
 
-    default void putBean(K key, V val){
+    default void putBean(K key, V val) {
         MappingBeanPool.put(this, key, val);
     }
 

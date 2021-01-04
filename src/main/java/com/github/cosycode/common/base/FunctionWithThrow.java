@@ -1,13 +1,16 @@
 package com.github.cosycode.common.base;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
- * <b>Description : </b>
+ * 带有 Throw 的 Function 函数式接口
+ * <p>
+ * <b>created in </b> 2020/11/18
  *
  * @author CPF
+ * @see java.util.function.Function
  * @since 1.0
- * @date 2020/11/18
  **/
 @FunctionalInterface
 public interface FunctionWithThrow<T, R, E extends Throwable> {
@@ -17,19 +20,41 @@ public interface FunctionWithThrow<T, R, E extends Throwable> {
      *
      * @param t the function argument
      * @return the function result
+     * @throws E apply 函数中需要抛出的异常
      */
     R apply(T t) throws E;
 
     /**
-     * @see #compose(java.util.function.Function)
+     * Returns a composed function that first applies the {@code before}
+     * function to its input, and then applies this function to the result.
+     * If evaluation of either function throws an exception, it is relayed to
+     * the caller of the composed function.
+     *
+     * @param <V>    the type of input to the {@code before} function, and to the
+     *               composed function
+     * @param before the function to apply before this function is applied
+     * @return a composed function that first applies the {@code before}
+     * function and then applies this function
+     * @throws NullPointerException if before is null
      */
-    default <V> FunctionWithThrow<V, R, E> compose(java.util.function.Function<? super V, ? extends T> before) {
+    default <V> FunctionWithThrow<V, R, E> compose(Function<? super V, ? extends T> before) {
         Objects.requireNonNull(before);
         return (V v) -> apply(before.apply(v));
     }
 
     /**
-     * @see #compose(java.util.function.Function)
+     * Returns a composed function that first applies this function to
+     * its input, and then applies the {@code after} function to the result.
+     * If evaluation of either function throws an exception, it is relayed to
+     * the caller of the composed function.
+     *
+     * @param <V>   the type of output of the {@code after} function, and of the
+     *              composed function
+     * @param after the function to apply after this function is applied
+     * @return a composed function that first applies this function and then
+     * applies the {@code after} function
+     * @throws NullPointerException if after is null
+     * @see #compose(Function)
      */
     default <V> FunctionWithThrow<T, V, E> andThen(FunctionWithThrow<? super R, ? extends V, E> after) {
         Objects.requireNonNull(after);

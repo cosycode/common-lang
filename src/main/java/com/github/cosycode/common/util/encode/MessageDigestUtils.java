@@ -9,24 +9,29 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 /**
- * <b>Description : </b> 字符串扩展处理类
+ * <b>Description : </b> 信息编码工具类
+ * <p>
+ * <b>created in </b> 2020/5/14
  *
  * @author CPF
  * @since 1.0
- * @date 2019/10/10 11:48
  **/
 public class MessageDigestUtils {
 
-    private MessageDigestUtils() {}
+    private MessageDigestUtils() {
+    }
 
     /**
      * 获取一个文件的md5值(可处理大文件)
      *
-     * @return md5 value
+     * @param file 待计算的文件
+     * @return md5 value 文件的MD5值
+     * @throws java.io.FileNotFoundException file文件未发现异常
+     * @throws IOException                   读取文件异常
      */
     public static String getMD5(File file) throws IOException {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
-            MessageDigest md5 = SimpleCode.runtimeExceptionForSup(() -> MessageDigest.getInstance("MD5"));
+            MessageDigest md5 = SimpleCode.runtimeException(() -> MessageDigest.getInstance("MD5"));
             byte[] buffer = new byte[8192];
             int length;
             while ((length = fileInputStream.read(buffer)) != -1) {
@@ -38,7 +43,7 @@ public class MessageDigestUtils {
     }
 
     public static String getMD5(byte[] data) {
-        MessageDigest md5 = SimpleCode.runtimeExceptionForSup(() -> MessageDigest.getInstance("MD5"));
+        MessageDigest md5 = SimpleCode.runtimeException(() -> MessageDigest.getInstance("MD5"));
         byte[] digest = md5.digest(data);
         return new BigInteger(1, digest).toString(16);
     }

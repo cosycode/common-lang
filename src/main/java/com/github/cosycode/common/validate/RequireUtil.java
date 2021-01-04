@@ -2,18 +2,23 @@ package com.github.cosycode.common.validate;
 
 import com.github.cosycode.common.lang.CheckException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 用于对一些对象进行要求判断, 如果不满足要求, 则抛出异常
+ * <p>
+ * <b>created in </b> 2019/4/12
  *
  * @author CPF
  * @since 1.0
- * @date 2019/4/12 17:19
  */
 public class RequireUtil {
 
-    private RequireUtil(){}
+    private RequireUtil() {
+    }
 
     /**
      * 为空则抛出异常
@@ -39,6 +44,9 @@ public class RequireUtil {
 
     /**
      * 为空则抛出异常
+     *
+     * @param collection 集合
+     * @param <T>        集合类型
      */
     public static <T> void requireCollectNonBlank(Collection<T> collection) {
         Objects.requireNonNull(collection);
@@ -49,6 +57,8 @@ public class RequireUtil {
 
     /**
      * 为空则抛出异常
+     *
+     * @param map map类型
      */
     public static void requireMapNonBlank(Map<?, ?> map) {
         Objects.requireNonNull(map);
@@ -71,7 +81,8 @@ public class RequireUtil {
     /**
      * flag不为true则抛出异常
      *
-     * @param flag 待验证的值
+     * @param flag    待验证的值
+     * @param message 如果 flag 为 false 时抛出的异常信息
      */
     public static void requireBooleanTrue(boolean flag, String message) {
         if (!flag) {

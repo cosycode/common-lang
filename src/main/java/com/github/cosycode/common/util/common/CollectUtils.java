@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 集合工具类
+ * <p>
+ * <b>created in </b> 2020/6/15
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/15 16:26
  */
 @Slf4j
 public class CollectUtils {

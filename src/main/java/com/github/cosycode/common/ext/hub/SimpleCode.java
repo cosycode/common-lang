@@ -1,20 +1,22 @@
 package com.github.cosycode.common.ext.hub;
 
+import com.github.cosycode.common.base.ConsumerWithThrow;
 import com.github.cosycode.common.base.RunnableWithThrow;
 import com.github.cosycode.common.base.SupplierWithThrow;
 import com.github.cosycode.common.lang.ActionExecException;
-import com.github.cosycode.common.base.ConsumerWithThrow;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * <b>Description : </b> 简化代码类
+ * <b>Description : </b> 简化代码类, 对冗余的代码进行简化, 增强可读性
+ * <p>
+ * ignoreException开头, 忽略发生的异常, 仅仅打印日志.
  * <p>
  * runtimeException开头, 原来需要catch的运行时转换为runtimeException抛出
- * ignoreException开头, 忽略发生的异常, 仅仅打印日志.
+ * <p>
+ * <b>created in </b> 2020/6/24
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/24
  */
 @Slf4j
 public class SimpleCode {
@@ -30,7 +32,7 @@ public class SimpleCode {
      * @param message  发生异常报错信息
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void ignoreException(RunnableWithThrow<Exception> runnable, String message) {
+    public static void ignoreException(RunnableWithThrow<? extends Exception> runnable, String message) {
         simpleExceptionForRun(runnable, message, false);
     }
 
@@ -40,7 +42,7 @@ public class SimpleCode {
      * @param runnable 带有异常的运行接口
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void ignoreException(RunnableWithThrow<Exception> runnable) {
+    public static void ignoreException(RunnableWithThrow<? extends Exception> runnable) {
         simpleExceptionForRun(runnable, null, false);
     }
 
@@ -51,7 +53,7 @@ public class SimpleCode {
      * @param message  发生异常报错信息
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void runtimeException(RunnableWithThrow<Exception> runnable, String message) {
+    public static void runtimeException(RunnableWithThrow<? extends Exception> runnable, String message) {
         simpleExceptionForRun(runnable, message, true);
     }
 
@@ -61,7 +63,7 @@ public class SimpleCode {
      * @param runnable 带有异常的运行接口
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void runtimeException(RunnableWithThrow<Exception> runnable) {
+    public static void runtimeException(RunnableWithThrow<? extends Exception> runnable) {
         simpleExceptionForRun(runnable, null, true);
     }
 
@@ -69,6 +71,7 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T ignoreException(SupplierWithThrow<T, ? extends Exception> supplier) {
@@ -80,6 +83,7 @@ public class SimpleCode {
      *
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T ignoreException(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue) {
@@ -91,6 +95,7 @@ public class SimpleCode {
      *
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T ignoreException(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message) {
@@ -101,6 +106,7 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T runtimeException(SupplierWithThrow<T, ? extends Exception> supplier) {
@@ -112,6 +118,7 @@ public class SimpleCode {
      *
      * @param supplier 带有返回值和throw的函数接口
      * @param message  supplier 发生错误后的信息
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T runtimeException(SupplierWithThrow<T, ? extends Exception> supplier, String message) {
@@ -166,7 +173,7 @@ public class SimpleCode {
      * @param message  发生异常报错信息
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void ignoreExceptionForRun(RunnableWithThrow<Exception> runnable, String message) {
+    public static void ignoreExceptionForRun(RunnableWithThrow<? extends Exception> runnable, String message) {
         simpleExceptionForRun(runnable, message, false);
     }
 
@@ -176,7 +183,7 @@ public class SimpleCode {
      * @param runnable 带有异常的运行接口
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void ignoreExceptionForRun(RunnableWithThrow<Exception> runnable) {
+    public static void ignoreExceptionForRun(RunnableWithThrow<? extends Exception> runnable) {
         simpleExceptionForRun(runnable, null, false);
     }
 
@@ -187,7 +194,7 @@ public class SimpleCode {
      * @param message  发生异常报错信息
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void runtimeExceptionForRun(RunnableWithThrow<Exception> runnable, String message) {
+    public static void runtimeExceptionForRun(RunnableWithThrow<? extends Exception> runnable, String message) {
         simpleExceptionForRun(runnable, message, true);
     }
 
@@ -197,7 +204,7 @@ public class SimpleCode {
      * @param runnable 带有异常的运行接口
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void runtimeExceptionForRun(RunnableWithThrow<Exception> runnable) {
+    public static void runtimeExceptionForRun(RunnableWithThrow<? extends Exception> runnable) {
         simpleExceptionForRun(runnable, null, true);
     }
 
@@ -205,6 +212,7 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T ignoreExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier) {
@@ -216,6 +224,7 @@ public class SimpleCode {
      *
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T ignoreExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue) {
@@ -227,6 +236,7 @@ public class SimpleCode {
      *
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T ignoreExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message) {
@@ -237,6 +247,7 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T runtimeExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier) {
@@ -248,6 +259,7 @@ public class SimpleCode {
      *
      * @param supplier 带有返回值和throw的函数接口
      * @param message  supplier 发生错误后的信息
+     * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
      */
     public static <T> T runtimeExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, String message) {

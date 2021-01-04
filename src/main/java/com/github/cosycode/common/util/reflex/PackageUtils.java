@@ -20,16 +20,19 @@ import java.util.stream.Collectors;
 
 /**
  * <b>Description : </b> 包工具类
+ * <p>
  * 功能1: 获取并处理一个包下的所有类
+ * <p>
+ * <b>created in </b> 2020/6/29
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/29 10:38
  */
 @Slf4j
 public class PackageUtils {
 
-    private PackageUtils(){}
+    private PackageUtils() {
+    }
 
     public static final String CLASS_SUFFIX = ".class";
 
@@ -41,7 +44,7 @@ public class PackageUtils {
     /**
      * 获取 clazz 所在 package 中的 经过 filter过滤后的 class 对象
      *
-     * @param clazz 类
+     * @param clazz  类
      * @param filter 过滤器
      * @return clazz 所在 package 中的 经过 filter过滤后的 class 对象
      */
@@ -68,7 +71,9 @@ public class PackageUtils {
     /**
      * 获取某个包下的所有类(获取jar包中类可能会出错)
      *
-     * @param packageName 包名: eg: com.github.common 或 com/github/common
+     * @param packageName  包名: eg: com.github.common 或 com/github/common
+     * @param loadChildren 是否加载子类
+     * @return 加载的类Set集合
      */
     public static Set<Class<?>> getClassesFromPackage(String packageName, boolean loadChildren) throws IOException {
         Set<Class<?>> classSet = new HashSet<>();

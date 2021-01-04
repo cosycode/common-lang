@@ -1,11 +1,12 @@
 package com.github.cosycode.common.ext.bean;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 用于封装两个对象的工具类
+ * <p>
+ * <b>created in </b> 2020/7/9
  *
  * @author CPF
  * @since 1.0
- * @date 2020/7/9
  */
 public class DoubleBean<O1, O2> {
 

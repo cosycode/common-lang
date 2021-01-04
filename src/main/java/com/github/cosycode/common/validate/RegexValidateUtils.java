@@ -3,15 +3,17 @@ package com.github.cosycode.common.validate;
 import java.util.regex.Pattern;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 正则表达式工具类
+ * <p>
+ * <b>created in </b> 2019/8/2
  *
  * @author CPF
  * @since 1.0
- * @date 2019/8/2 15:39
  **/
 public class RegexValidateUtils {
 
-    private RegexValidateUtils() {}
+    private RegexValidateUtils() {
+    }
 
     /**
      * yyyy-MM-dd
@@ -26,13 +28,13 @@ public class RegexValidateUtils {
     /**
      * yyyy-MM-dd hh:mm:ss
      */
-    public static final String REGEX_DATE_TIME = REGEX_DATE.substring(0, REGEX_DATE.length() -1 ) + " " + REGEX_TIME.substring(1);
+    public static final String REGEX_DATE_TIME = REGEX_DATE.substring(0, REGEX_DATE.length() - 1) + " " + REGEX_TIME.substring(1);
 
     public static final String REGEX_EMAIL = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
 
     public static final String REGEX_PHONE = "^1([345789])\\d{9}$";
 
-    public static boolean isEmail(String email){
+    public static boolean isEmail(String email) {
         return Pattern.matches(REGEX_EMAIL, email);
     }
 

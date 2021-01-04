@@ -8,16 +8,17 @@ import lombok.NonNull;
 import java.util.Map;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> map的装饰类
+ * <p>
+ * <b>created in </b> 2020/7/28
  *
  * @author CPF
  * @since 1.0
- * @date 2020/7/28
  */
 public class MapDecorator<K, V> implements IGetter<K> {
 
     @Getter
-    private Map<K, V> map;
+    private final Map<K, V> map;
 
     public MapDecorator(@NonNull Map<K, V> map) {
         this.map = map;

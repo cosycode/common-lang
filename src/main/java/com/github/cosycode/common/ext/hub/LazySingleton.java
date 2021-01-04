@@ -4,11 +4,12 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * <b>Description : </b> 单例懒加载
+ * <b>Description : </b> 单例懒加载类, 方便单例类的创建
+ * <p>
+ * <b>created in </b> 2020/6/15
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/15
  */
 public class LazySingleton<T> {
 
@@ -53,8 +54,10 @@ public class LazySingleton<T> {
     public boolean destroy() {
         if (t != null) {
             synchronized (this) {
-                t = null;
-                return true;
+                if (t != null) {
+                    t = null;
+                    return true;
+                }
             }
         }
         return false;

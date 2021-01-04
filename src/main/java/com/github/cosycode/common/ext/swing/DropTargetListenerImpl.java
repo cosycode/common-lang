@@ -10,10 +10,11 @@ import java.util.List;
 
 /**
  * <b>Description : </b> 拖拽实现监听包装类, 方便swing拖拽组件的使用
+ * <p>
+ * <b>created in </b> 2019/12/16
  *
  * @author CPF
  * @since 1.0
- * @date 2019/12/13
  **/
 public class DropTargetListenerImpl implements DropTargetListener {
 

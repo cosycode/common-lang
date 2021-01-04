@@ -2,10 +2,11 @@ package com.github.cosycode.common.ext.mapping;
 
 /**
  * <b>Description : </b> 用于存放 Mapping
+ * <p>
+ * <b>created in </b> 2019/12/13
  *
  * @author CPF
  * @since 1.0
- * @date 2019/12/13 10:43
  **/
 public class MappingBean<K, V> {
 

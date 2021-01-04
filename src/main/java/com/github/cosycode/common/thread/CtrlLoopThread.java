@@ -4,18 +4,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.BooleanSupplier;
 
 /**
  * <b>Description : </b> 可控制的循环线程
+ * <p>
+ * <b>created in </b> 2020/8/13
  *
  * @author CPF
  * @since 1.0
- * @date 2020/8/13 23:10
  */
 @Slf4j
 public final class CtrlLoopThread extends Thread {
+
+    private static int threadInitNumber;
+
+    private static synchronized int nextThreadNum() {
+        return threadInitNumber++;
+    }
 
     /**
      * 线程每次执行的函数, 如果函数返回false, 则线程循环结束
@@ -51,7 +59,8 @@ public final class CtrlLoopThread extends Thread {
     private long waitTime;
 
     @Builder
-    public CtrlLoopThread(BooleanSupplier booleanSupplier, boolean continueIfException, int millisecond) {
+    public CtrlLoopThread(BooleanSupplier booleanSupplier, String name, boolean continueIfException, int millisecond) {
+        super(StringUtils.isBlank(name) ? "CtrlLoopThread" + nextThreadNum() : name);
         this.booleanSupplier = booleanSupplier;
         this.continueIfException = continueIfException;
         this.millisecond = millisecond;

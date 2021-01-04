@@ -10,24 +10,26 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> Bean集合 工具类
+ * <p>
+ * <b>created in </b> 2020/6/15
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/15 15:48
  */
 @Slf4j
 public class BeanListUtils {
 
-    private BeanListUtils() {}
+    private BeanListUtils() {
+    }
 
     /**
      * 将 list 按照指定规则转为 Map
      *
      * @param getHKey 从对象中寻求 hash key 的方法
-     * @param list 待转换的list
-     * @param <K> hash key
-     * @param <V> hash value
+     * @param list    待转换的list
+     * @param <K>     hash key
+     * @param <V>     hash value
      * @return 转换后的map
      */
     public static <K, V> Map<K, V> castListToMap(@NonNull List<V> list, @NonNull Function<V, K> getHKey) {

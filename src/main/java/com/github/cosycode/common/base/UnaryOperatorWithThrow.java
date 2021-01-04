@@ -1,12 +1,14 @@
 package com.github.cosycode.common.base;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 带有抛出异常的 UnaryOperator 接口
+ * <p>
+ * <b>created in </b> 2020/6/29
  *
  * @author CPF
  * @see FunctionWithThrow
+ * @see java.util.function.UnaryOperator
  * @since 1.0
- * @date 2020/6/29
  **/
 @FunctionalInterface
 public interface UnaryOperatorWithThrow<T, E extends Throwable> extends FunctionWithThrow<T, T, E> {

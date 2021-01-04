@@ -1,43 +1,47 @@
 package com.github.cosycode.common.util.common;
 
+import com.github.cosycode.common.lang.ShouldNotHappenException;
+import lombok.NonNull;
+
 import java.util.Arrays;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 数组工具类
+ * <p>
+ * <b>created in </b> 2020/3/27
  *
  * @author CPF
  * @since 1.0
- * @date 2020/3/27 14:42
  */
 public class ArrUtils {
 
-    private ArrUtils(){}
+    private ArrUtils() {
+    }
 
     /**
      * 获取一维数组中相邻 number 个数的最大乘积
      *
-     * @param arr 待处理的数组
+     * @param arr    待处理的数组
      * @param number 相邻数量
-     * @return
-     * throw new RuntimeException (arr.length < number)
+     * @return throw new RuntimeException (arr.length &lt; number)
      */
-    public static int getMaxProductInArr(int[] arr, int number) throws Throwable {
+    public static int getMaxProductInArr(int[] arr, int number) {
         int len = arr.length;
-        if (len < number){
+        if (len < number) {
             throw new RuntimeException("arr太小!");
         }
         int[] num = Arrays.copyOf(arr, number);
 
-        int product = Arrays.stream(num).reduce((a, b) -> a*b).orElseThrow(Throwable::new);
+        int product = Arrays.stream(num).reduce((a, b) -> a * b).orElseThrow(ShouldNotHappenException::new);
         int cur = 0;
         int tmpProdect;
-        for (int i = number; i < len; i ++) {
+        for (int i = number; i < len; i++) {
             num[cur] = arr[i];
-            tmpProdect = Arrays.stream(num).reduce((a, b) -> a*b).orElseThrow(Throwable::new);
+            tmpProdect = Arrays.stream(num).reduce((a, b) -> a * b).orElseThrow(ShouldNotHappenException::new);
             if (tmpProdect > product) {
                 product = tmpProdect;
             }
-            cur ++;
+            cur++;
             cur = cur % number;
         }
         return product;
@@ -45,16 +49,17 @@ public class ArrUtils {
 
     /**
      * 转置矩阵, 矩阵必须是方形矩阵
+     *
      * @param matrix 矩阵数组
      */
-    public static void transposeMatrix(Object[][] matrix){
-        if (matrix.length != matrix[0].length){
+    public static void transposeMatrix(Object[][] matrix) {
+        if (matrix.length != matrix[0].length) {
             throw new RuntimeException("matrix.length != matrix[0].length");
         }
         int length = matrix.length;
         Object tmp;
-        for (int i = 0; i < length; i ++){
-            for (int j = 0; j < i; j++){
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < i; j++) {
                 tmp = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
                 matrix[j][i] = tmp;
@@ -67,14 +72,14 @@ public class ArrUtils {
      *
      * @param matrix 矩阵数组
      */
-    public static void transposeMatrix(int[][] matrix){
-        if (matrix.length != matrix[0].length){
+    public static void transposeMatrix(int[][] matrix) {
+        if (matrix.length != matrix[0].length) {
             throw new RuntimeException("matrix.length != matrix[0].length");
         }
         int length = matrix.length;
         int tmp;
-        for (int i = 0; i < length; i ++){
-            for (int j = 0; j < i; j++){
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < i; j++) {
                 tmp = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
                 matrix[j][i] = tmp;
@@ -85,13 +90,14 @@ public class ArrUtils {
 
     /**
      * 将一个字符串数组转换为int数组
+     *
      * @param strArr 待处理的字符串数组
      * @return 转换后的int数组
      */
-    public static int[] transStrArrToIntArr(String[] strArr){
+    public static int[] transStrArrToIntArr(String[] strArr) {
         int len = strArr.length;
         int[] intArr = new int[len];
-        for (int i = 0; i < len; i++){
+        for (int i = 0; i < len; i++) {
             intArr[i] = Integer.parseInt(strArr[i]);
         }
         return intArr;
@@ -100,16 +106,19 @@ public class ArrUtils {
 
     /**
      * 全层数组深拷贝,
+     *
      * @param arr 拷贝后的数组
+     * @param <T> 数据模板
+     * @return 拷贝后的数组
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] fullClone(T[] arr){
+    public static <T> T[] fullClone(T[] arr) {
         int len = arr.length;
         T[] copy = arr.clone();
-        for (int i = 0; i<len; i ++){
+        for (int i = 0; i < len; i++) {
             T t = copy[i];
             if (t != null && t.getClass().isArray()) {
-                 copy[i] = (T) fullClone((Object[]) t);
+                copy[i] = (T) fullClone((Object[]) t);
             }
         }
         return copy;
@@ -120,10 +129,10 @@ public class ArrUtils {
      * @param arr 二维数组
      * @return 深拷贝的二维数组
      */
-    public static int[][] deepClone(int[][] arr){
+    public static int[][] deepClone(int[][] arr) {
         int len = arr.length;
         int[][] copy = arr.clone();
-        for (int i = 0; i<len;i ++){
+        for (int i = 0; i < len; i++) {
             copy[i] = arr[i].clone();
         }
         return copy;
@@ -139,7 +148,7 @@ public class ArrUtils {
      */
     public static <T> void fullFill(T[] arr, T val) {
         int len = arr.length;
-        for (int i = 0; i<len; i ++){
+        for (int i = 0; i < len; i++) {
             T t = arr[i];
             if (t != null && t.getClass().isArray()) {
                 fullFill((Object[]) t, val);
@@ -151,8 +160,9 @@ public class ArrUtils {
 
     /**
      * 查询 n 在 arr 中的位置
+     *
      * @param arr 数组
-     * @param n 对象
+     * @param n   对象
      * @return n 在 arr 中的位置
      */
     public static int indexOf(Object[] arr, Object n) {
@@ -168,8 +178,9 @@ public class ArrUtils {
 
     /**
      * 查询 n 在 arr 中的位置
+     *
      * @param arr 数组
-     * @param n 整型值
+     * @param n   整型值
      * @return n 在 arr 中的位置
      */
     public static int indexOf(int[] arr, int n) {
@@ -184,8 +195,8 @@ public class ArrUtils {
     }
 
     /**
-     * @param start 开始
-     * @param end 结束
+     * @param start    开始
+     * @param end      结束
      * @param interval 间隔
      * @return start 开始到 end 结束(未必会有 end ), 间隔为 interval 的数组
      */
@@ -206,4 +217,19 @@ public class ArrUtils {
         return result;
     }
 
+    /**
+     * 判断数组是否所有元素全为null
+     *
+     * @param array 待判断的数组
+     * @param <T>   数组类型
+     * @return true: 或数组元素全为null, false: 数组种有值存在
+     */
+    public static <T> boolean isEmpty(@NonNull T[] array) {
+        for (T t : array) {
+            if (t != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

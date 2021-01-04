@@ -1,11 +1,13 @@
 package com.github.cosycode.common.ext.mapping;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> IMapping&lt;String, String&gt;映射接口, 用于从枚举种获取对象
+ * <p>
+ * <b>created in </b> 2020/6/4
  *
  * @author CPF
+ * @see com.github.cosycode.common.ext.mapping.IMapping
  * @since 1.0
- * @date 2020/6/4
  */
 public interface IStringStringMapping extends IMapping<String, String> {
 
@@ -13,8 +15,8 @@ public interface IStringStringMapping extends IMapping<String, String> {
      * 通过key来获取enumClass中匹配的枚举对象
      *
      * @param enumClass 枚举类
-     * @param key 代码
-     * @param <T> 模板类型
+     * @param key       代码
+     * @param <T>       模板类型
      * @return 如果 enumClass为空, 返回 null, 否则返回枚举类中第一个匹配 key 的枚举对象.
      */
     static <T extends IStringStringMapping> T getByKey(Class<T> enumClass, String key) {
@@ -35,8 +37,8 @@ public interface IStringStringMapping extends IMapping<String, String> {
      * 通过val来获取enumClass中匹配的枚举对象
      *
      * @param enumClass 枚举类
-     * @param val 值
-     * @param <T> 模板类型
+     * @param val       值
+     * @param <T>       模板类型
      * @return 如果 enumClass为空, 返回 null, 否则返回枚举类中第一个匹配 val 的枚举对象.
      */
     static <T extends IStringStringMapping> T getByVal(Class<T> enumClass, String val) {
@@ -57,8 +59,8 @@ public interface IStringStringMapping extends IMapping<String, String> {
      * 通过 key 来获取 val
      *
      * @param enumClass 枚举类
-     * @param key 枚举代码
-     * @param <T> 模板类型
+     * @param key       枚举代码
+     * @param <T>       模板类型
      * @return 如果 key为空
      */
     static <T extends IStringStringMapping> String getValByKey(Class<T> enumClass, String key) {
@@ -76,8 +78,8 @@ public interface IStringStringMapping extends IMapping<String, String> {
      * 通过 val 来获取 key
      *
      * @param enumClass 枚举类
-     * @param val 枚举代码
-     * @param <T> 模板类型
+     * @param val       枚举代码
+     * @param <T>       模板类型
      * @return 如果 key为空
      */
     static <T extends IStringStringMapping> String getKeyByVal(Class<T> enumClass, String val) {

@@ -2,19 +2,29 @@ package com.github.cosycode.common.thread;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.BooleanSupplier;
 
 /**
  * <b>Description : </b> 可控制的循环线程(装饰模式), 与 CtrlLoopThread 的区别是对 Thread 采用了组合方式, 而不是继承方式
+ * <p>
+ * <b>created in </b> 2020/8/13
  *
  * @author CPF
  * @since 1.0
- * @date 2020/8/13 23:10
  */
 @Slf4j
+@Accessors(chain = true)
 public class CtrlLoopThreadComp {
+
+    private static int threadInitNumber;
+
+    private static synchronized int nextThreadNum() {
+        return threadInitNumber++;
+    }
 
     /**
      * 线程每次执行的函数, 如果函数返回false, 则线程循环结束
@@ -52,31 +62,59 @@ public class CtrlLoopThreadComp {
     @Getter
     private final Thread thread;
 
-    public static CtrlLoopThreadComp ofSupplier(BooleanSupplier booleanSupplier, boolean continueIfException, int millisecond) {
-        return new CtrlLoopThreadComp(booleanSupplier, continueIfException, millisecond);
-    }
-
     public static CtrlLoopThreadComp ofRunnable(Runnable runnable, boolean continueIfException, int millisecond) {
         return new CtrlLoopThreadComp(() -> {
             runnable.run();
             return true;
-        }, continueIfException, millisecond);
+        }, null, continueIfException, millisecond);
+    }
+
+    public static CtrlLoopThreadComp ofRunnable(Runnable runnable) {
+        return new CtrlLoopThreadComp(() -> {
+            runnable.run();
+            return true;
+        }, null, false, 0);
+    }
+
+    public static CtrlLoopThreadComp ofSupplier(BooleanSupplier booleanSupplier, boolean continueIfException, int millisecond) {
+        return new CtrlLoopThreadComp(booleanSupplier, null, continueIfException, millisecond);
+    }
+
+    public static CtrlLoopThreadComp ofSupplier(BooleanSupplier booleanSupplier) {
+        return new CtrlLoopThreadComp(booleanSupplier, null, false, 0);
     }
 
     protected CtrlLoopThreadComp(BooleanSupplier booleanSupplier, boolean continueIfException, int millisecond) {
+        this(booleanSupplier, null, continueIfException, millisecond);
+    }
+
+    protected CtrlLoopThreadComp(BooleanSupplier booleanSupplier, String name, boolean continueIfException, int millisecond) {
         this.booleanSupplier = booleanSupplier;
         this.continueIfException = continueIfException;
         this.millisecond = millisecond;
-        thread = new Thread(new CtrlLoopRunnable());
+        if (StringUtils.isBlank(name)) {
+            name = "CtrlLoopThreadComp-" + nextThreadNum();
+        }
+        thread = new Thread(new CtrlLoopRunnable(), name);
     }
 
     /**
      * loop函数, 添加一个函数, 方便子类继承
+     *
+     * @return 当前函数是否运行成功
      */
     protected boolean loop() {
         return booleanSupplier != null && booleanSupplier.getAsBoolean();
     }
 
+    /**
+     * <b>Description : </b> 可控制的循环线程的runnable内部类, 控制CtrlLoopThreadComp的执行方式
+     * <p>
+     * <b>created in </b> 2020/8/13
+     *
+     * @author CPF
+     * @since 1.0
+     **/
     private class CtrlLoopRunnable implements Runnable {
 
         @Override
@@ -123,7 +161,7 @@ public class CtrlLoopThreadComp {
                     try {
                         Thread.sleep(millisecond);
                     } catch (InterruptedException e) {
-                        log.error("CtrlLoopThread [\" + name + \"] processing exception in sleep", e);
+                        log.error("CtrlLoopThread [" + name + "] processing exception in sleep", e);
                         thread.interrupt();
                     }
                 }
@@ -200,6 +238,15 @@ public class CtrlLoopThreadComp {
         } else {
             thread.interrupt();
         }
+    }
+
+    public CtrlLoopThreadComp setName(String name) {
+        thread.setName(name);
+        return this;
+    }
+
+    public String getName() {
+        return thread.getName();
     }
 
 }

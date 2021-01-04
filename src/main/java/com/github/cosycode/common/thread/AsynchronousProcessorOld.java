@@ -13,29 +13,33 @@ import java.util.function.Predicate;
 
 /**
  * <b>Description : </b> 异步处理器
+ * <p>
+ * <b>created in </b> 2018/9/19
  *
  * @author CPF
+ * @see AsynchronousProcessor
  * @since 1.0
- * @date 2018/9/19 16:48
+ * @deprecated 1.1 replaced by {@link AsynchronousProcessor}
  **/
 @Slf4j
-public class AsynchronousProcessorOld<T>{
+@Deprecated
+public class AsynchronousProcessorOld<T> {
 
     /**
      * 有消息的消息函数处理接口
      */
-    private Predicate<T> disposeFun;
+    private final Predicate<T> disposeFun;
 
     /**
      * 出错时的消费函数接口
      */
-    private Consumer<T> errFun;
+    private final Consumer<T> errFun;
 
     /**
      * 存放待处理的消息
      */
     @Getter
-    private BlockingQueue<T> blockingQueue;
+    private final BlockingQueue<T> blockingQueue;
 
     /**
      * 多长时间运行一次(while true 中的一个执行sleep多久)
@@ -61,9 +65,10 @@ public class AsynchronousProcessorOld<T>{
     private volatile boolean suspend;
 
     /**
-     * @param disposeFun 消息的消息函数处理接口(不可为空)
-     * @param errFun 出错时的消费函数接口
-     * @param millisecond 线程多久处理一次(毫米), 为0, 表示不 sleep
+     * @param blockingQueue 阻塞缓存队列
+     * @param disposeFun    消息的消息函数处理接口(不可为空)
+     * @param errFun        出错时的消费函数接口
+     * @param millisecond   线程多久处理一次(毫米), 为0, 表示不 sleep
      */
     public AsynchronousProcessorOld(@NonNull BlockingQueue<T> blockingQueue, @NonNull Predicate<T> disposeFun, Consumer<T> errFun, int millisecond) {
         this.blockingQueue = blockingQueue;
@@ -74,7 +79,7 @@ public class AsynchronousProcessorOld<T>{
     }
 
     /**
-     * @param disposeFun 消息的消息函数处理接口(不可为空)
+     * @param disposeFun  消息的消息函数处理接口(不可为空)
      * @param millisecond 线程多久处理一次(毫米), 为0, 表示不 sleep
      */
     public AsynchronousProcessorOld(@NonNull Predicate<T> disposeFun, int millisecond) {
@@ -89,8 +94,8 @@ public class AsynchronousProcessorOld<T>{
 
         @Override
         public void run() {
-            while(!Thread.currentThread().isInterrupted()) {
-                while(suspend){
+            while (!Thread.currentThread().isInterrupted()) {
+                while (suspend) {
                     synchronized (lock) {
                         try {
                             log.info("AsynchronousProcessorOld Thread 已经暂停!!!");
@@ -133,7 +138,7 @@ public class AsynchronousProcessorOld<T>{
     /**
      * 启动线程
      */
-    public void start(){
+    public void start() {
         if (thread == null || thread.isInterrupted()) {
             synchronized (this) {
                 if (thread == null || thread.isInterrupted()) {

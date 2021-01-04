@@ -7,21 +7,23 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 基础工具类
+ * <p>
+ * <b>created in </b> 2020/4/13
  *
  * @author CPF
  * @since 1.0
- * @date 2020/4/13 9:28
  */
 public class BaseUtils {
 
-    private BaseUtils(){}
+    private BaseUtils() {
+    }
 
     /**
      * 从 [0, range] 中获取cnt个不相同的随机数
      *
      * @param range 范围
-     * @param cnt 随机数值
+     * @param cnt   随机数值
      * @return 从 0-range范围内的不相同的cnt个随机数值
      */
     @SuppressWarnings("all")
@@ -66,7 +68,7 @@ public class BaseUtils {
                         mapping[1][idx2] = -1;
                     }
                 }
-            } else if (i == range){
+            } else if (i == range) {
                 int index = ArrUtils.indexOf(mapping[0], range);
                 if (index == -1) {
                     list.add(i);

@@ -8,10 +8,11 @@ import java.util.regex.Pattern;
 
 /**
  * <b>Description : </b> 字符串扩展处理类
+ * <p>
+ * <b>created in </b> 2019/10/10
  *
  * @author CPF
  * @since 1.0
- * @date 2019/10/10 11:48
  **/
 public class StrUtils {
 
@@ -20,21 +21,23 @@ public class StrUtils {
 
     /**
      * 正则替换, 按照 regex 对 content 进行查询指定字符串, 并在字符串前后增加 prefix 前缀和 suffix 后缀
-     * eg: replaceJoinAll("\\d+", "sing34hj32kh423jk", "<", ">");
-     * return sing<34>hj<32>kh<42322>jk
+     * <p>
+     * eg: replaceJoinAll("\\d+", "sing34hj32kh423jk", "\{", "\}");
+     * return sing{34}hj{32}kh{42322}jk
+     * </p>
      *
-     * @param regex 正则表达式
+     * @param regex   正则表达式
      * @param content 文本
-     * @param prefix 前缀
-     * @param suffix 后缀
+     * @param prefix  前缀
+     * @param suffix  后缀
      * @return 处理过的字符串
      */
-    public static String replaceJoinAll(String regex, String content, String prefix, String suffix){
+    public static String replaceJoinAll(String regex, String content, String prefix, String suffix) {
         final Pattern p = Pattern.compile(regex);
         // 获取 matcher 对象
         final Matcher m = p.matcher(content);
         final StringBuffer sb = new StringBuffer();
-        while(m.find()){
+        while (m.find()) {
             final String group = m.group();
             m.appendReplacement(sb, "");
             sb.append(prefix).append(group).append(suffix);
@@ -46,6 +49,9 @@ public class StrUtils {
 
     /**
      * 首字母变小写
+     *
+     * @param str 待转换的字符串
+     * @return 转换后的字符串
      */
     public static String firstCharToLowerCase(@NonNull String str) {
         str = str.trim();
@@ -57,6 +63,9 @@ public class StrUtils {
 
     /**
      * 首字母变大写
+     *
+     * @param str 待转换的字符串
+     * @return 转换后的字符串
      */
     public static String firstCharToUpperCase(@NonNull String str) {
         str = str.trim();
@@ -68,10 +77,11 @@ public class StrUtils {
 
     /**
      * 返回待处理字符串的驼峰格式
+     *
      * @param string 待处理的字符串
      * @return 返回驼峰式字符串, 以'_'为分隔符
      */
-    public static String lowerCamel(@NonNull String string){
+    public static String lowerCamel(@NonNull String string) {
         if (!string.contains("_")) {
             return string.trim().toLowerCase();
         }
@@ -95,10 +105,11 @@ public class StrUtils {
 
     /**
      * 返回待处理字符串的小写下滑线形式
+     *
      * @param string 待处理的字符串
      * @return 待处理字符串的小写下滑线形式, 以'_'为分隔符
      */
-    public static String lowerDownLine(@NonNull String string){
+    public static String lowerDownLine(@NonNull String string) {
         string = string.trim();
         int len = string.length();
         if (len == 0) {
@@ -121,19 +132,21 @@ public class StrUtils {
 
     /**
      * 返回待处理字符串的驼峰格式
+     *
      * @param string 待处理的字符串
      * @return 返回驼峰式字符串, 以'_'为分隔符
      */
-    public static String upperCamel(@NonNull String string){
+    public static String upperCamel(@NonNull String string) {
         return firstCharToUpperCase(lowerCamel(string));
     }
 
     /**
      * 返回待处理字符串的大写下滑线形式
+     *
      * @param string 待处理的字符串
      * @return 待处理字符串的大写下滑线形式, 以'_'为分隔符
      */
-    public static String upperDownLine(@NonNull String string){
+    public static String upperDownLine(@NonNull String string) {
         string = string.trim();
         int len = string.length();
         if (len == 0) {
@@ -155,7 +168,7 @@ public class StrUtils {
     }
 
     /**
-     * @param s 原始字符串
+     * @param s          原始字符串
      * @param defaultStr 默认字符串
      * @return 如果原始字符串为空, 则返回默认字符串
      */

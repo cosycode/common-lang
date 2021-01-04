@@ -7,15 +7,17 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> Map的工具类
+ * <p>
+ * <b>created in </b> 2020/7/29
  *
  * @author CPF
  * @since 1.0
- * @date 2020/7/29 11:42
  */
 public class Maps {
 
-    private Maps(){}
+    private Maps() {
+    }
 
     /**
      * 可以表示为{@code int}的2的最大幂。
@@ -42,8 +44,13 @@ public class Maps {
     }
 
     /**
-     * 创建一个具有足够“初始容量”的{@code HashMap}实例, 它应<i>应</ i>容纳{@code ExpectedSize}元素而不会增长。
-     * 这种行为不能得到广泛保证，但可以观察到是真的, 适用于OpenJDK 1.7。也不能保证该方法不是, 不经意<i>过大</ i>返回的地图。
+     * 创建一个具有足够“初始容量”的{@code HashMap}实例, 它应应容纳{@code ExpectedSize}元素而不会增长。
+     * 这种行为不能得到广泛保证，但可以观察到是真的, 适用于OpenJDK 1.7。也不能保证该方法不是, 不经意过大返回的地图。
+     *
+     * @param expectedSize 期望的Map大小
+     * @param <K>          key类型
+     * @param <V>          value类型
+     * @return 生成的HashMap实例
      */
     public static <K, V> Map<K, V> newHashMapWithExpectedSize(int expectedSize) {
         return new HashMap<>(capacity(expectedSize));
@@ -52,11 +59,11 @@ public class Maps {
     /**
      * 将旧key对应的Value赋值到新key对应的Value中
      *
-     * @param map map
+     * @param map    map
      * @param oldKey 旧的键值
      * @param newKey 新的键值
-     * @param <K> map的Key类型
-     * @param <V> map的Value类型
+     * @param <K>    map的Key类型
+     * @param <V>    map的Value类型
      */
     public static <K, V> void changeKey(Map<K, V> map, K oldKey, K newKey) {
         if (map.containsKey(oldKey)) {
@@ -68,10 +75,10 @@ public class Maps {
     /**
      * 将旧key对应的Value赋值到新key对应的Value中
      *
-     * @param map map
-     * @param operator 新key提供值(旧key -> 新key)
-     * @param <K> map的Key类型
-     * @param <V> map的Value类型
+     * @param map      map
+     * @param operator 新key提供值(旧key - 新key)
+     * @param <K>      map的Key类型
+     * @param <V>      map的Value类型
      */
     public static <K, V> void changeKey(Map<K, V> map, UnaryOperator<K> operator) {
         map.forEach((key, value) -> {
@@ -82,8 +89,6 @@ public class Maps {
     }
 
     /**
-     *
-     *
      * @param map map
      * @param <V> map中的Value类型
      */

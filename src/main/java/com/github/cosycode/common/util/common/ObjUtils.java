@@ -10,19 +10,25 @@ import java.text.ParseException;
 import java.util.Date;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> 对象的工具类
+ * <p>
+ * <b>created in </b> 2020/6/15
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/15 16:26
  */
 @Slf4j
 public class ObjUtils {
 
-    private ObjUtils(){}
+    private ObjUtils() {
+    }
 
     /**
      * 判断两个对象是否相等, 两个对象均为 null 也算相等
+     *
+     * @param obj1 待比较的对象1
+     * @param obj2 待比较的对象2
+     * @return 是否相等
      */
     public static boolean isEqualWithNullAble(Object obj1, Object obj2) {
         if (obj1 == null) {
@@ -34,6 +40,11 @@ public class ObjUtils {
 
     /**
      * String 转换为指定class类型
+     *
+     * @param str   将String转换为 T 类型
+     * @param clazz T的class
+     * @param <T>   指定转换的类型
+     * @return 转换后的对象
      */
     @SuppressWarnings("unchecked")
     public static <T> T parse(String str, Class<T> clazz) {
@@ -70,25 +81,33 @@ public class ObjUtils {
 
     /**
      * 将对象序列化为 byte[]
+     *
+     * @param obj 待序列化的对象
+     * @return 转换后的byte数组
      */
     public static byte[] objectToByte(@NonNull Serializable obj) {
         byte[] bytes = null;
         try (ByteArrayOutputStream bo = new ByteArrayOutputStream();
-             ObjectOutputStream oo = new ObjectOutputStream(bo)){
+             ObjectOutputStream oo = new ObjectOutputStream(bo)) {
             oo.writeObject(obj);
             bytes = bo.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("将对象序列化为 byte[] 失败 对象: " + obj, e);
         }
         return bytes;
     }
 
     /**
      * 将byte[]反序列化回java对象
+     *
+     * @param bytes 待反序列化的byte数组
+     * @param cls   指定转换的class类型
+     * @param <T>   指定转换的类型
+     * @return 转换后的对象
      */
     public static <T extends Serializable> T byteToObject(@NonNull byte[] bytes, @NonNull Class<T> cls) {
         try (ByteArrayInputStream bi = new ByteArrayInputStream(bytes);
-             ObjectInputStream oi = new ObjectInputStream(bi)){
+             ObjectInputStream oi = new ObjectInputStream(bi)) {
             return cls.cast(oi.readObject());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

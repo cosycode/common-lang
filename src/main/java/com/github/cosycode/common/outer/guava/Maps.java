@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <b>Description : </b>
+ * <b>Description : </b> copy from guava:Maps
  *
  * @author CPF
  * @since 1.0
- * @date 2020/6/15 15:50
  */
 public class Maps {
 
-    private Maps(){}
+    private Maps() {
+    }
 
     /**
      * The largest power of two that can be represented as an {@code int}.
@@ -50,9 +50,11 @@ public class Maps {
      * inadvertently <i>oversizing</i> the returned map.
      *
      * @param expectedSize the number of entries you expect to add to the
-     *        returned map
+     *                     returned map
+     * @param <K>          key的类型
+     * @param <V>          value的类型
      * @return a new, empty {@code HashMap} with enough capacity to hold {@code
-     *         expectedSize} entries without resizing
+     * expectedSize} entries without resizing
      * @throws IllegalArgumentException if {@code expectedSize} is negative
      */
     public static <K, V> Map<K, V> newHashMapWithExpectedSize(int expectedSize) {

@@ -4,14 +4,15 @@ import java.util.Date;
 import java.util.function.Function;
 
 /**
- * <b>Description : </b>
+ * 模板 T 类型 get方法的增强扩展接口
+ * <p>
+ * <b>created in </b> 2020/8/12
  *
  * @author CPF
  * @since 1.0
- * @date 2020/8/12
  */
 public interface IValGetter<T> {
-    
+
     T getVal();
 
     default <R> R get(Class<R> returnClass) {
@@ -38,7 +39,7 @@ public interface IValGetter<T> {
         return o;
     }
 
-    default <R> R getDefault(Class<R> returnClass, R defaultObj){
+    default <R> R getDefault(Class<R> returnClass, R defaultObj) {
         T o = getVal();
         if (o == null) {
             return defaultObj;
@@ -46,7 +47,7 @@ public interface IValGetter<T> {
         return returnClass.cast(o);
     }
 
-    default <R> R get(Function<T, R> function){
+    default <R> R get(Function<T, R> function) {
         T o = getVal();
         return function.apply(o);
     }
