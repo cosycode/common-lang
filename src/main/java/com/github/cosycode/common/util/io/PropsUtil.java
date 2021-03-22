@@ -1,13 +1,14 @@
 package com.github.cosycode.common.util.io;
 
+import com.github.cosycode.common.util.common.BeanUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -35,32 +36,54 @@ public final class PropsUtil {
      *
      * @param filename 资源文件路径及文件名
      * @return 加载文件之后创建的实例对象
+     * @throws IOException 文件加载失败异常
      */
     public static Properties loadProps(@NonNull String filename) throws IOException {
-        return loadProps(filename, Charset.defaultCharset());
+        return loadProps(filename, StandardCharsets.UTF_8);
     }
 
     /**
-     * 加载文件
+     * 加载 properties文件
      *
-     * @param filename 资源文件路径及文件名
+     * @param propsFile properties文件对象
      * @param charset  按照指定文件格式加载 Properties 文件
      * @return 加载文件之后创建的实例对象
+     * @throws IOException 文件加载失败异常
      */
-    public static Properties loadProps(@NonNull String filename, Charset charset) throws IOException {
-        Properties props = null;
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename)) {
-            if (is == null) {
-                throw new FileNotFoundException(filename + " file not found.");
-            }
-            props = new Properties();
+    public static Properties loadProps(@NonNull File propsFile, Charset charset) throws IOException {
+        try (InputStream is = new FileInputStream(propsFile)) {
+            Properties props = new Properties();
             try (final InputStreamReader inputStreamReader = new InputStreamReader(is, charset)) {
                 props.load(inputStreamReader);
             }
             return props;
         } catch (IOException e) {
-            throw new IOException(filename + " file load failure", e);
+            throw new IOException(propsFile.getAbsolutePath() + " file load failure", e);
         }
+    }
+
+    /**
+     * 加载 Properties 文件
+     * <P>
+     *     路径1: 前面有 classpath: 表示资源文件路径下的文件
+     *     路径2: 绝对路径
+     *     路径3: 相对路径, 以当前项目文件位 BasePath
+     * </P>
+     *
+     * @param filePath 文件路径
+     * @param charset  按照指定文件格式加载 Properties 文件
+     * @return 加载文件之后创建的实例对象
+     * @throws IOException 文件加载失败异常
+     */
+    public static Properties loadProps(@NonNull String filePath, Charset charset) throws IOException {
+        final File file = FileSystemUtils.newFile(filePath);
+        if (!file.exists()) {
+            throw new FileNotFoundException(filePath);
+        }
+        if (!file.canRead()) {
+            throw new IOException(filePath + "文件读取失败");
+        }
+        return loadProps(file, charset);
     }
 
     /**
@@ -70,9 +93,11 @@ public final class PropsUtil {
      * @param key          键值
      * @param defaultValue 获取失败的默认值.
      * @return 从 filename 中提取的键为 key 的字符串, 如果为空, 则返回 defaultValue
+     * @throws IOException 文件加载失败异常
      */
     public static String getString(String filename, String key, String defaultValue) throws IOException {
-        return loadProps(filename).getProperty(key, defaultValue);
+        final Properties properties = loadProps(filename, StandardCharsets.UTF_8);
+        return properties.getProperty(key, defaultValue);
     }
 
     /**
@@ -81,9 +106,38 @@ public final class PropsUtil {
      * @param filename properties文件名
      * @param key      键.
      * @return 从 filename 中提取的键为 key 的字符串
+     * @throws IOException 文件加载失败异常
      */
     public static String getString(String filename, String key) throws IOException {
-        return loadProps(filename).getProperty(key);
+        return getString(filename, key, "");
     }
+
+    /**
+     * 将文件属性映射到 bean 中
+     *
+     * @param properties properties
+     * @param bean 待装载的bean
+     * @param <T> bean的类型
+     */
+    public static <T> T populateToBean(@NonNull T bean, @NonNull Properties properties, String prefix) {
+        final Map<String, Object> map = new HashMap<>();
+        prefix = prefix.trim();
+        if (prefix.isEmpty()) {
+            properties.forEach((ok, ov) -> map.put(ok.toString(), ov));
+        } else {
+            final String prefixPoint = prefix + '.';
+            final int splitLen = prefixPoint.length();
+            properties.forEach((ok, ov) -> {
+                final String key = ok.toString();
+                if (key.length() <= splitLen || !key.startsWith(prefixPoint) ) {
+                    return;
+                }
+                map.put(key.substring(splitLen), ov);
+            });
+        }
+        BeanUtils.populate(bean, map);
+        return bean;
+    }
+
 
 }

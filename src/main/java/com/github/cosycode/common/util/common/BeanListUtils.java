@@ -1,6 +1,6 @@
 package com.github.cosycode.common.util.common;
 
-import com.github.cosycode.common.outer.guava.Maps;
+import com.github.cosycode.common.override.guava.Maps;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 

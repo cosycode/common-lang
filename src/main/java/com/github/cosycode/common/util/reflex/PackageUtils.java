@@ -6,13 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -36,17 +36,14 @@ public class PackageUtils {
 
     public static final String CLASS_SUFFIX = ".class";
 
-    public static void disposeClassesFromJar(Class<?> clazz, Predicate<JarEntry> predicate, Consumer<Class<?>> classConsumer) throws IOException {
-        List<Class<?>> classFromJar = getClassesFromJar(clazz, predicate);
-        classFromJar.forEach(classConsumer);
-    }
-
     /**
-     * 获取 clazz 所在 package 中的 经过 filter过滤后的 class 对象
+     * 获取 clazz 所在 package 中的 经过 filter 过滤后的 class 对象的集合
      *
      * @param clazz  类
      * @param filter 过滤器
      * @return clazz 所在 package 中的 经过 filter过滤后的 class 对象
+     * @throws FileNotFoundException 通过class获取class所在jar包
+     * @throws IOException 读取`通过class获取class所在jar包`出现IO异常
      */
     public static List<Class<?>> getClassesFromJar(Class<?> clazz, Predicate<JarEntry> filter) throws IOException {
         if (clazz == null) {
@@ -56,14 +53,18 @@ public class PackageUtils {
         final String jarPath = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
         // 获取 clazz 所在包路径
         String packagePath = clazz.getPackage().getName().replace('.', File.separatorChar);
-
-        try (JarFile file = new JarFile(new File(jarPath))) {
+        // jarFile
+        final File file1 = new File(jarPath);
+        if (!file1.exists()) {
+            throw new FileNotFoundException(String.format("获取路径出错, clazz: %s, jarPath: %s, packagePath: %s", clazz.getName(), jarPath, packagePath));
+        }
+        try (JarFile file = new JarFile(file1)) {
             return file.stream()
                     .filter(jarEntry -> jarEntry.getName().startsWith(packagePath) && (filter == null || filter.test(jarEntry)))
                     .map(jarEntry -> ClassUtils.loadClass(jarEntry.getName().replace(CLASS_SUFFIX, "").replace(File.separatorChar, '.')))
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new IOException("String.format(\"获取路径出错, clazz: %s, jarPath: %s, packagePath: %s\", clazz.getName(), jarPath, packagePath)", e);
+            throw new IOException(String.format("获取路径出错, clazz: %s, jarPath: %s, packagePath: %s", clazz.getName(), jarPath, packagePath), e);
         }
     }
 

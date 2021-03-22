@@ -38,7 +38,7 @@ public class TestUtils {
     }
 
     /**
-     * 正常执行 Runnable 函数, 打印 执行 Runnable 函数的执行时长信息
+     * 循环执行 Runnable 函数, 打印 执行 Runnable 函数循环 loop 次的执行时长信息
      *
      * @param tag      标记
      * @param runnable 执行函数

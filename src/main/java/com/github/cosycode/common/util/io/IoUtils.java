@@ -91,6 +91,8 @@ public class IoUtils {
 
     /**
      * 输入流转String
+     * <p>
+     *     利用 InputStreamReader 和 char[] 读取流
      *
      * @param inputStream 输入流
      * @param charset     编码
@@ -100,15 +102,14 @@ public class IoUtils {
     public static String readStringFromInputStream(InputStream inputStream, Charset charset) throws IOException {
         try (InputStreamReader inputStreamReader = charset == null ?
                 new InputStreamReader(inputStream) : new InputStreamReader(inputStream, charset)) {
-            //字符缓冲流
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            char[] chars = new char[8 * 1024];
+            int read = 0;
             //字符串缓冲区
             StringBuilder stringBuilder = new StringBuilder();
-            String len;
             //按行读
-            while ((len = bufferedReader.readLine()) != null) {
+            while ((read = inputStreamReader.read(chars)) > 0) {
                 //追加到字符串缓冲区存放
-                stringBuilder.append(len);
+                stringBuilder.append(chars,0, read);
             }
             //将字符串返回
             return stringBuilder.toString();
@@ -117,13 +118,15 @@ public class IoUtils {
 
     /**
      * 按行读取流, 由 consumer 对行进行消费
+     * <p>
+     *     利用 InputStreamReader 和 BufferedReader 读取流, 并按行进行消费处理
      *
      * @param inputStream 输入流
      * @param charset     编码
-     * @param consumer    按行读取流的消费函数
+     * @param rowConsumer    按行读取流的消费函数
      * @throws IOException 读取流数据异常
      */
-    public static void readStringFromInputStream(InputStream inputStream, Charset charset, Consumer<String> consumer) throws IOException {
+    public static void readAndConsumeRowFromInputStream(InputStream inputStream, Charset charset, Consumer<String> rowConsumer) throws IOException {
         try (InputStreamReader inputStreamReader = charset == null ?
                 new InputStreamReader(inputStream) : new InputStreamReader(inputStream, charset)) {
             //字符缓冲流
@@ -132,7 +135,7 @@ public class IoUtils {
             //按行读
             while ((len = bufferedReader.readLine()) != null) {
                 //追加到字符串缓冲区存放
-                consumer.accept(len);
+                rowConsumer.accept(len);
             }
         }
     }
@@ -140,11 +143,11 @@ public class IoUtils {
     /**
      * 读取文件
      *
-     * @param filePath 文件路径
-     * @return 文件字符串
+     * @param file 待处理的文件
+     * @return 从文件中读取的字符串
+     * @throws IOException 文件读取失败异常
      */
-    public static String readFile(String filePath) throws IOException {
-        final File file = new File(filePath);
+    public static String readFile(final File file) throws IOException {
         Validate.isTrue(file.exists(), "文件不存在");
         final long length = file.length();
         char[] chars = new char[(int) length];
@@ -155,6 +158,18 @@ public class IoUtils {
             throw new IOException("文件读取失败: filePath", e);
         }
         return new String(chars);
+    }
+
+    /**
+     * 读取文件
+     *
+     * @param filePath 文件路径
+     * @return 从文件中读取的字符串
+     * @throws IOException 文件读取失败异常
+     */
+    public static String readFile(final String filePath) throws IOException {
+        final File file = new File(filePath);
+        return readFile(file);
     }
 
     /**

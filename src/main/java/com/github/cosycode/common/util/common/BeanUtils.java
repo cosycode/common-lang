@@ -3,7 +3,6 @@ package com.github.cosycode.common.util.common;
 import com.github.cosycode.common.ext.hub.SimpleCode;
 import com.github.cosycode.common.lang.RuntimeExtException;
 import com.github.cosycode.common.lang.ShouldNotHappenException;
-import com.github.cosycode.common.lang.WrongBranchException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -116,53 +115,27 @@ public class BeanUtils {
         // 定义从targetFields获取指定Field的Function
         Function<String, Field> function = geneGetFieldFunction(targetFields);
         // 遍历 sourceFields 从中获取方法, 并赋值
-        for (Map.Entry<String, Object> entry : source.entrySet()) {
-            final Field apply = function.apply(entry.getKey());
-            if (apply == null) {
+        for (Map.Entry<String, Object> sEntry : source.entrySet()) {
+            final Field tField = function.apply(sEntry.getKey());
+            if (tField == null) {
                 continue;
             }
-            final Object value = entry.getValue();
-            if (value != null && !getPackageType(apply.getType()).isAssignableFrom(getPackageType(value.getClass()))) {
-                log.debug("类型不匹配");
+            final Object sValue = sEntry.getValue();
+            if (sValue == null) {
                 continue;
             }
-            apply.setAccessible(true);
+            final Class<?> type = tField.getType();
+            Object value = TypeConvertUtils.convert(sValue, type);
+            if (value == null) {
+                log.debug("类型不匹配! target: [{}], source: [{}@{}]", type, sValue.getClass(), sValue);
+                continue;
+            }
+            tField.setAccessible(true);
             try {
-                apply.set(target, value);
+                tField.set(target, value);
             } catch (IllegalAccessException e) {
                 throw new ShouldNotHappenException(e);
             }
-        }
-    }
-
-    /**
-     * 通过基本数据类型获取包装类型
-     *
-     * @param clazz 基本数据类型
-     * @return 包装类型
-     */
-    private static Class<?> getPackageType(Class<?> clazz) {
-        if (!clazz.isPrimitive()) {
-            return clazz;
-        }
-        if (byte.class.equals(clazz)) {
-            return Byte.class;
-        } else if (short.class.equals(clazz)) {
-            return Short.class;
-        } else if (int.class.equals(clazz)) {
-            return Integer.class;
-        } else if (long.class.equals(clazz)) {
-            return Long.class;
-        } else if (float.class.equals(clazz)) {
-            return Float.class;
-        } else if (double.class.equals(clazz)) {
-            return Double.class;
-        } else if (char.class.equals(clazz)) {
-            return Character.class;
-        } else if (boolean.class.equals(clazz)) {
-            return Boolean.class;
-        } else {
-            throw new WrongBranchException("class: " + clazz.getName() + " 不是包装类型");
         }
     }
 

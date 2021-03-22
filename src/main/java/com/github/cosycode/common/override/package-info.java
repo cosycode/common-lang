@@ -6,4 +6,4 @@
  * @author CPF
  * @since 1.0
  */
-package com.github.cosycode.common.outer;
+package com.github.cosycode.common.override;

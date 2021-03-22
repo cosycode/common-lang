@@ -14,7 +14,7 @@ import java.util.HashMap;
  **/
 public class Record extends HashMap<String, Object> implements IMapGetter<String, Object> {
 
-    public void set(String key, String value) {
+    public void set(String key, Object value) {
         super.put(key, value);
     }
 

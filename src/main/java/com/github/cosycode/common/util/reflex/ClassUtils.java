@@ -1,5 +1,7 @@
 package com.github.cosycode.common.util.reflex;
 
+import com.github.cosycode.common.ext.hub.SimpleCode;
+
 /**
  * <b>Description : </b> 类相关的工具类
  * <p>
@@ -21,13 +23,7 @@ public class ClassUtils {
      * @return 类class对象
      */
     public static Class<?> loadClass(String className, boolean isInitialized) {
-        Class<?> cls;
-        try {
-            cls = Class.forName(className, isInitialized, ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return cls;
+        return SimpleCode.ignoreException(() -> Class.forName(className, isInitialized, ClassLoader.getSystemClassLoader()));
     }
 
     /**
@@ -39,6 +35,5 @@ public class ClassUtils {
     public static Class<?> loadClass(String className) {
         return loadClass(className, false);
     }
-
 
 }

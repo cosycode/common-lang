@@ -3,6 +3,7 @@ package com.github.cosycode.common.util.common;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +41,39 @@ public class StrUtils {
         while (m.find()) {
             final String group = m.group();
             m.appendReplacement(sb, "");
-            sb.append(prefix).append(group).append(suffix);
+            if (prefix != null) {
+                sb.append(prefix);
+            }
+            sb.append(group);
+            if (suffix != null) {
+                sb.append(suffix);
+            }
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    /**
+     * 正则替换, 按照 regex 对 content 进行对比字符串, 并按指定规则对字符串进行替换
+     * <p>
+     * eg: replaceAll("\\d+", "sing34hj32kh423jk", it -> "\{" + it + "\}");
+     * return sing{34}hj{32}kh{42322}jk
+     * </p>
+     *
+     * @param regex   正则表达式
+     * @param content 文本
+     * @param matchDispose 将匹配的字符串转换为目标字符串的方法
+     * @return 处理过的字符串
+     */
+    public static String replaceAll(@NonNull String regex, @NonNull String content, @NonNull UnaryOperator<String> matchDispose) {
+        final Pattern p = Pattern.compile(regex);
+        // 获取 matcher 对象
+        final Matcher m = p.matcher(content);
+        final StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            final String group = m.group();
+            m.appendReplacement(sb, "");
+            sb.append(matchDispose.apply(group));
         }
         m.appendTail(sb);
         return sb.toString();
@@ -178,4 +211,5 @@ public class StrUtils {
         }
         return s;
     }
+
 }

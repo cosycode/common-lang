@@ -1,4 +1,4 @@
-package com.github.cosycode.common.outer.guava;
+package com.github.cosycode.common.override.guava;
 
 import com.github.cosycode.common.validate.RequireUtil;
 
