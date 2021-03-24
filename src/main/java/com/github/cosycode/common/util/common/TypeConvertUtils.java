@@ -18,6 +18,15 @@ public class TypeConvertUtils {
 
     private TypeConvertUtils(){}
 
+    /**
+     * 将 s 转换为 tClass 类型
+     *
+     * @param s 数据源对象
+     * @param tClass 转换成的目标对象类型
+     * @param <S> 数据源对象类型
+     * @param <T> 目标数据类型
+     * @return 若可以转换, 则返回 s 转换为 tClass 类型后的对象, 若无法转换则返回 null
+     */
     @SuppressWarnings("unchecked")
     public static <S, T> T convert(@NonNull S s, @NonNull Class<T> tClass) {
         // 如果类型相同, 则直接返回
@@ -37,18 +46,25 @@ public class TypeConvertUtils {
         return null;
     }
 
+    /**
+     * 将字符串 s 转换为 tClass 类型
+     * @param s 待转换的字符串
+     * @param clazz 转换成的目标对象类型
+     * @param <T> 目标数据类型
+     * @return 若可以转换, 则返回 s 转换为 tClass 类型后的对象, 若无法转换则返回 null
+     */
     @SuppressWarnings("unchecked")
     private static <T> T convertFromString(@NonNull String s, Class<T> clazz) {
-        if (clazz == Integer.class) {
+        if (clazz == Integer.class || clazz == Integer.TYPE) {
             return (T) Integer.valueOf(s);
         }
-        if (clazz == Boolean.class) {
+        if (clazz == Boolean.class || clazz == Boolean.TYPE) {
             return (T) Boolean.valueOf(s);
         }
-        if (clazz == Short.class) {
+        if (clazz == Short.class || clazz == Short.TYPE) {
             return (T) Short.valueOf(s);
         }
-        if (clazz == Long.class) {
+        if (clazz == Long.class || clazz == Long.TYPE) {
             return (T) Long.valueOf(s);
         }
         if (clazz == BigDecimal.class) {
@@ -57,13 +73,13 @@ public class TypeConvertUtils {
         if (clazz == BigInteger.class) {
             return (T) new BigInteger(s);
         }
-        if (clazz == Double.class) {
+        if (clazz == Double.class || clazz == Double.TYPE) {
             return (T) Double.valueOf(s);
         }
-        if (clazz == Float.class) {
+        if (clazz == Float.class || clazz == Float.TYPE) {
             return (T) Float.valueOf(s);
         }
-        if (clazz == Byte.class) {
+        if (clazz == Byte.class || clazz == Byte.TYPE) {
             return (T) Byte.valueOf(s);
         }
         return null;
