@@ -81,15 +81,15 @@ public class MessageDigestUtils {
     /**
      * 将 Unicode 编码字符串转换为对应字符字符(例如: 中文字符)
      * <p>
-     *     系统中接受中文参数变成百分号，如：“黄大”-->“%u9EC4%u5927”
-     *     而实际上内容对应，应该是：“黄大”-->“\u9EC4\u5927”，中文变unicode
+     * 系统中接受中文参数变成百分号，如：“黄大”-->“%u9EC4%u5927”
+     * 而实际上内容对应，应该是：“黄大”-->“\u9EC4\u5927”，中文变unicode
      * </p>
      *
      * @param unicodeString Unicode 编码字符串
      * @return 转换成字符的字符串
      */
     public static String decodeUnicodeString(String unicodeString) {
-        unicodeString = unicodeString.replace("%","\\");//这行酌情不要
+        unicodeString = unicodeString.replace("%", "\\");//这行酌情不要
         int start = 0;
         int end = 0;
         final StringBuilder stringBuilder = new StringBuilder();

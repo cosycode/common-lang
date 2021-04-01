@@ -16,15 +16,16 @@ import java.math.BigInteger;
  **/
 public class TypeConvertUtils {
 
-    private TypeConvertUtils(){}
+    private TypeConvertUtils() {
+    }
 
     /**
      * 将 s 转换为 tClass 类型
      *
-     * @param s 数据源对象
+     * @param s      数据源对象
      * @param tClass 转换成的目标对象类型
-     * @param <S> 数据源对象类型
-     * @param <T> 目标数据类型
+     * @param <S>    数据源对象类型
+     * @param <T>    目标数据类型
      * @return 若可以转换, 则返回 s 转换为 tClass 类型后的对象, 若无法转换则返回 null
      */
     @SuppressWarnings("unchecked")
@@ -48,9 +49,10 @@ public class TypeConvertUtils {
 
     /**
      * 将字符串 s 转换为 tClass 类型
-     * @param s 待转换的字符串
+     *
+     * @param s     待转换的字符串
      * @param clazz 转换成的目标对象类型
-     * @param <T> 目标数据类型
+     * @param <T>   目标数据类型
      * @return 若可以转换, 则返回 s 转换为 tClass 类型后的对象, 若无法转换则返回 null
      */
     @SuppressWarnings("unchecked")

@@ -4,7 +4,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -27,7 +29,7 @@ public class ThreadUtils {
      * @param collection 待处理的集合(不允许为空)
      * @param consumer   处理数据的方法(不允许为空)
      * @param threadNum  线程池数量, 具体处理方式看方法说明
-     * @param <T> 待处理的列表对象类型
+     * @param <T>        待处理的列表对象类型
      */
     public <T> void multithreading(@NonNull Collection<T> collection, @NonNull Consumer<T> consumer, int threadNum) {
         if (collection.isEmpty()) {

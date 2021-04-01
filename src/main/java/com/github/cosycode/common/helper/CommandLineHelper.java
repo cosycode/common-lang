@@ -91,7 +91,7 @@ public class CommandLineHelper {
         if (keyParams == null) {
             return "";
         }
-        return keyParams.get(key.toLowerCase());
+        return keyParams.getOrDefault(key.toLowerCase(), "");
     }
 
     /**

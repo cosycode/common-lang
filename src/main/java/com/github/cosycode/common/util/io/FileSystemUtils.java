@@ -3,9 +3,11 @@ package com.github.cosycode.common.util.io;
 import com.github.cosycode.common.base.FileDisposer;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Validate;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -106,41 +108,103 @@ public class FileSystemUtils {
         }
     }
 
+    /**
+     * 确保文件夹存在, 不存在则创建文件夹
+     *
+     * @param dir 文件夹
+     */
+    public static void insureFileDirExist(@NonNull final File dir) {
+        if (dir.exists()) {
+            Validate.isTrue(dir.isDirectory(), "创建文件夹异常, 已存在同名非文件夹事物, 请检查 path : " + dir.getPath());
+        } else {
+            final boolean mkDirs = dir.mkdirs();
+            Validate.isTrue(mkDirs, "文件夹创建失败, 请检查 path : " + dir.getPath());
+            log.info("文件夹创建成功: {} ", dir);
+        }
+    }
+
+    /**
+     * 确保文件存在
+     * 如果不存在则创建文件(包括文件夹)
+     *
+     * @param file 文件
+     * @return 是否创建了文件
+     */
+    public static boolean insureFileExist(@NonNull final File file) {
+        final boolean exists = file.exists();
+        if (exists) {
+            Validate.isTrue(file.isFile(), "创建文件异常, 已存在同名非文件事物(如存在和当前文件相同的文件夹), 请检查 path : " + file.getPath());
+            return false;
+        } else {
+            // 确保文件所在文件夹存在
+            File parentFile = file.getParentFile();
+            insureFileDirExist(parentFile);
+            // 不存在则创建文件
+            try {
+                final boolean newFile = file.createNewFile();
+                Validate.isTrue(newFile, "文件创建失败 path : " + file.getPath());
+                return true;
+            } catch (IOException e) {
+                log.error("文件创建失败 path : " + file.getPath(), e);
+                return false;
+            }
+        }
+    }
 
     /**
      * 通过文件路径获取正确的文件对象
      *
+     * <p>
+     * filePathExpression:
+     * </p>
+     * <p>
+     * classpath:{path}: 将获取配置文件的路径
+     * </p>
+     * <p>
+     * suitpath:{path}: 首先从执行路径下找文件, 若找不到再从配置文件中找文件
+     * </p>
+     *
      * @param filePathExpression 文件路径
      * @return 文件路径对应的文件对象
      */
-    public static File newFile(@NonNull String filePathExpression) {
-        final String absolutePath = pausePath(filePathExpression);
-        if (absolutePath.isEmpty()) {
-            return null;
-        }
-        return new File(absolutePath);
-    }
-
-
-    /**
-     * 解析文件路径
-     *
-     * @param filePathExpression 文件路径表达式
-     * @return 文件表达式对应的绝对路径
-     */
-    public static String pausePath(@NonNull String filePathExpression) {
-        if (filePathExpression.startsWith("classpath:")) {
+    public static File findFile(@NonNull String filePathExpression) {
+        filePathExpression = filePathExpression.trim();
+        if (filePathExpression.startsWith("suitpath:")) {
+            final String relativePath = filePathExpression.substring(9);
+            File file = findFile(relativePath);
+            if (file != null && file.exists()) {
+                return file;
+            }
+            return findFile("classpath:" + relativePath);
+        } else if (filePathExpression.startsWith("classpath:")) {
             final String filePath = filePathExpression.substring(10);
             final URL resource = Thread.currentThread().getContextClassLoader().getResource(filePath);
             if (resource == null) {
-                return "";
+                return null;
             } else {
-                return resource.getPath();
+                return new File(resource.getPath());
             }
         } else {
-            return filePathExpression;
+            return new File(filePathExpression);
         }
     }
 
+    /**
+     * 获取项目的当前工作目录
+     *
+     * @return System.getProperty(" user.dir ")
+     */
+    public static String getUserDir() {
+        return System.getProperty("user.dir");
+    }
+
+    /**
+     * 获取用户目录
+     *
+     * @return System.getProperty(" user.home ")
+     */
+    public static String getUserHome() {
+        return System.getProperty("user.home");
+    }
 
 }

@@ -21,7 +21,7 @@ public class ReflexUtils {
     /**
      * 通过反射从 对象中 获取属性值
      *
-     * @param obj 带获取值的对象
+     * @param obj           带获取值的对象
      * @param attributeName 属性名称
      * @return 对象中对应属性的值
      * @throws NoSuchFieldException 对象中没有对应属性

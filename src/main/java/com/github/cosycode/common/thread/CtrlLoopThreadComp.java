@@ -151,9 +151,11 @@ public class CtrlLoopThreadComp {
                 } catch (RuntimeException e) {
                     // 如果发生异常是否继续执行下一回合
                     if (continueIfException) {
-                        log.error("CtrlLoopThread [" + name + "] processing exception, continue to the next round", e);
+                        final String msg = String.format("CtrlLoopThread [%s] processing exception, continue to the next round", name);
+                        log.error(msg, e);
                     } else {
-                        throw new RuntimeException("CtrlLoopThread [" + name + "] processing exception, the thread stop!", e);
+                        final String msg = String.format("CtrlLoopThread [%s] processing exception, the thread stop!", name);
+                        throw new RuntimeException(msg, e);
                     }
                 }
                 // 控制loop多久循环一次, 防止 CPU 过高占用

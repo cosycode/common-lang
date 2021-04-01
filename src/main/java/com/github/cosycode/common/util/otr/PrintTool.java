@@ -14,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PrintTool {
 
+    private static final String DIRECTOR_STRING = " ==> ";
+
     enum Level {
         OFF(Integer.MAX_VALUE), FATAL(50000), ERROR(40000), WARN(30000), INFO(30000), DEBUG(30000);
-        
+
         private final int val;
 
         Level(int val) {
@@ -26,7 +28,7 @@ public class PrintTool {
         public int toInt() {
             return val;
         }
-        
+
     }
 
     /**
@@ -66,7 +68,7 @@ public class PrintTool {
                     if (logFlag) {
                         log.debug(s, objects);
                     } else {
-                        System.out.println(level.name() + " ==> " + format(s, objects));
+                        System.out.println(level.name() + DIRECTOR_STRING + format(s, objects));
                     }
                 }
                 break;
@@ -75,7 +77,7 @@ public class PrintTool {
                     if (logFlag) {
                         log.info(s, objects);
                     } else {
-                        System.out.println(level.name() + " ==> " + format(s, objects));
+                        System.out.println(level.name() + DIRECTOR_STRING + format(s, objects));
                     }
                 }
                 break;
@@ -84,7 +86,7 @@ public class PrintTool {
                     if (logFlag) {
                         log.warn(s, objects);
                     } else {
-                        System.out.println(level.name() + " ==> " + format(s, objects));
+                        System.out.println(level.name() + DIRECTOR_STRING + format(s, objects));
                     }
                 }
                 break;
@@ -93,7 +95,7 @@ public class PrintTool {
                     if (logFlag) {
                         log.error(s, objects);
                     } else {
-                        System.out.println(level.name() + " ==> " + format(s, objects));
+                        System.out.println(level.name() + DIRECTOR_STRING + format(s, objects));
                     }
                 }
                 break;
@@ -119,6 +121,5 @@ public class PrintTool {
         }
         return sb.toString();
     }
-
 
 }

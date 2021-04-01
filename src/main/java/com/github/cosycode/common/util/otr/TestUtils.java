@@ -1,6 +1,8 @@
 package com.github.cosycode.common.util.otr;
 
 import com.github.cosycode.common.ext.bean.DoubleBean;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
@@ -15,10 +17,8 @@ import java.util.function.Supplier;
  * @since 1.0
  **/
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestUtils {
-
-    private TestUtils() {
-    }
 
     /**
      * 格式化数字(%,.3f: 每三位加一个`,`, 保留三位小数)

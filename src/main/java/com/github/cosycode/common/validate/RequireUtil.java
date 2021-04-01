@@ -101,13 +101,4 @@ public class RequireUtil {
             throw new CheckException("array 中不包含 target");
         }
     }
-
-    public static String concat(String str1, String str2) {
-        Objects.requireNonNull(str1);
-        if (str2 != null && !"".equals(str2)) {
-            return str1 + str2;
-        }
-        return str1;
-    }
-
 }

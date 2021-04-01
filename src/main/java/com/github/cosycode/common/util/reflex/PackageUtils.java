@@ -43,7 +43,7 @@ public class PackageUtils {
      * @param filter 过滤器
      * @return clazz 所在 package 中的 经过 filter过滤后的 class 对象
      * @throws FileNotFoundException 通过class获取class所在jar包
-     * @throws IOException 读取`通过class获取class所在jar包`出现IO异常
+     * @throws IOException           读取`通过class获取class所在jar包`出现IO异常
      */
     public static List<Class<?>> getClassesFromJar(Class<?> clazz, Predicate<JarEntry> filter) throws IOException {
         if (clazz == null) {

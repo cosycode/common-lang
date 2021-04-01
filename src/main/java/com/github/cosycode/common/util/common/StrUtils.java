@@ -60,8 +60,8 @@ public class StrUtils {
      * return sing{34}hj{32}kh{42322}jk
      * </p>
      *
-     * @param regex   正则表达式
-     * @param content 文本
+     * @param regex        正则表达式
+     * @param content      文本
      * @param matchDispose 将匹配的字符串转换为目标字符串的方法
      * @return 处理过的字符串
      */
@@ -210,6 +210,25 @@ public class StrUtils {
             return defaultStr;
         }
         return s;
+    }
+
+    /**
+     * 将String对象组连接起来, 如果为 null, 则转换为 EMPTY_STRING 连接
+     *
+     * @param strings string对象阻
+     * @return 连接后的字符串
+     */
+    public static String concat(@NonNull String... strings) {
+        if (strings.length <= 1) {
+            return strings[0] == null ? "" : strings[0];
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String str : strings) {
+            if (str != null) {
+                sb.append(str);
+            }
+        }
+        return sb.toString();
     }
 
 }

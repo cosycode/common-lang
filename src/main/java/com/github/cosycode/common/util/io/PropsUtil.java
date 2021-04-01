@@ -46,7 +46,7 @@ public final class PropsUtil {
      * 加载 properties文件
      *
      * @param propsFile properties文件对象
-     * @param charset  按照指定文件格式加载 Properties 文件
+     * @param charset   按照指定文件格式加载 Properties 文件
      * @return 加载文件之后创建的实例对象
      * @throws IOException 文件加载失败异常
      */
@@ -64,10 +64,10 @@ public final class PropsUtil {
 
     /**
      * 加载 Properties 文件
-     * <P>
-     *     路径1: 前面有 classpath: 表示资源文件路径下的文件
-     *     路径2: 绝对路径
-     *     路径3: 相对路径, 以当前项目文件位 BasePath
+     * <p>
+     * 路径1: 前面有 classpath: 表示资源文件路径下的文件
+     * 路径2: 绝对路径
+     * 路径3: 相对路径, 以当前项目文件位 BasePath
      * </P>
      *
      * @param filePath 文件路径
@@ -76,8 +76,8 @@ public final class PropsUtil {
      * @throws IOException 文件加载失败异常
      */
     public static Properties loadProps(@NonNull String filePath, Charset charset) throws IOException {
-        final File file = FileSystemUtils.newFile(filePath);
-        if (!file.exists()) {
+        final File file = FileSystemUtils.findFile(filePath);
+        if (file == null || !file.exists()) {
             throw new FileNotFoundException(filePath);
         }
         if (!file.canRead()) {
@@ -116,8 +116,8 @@ public final class PropsUtil {
      * 将文件属性映射到 bean 中
      *
      * @param properties properties
-     * @param bean 待装载的bean
-     * @param <T> bean的类型
+     * @param bean       待装载的bean
+     * @param <T>        bean的类型
      */
     public static <T> T populateToBean(@NonNull T bean, @NonNull Properties properties, String prefix) {
         final Map<String, Object> map = new HashMap<>();
@@ -129,7 +129,7 @@ public final class PropsUtil {
             final int splitLen = prefixPoint.length();
             properties.forEach((ok, ov) -> {
                 final String key = ok.toString();
-                if (key.length() <= splitLen || !key.startsWith(prefixPoint) ) {
+                if (key.length() <= splitLen || !key.startsWith(prefixPoint)) {
                     return;
                 }
                 map.put(key.substring(splitLen), ov);

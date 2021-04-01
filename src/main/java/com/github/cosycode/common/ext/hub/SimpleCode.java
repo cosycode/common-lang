@@ -63,7 +63,7 @@ public class SimpleCode {
      * @param runnable 带有异常的运行接口
      * @see SimpleCode#simpleExceptionForRun(RunnableWithThrow, java.lang.String, boolean)
      */
-    public static void runtimeException(RunnableWithThrow<? extends Exception> runnable) {
+    public static <E extends Exception> void runtimeException(RunnableWithThrow<E> runnable) {
         simpleExceptionForRun(runnable, null, true);
     }
 
@@ -71,9 +71,9 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @param <T>      supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T ignoreException(SupplierWithThrow<T, ? extends Exception> supplier) {
         return simpleExceptionForSup(supplier, null, null, false);
@@ -84,9 +84,9 @@ public class SimpleCode {
      *
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
+     * @param <T>          supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T ignoreException(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue) {
         return simpleExceptionForSup(supplier, defaultValue, null, false);
@@ -98,9 +98,9 @@ public class SimpleCode {
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
      * @param message      发生错误后打印抛出的异常信息
+     * @param <T>          supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T ignoreException(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message) {
         return simpleExceptionForSup(supplier, defaultValue, message, false);
@@ -110,9 +110,9 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @param <T>      supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T runtimeException(SupplierWithThrow<T, ? extends Exception> supplier) {
         return simpleExceptionForSup(supplier, null, null, true);
@@ -123,9 +123,9 @@ public class SimpleCode {
      *
      * @param supplier 带有返回值和throw的函数接口
      * @param message  supplier 发生错误后的信息
+     * @param <T>      supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T runtimeException(SupplierWithThrow<T, ? extends Exception> supplier, String message) {
         return simpleExceptionForSup(supplier, null, message, true);
@@ -218,9 +218,9 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @param <T>      supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T ignoreExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier) {
         return simpleExceptionForSup(supplier, null, null, false);
@@ -231,9 +231,9 @@ public class SimpleCode {
      *
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
+     * @param <T>          supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T ignoreExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue) {
         return simpleExceptionForSup(supplier, defaultValue, null, false);
@@ -245,9 +245,9 @@ public class SimpleCode {
      * @param supplier     带有返回值和throw的函数接口
      * @param defaultValue supplier 发生错误后的默认返回值
      * @param message      supplier 发生错误后的信息
+     * @param <T>          supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T ignoreExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message) {
         return simpleExceptionForSup(supplier, defaultValue, message, false);
@@ -257,9 +257,9 @@ public class SimpleCode {
      * 忽略运行的异常
      *
      * @param supplier 带有返回值和throw的函数接口
+     * @param <T>      supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T runtimeExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier) {
         return simpleExceptionForSup(supplier, null, null, true);
@@ -270,9 +270,9 @@ public class SimpleCode {
      *
      * @param supplier 带有返回值和throw的函数接口
      * @param message  supplier 发生错误后的信息
+     * @param <T>      supplier的提供的返回值类型
      * @return supplier 的返回值
      * @see SimpleCode#simpleExceptionForSup(SupplierWithThrow, java.lang.Object, java.lang.String, boolean)
-     * @param <T> supplier的提供的返回值类型
      */
     public static <T> T runtimeExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, String message) {
         return simpleExceptionForSup(supplier, null, message, true);
@@ -357,8 +357,8 @@ public class SimpleCode {
     /**
      * @param consumerWithThrow 函数表达式(带有异常)
      * @param t                 传入 consumerWithThrow 中的参数
+     * @param <T>               传入 consumerWithThrow 中的参数类型
      * @return 若出现异常, 则将异常返回, 否则返回 null
-     * @param <T> 传入 consumerWithThrow 中的参数类型
      */
     public static <T> Exception catchThrow(ConsumerWithThrow<T, ? extends Exception> consumerWithThrow, T t) {
         try {

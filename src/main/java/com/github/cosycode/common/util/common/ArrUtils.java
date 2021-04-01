@@ -166,8 +166,6 @@ public class ArrUtils {
      * @return n 在 arr 中的位置
      */
     public static int indexOf(Object[] arr, Object n) {
-        Object[] objects = new Object[4];
-        fullFill(objects, 5);
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == n) {
                 return i;
@@ -184,8 +182,6 @@ public class ArrUtils {
      * @return n 在 arr 中的位置
      */
     public static int indexOf(int[] arr, int n) {
-        Object[] objects = new Object[4];
-        fullFill(objects, 5);
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == n) {
                 return i;

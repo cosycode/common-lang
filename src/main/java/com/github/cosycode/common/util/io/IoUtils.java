@@ -92,7 +92,7 @@ public class IoUtils {
     /**
      * 输入流转String
      * <p>
-     *     利用 InputStreamReader 和 char[] 读取流
+     * 利用 InputStreamReader 和 char[] 读取流
      *
      * @param inputStream 输入流
      * @param charset     编码
@@ -109,7 +109,7 @@ public class IoUtils {
             //按行读
             while ((read = inputStreamReader.read(chars)) > 0) {
                 //追加到字符串缓冲区存放
-                stringBuilder.append(chars,0, read);
+                stringBuilder.append(chars, 0, read);
             }
             //将字符串返回
             return stringBuilder.toString();
@@ -119,11 +119,11 @@ public class IoUtils {
     /**
      * 按行读取流, 由 consumer 对行进行消费
      * <p>
-     *     利用 InputStreamReader 和 BufferedReader 读取流, 并按行进行消费处理
+     * 利用 InputStreamReader 和 BufferedReader 读取流, 并按行进行消费处理
      *
      * @param inputStream 输入流
      * @param charset     编码
-     * @param rowConsumer    按行读取流的消费函数
+     * @param rowConsumer 按行读取流的消费函数
      * @throws IOException 读取流数据异常
      */
     public static void readAndConsumeRowFromInputStream(InputStream inputStream, Charset charset, Consumer<String> rowConsumer) throws IOException {
@@ -182,14 +182,13 @@ public class IoUtils {
      */
     public static void writeFile(@NonNull String savePath, @NonNull byte[] content) throws IOException {
         final File file = new File(savePath);
-        insureFileExist(file);
+        FileSystemUtils.insureFileExist(file);
 
         // 写入文件
         try (final FileOutputStream writer = new FileOutputStream(file)) {
             writer.write(content);
         }
     }
-
 
     /**
      * 文件拷贝
@@ -214,49 +213,6 @@ public class IoUtils {
 
 
     /**
-     * 确保文件夹存在, 不存在则创建文件夹
-     *
-     * @param dir 文件夹
-     */
-    public static void insureFileDirExist(@NonNull final File dir) {
-        if (dir.exists()) {
-            Validate.isTrue(dir.isDirectory(), "创建文件夹异常, 已存在同名非文件夹事物, 请检查 path : " + dir.getPath());
-        } else {
-            final boolean mkDirs = dir.mkdirs();
-            Validate.isTrue(mkDirs, "文件夹创建失败, 请检查 path : " + dir.getPath());
-            log.info("文件夹创建成功: {} ", dir);
-        }
-    }
-
-    /**
-     * 确保文件存在
-     * 如果不存在则创建文件(包括文件夹)
-     *
-     * @param file 文件
-     * @return 是否创建了文件
-     */
-    public static boolean insureFileExist(@NonNull final File file) {
-        final boolean exists = file.exists();
-        if (exists) {
-            Validate.isTrue(file.isFile(), "创建文件异常, 已存在同名非文件事物(如存在和当前文件相同的文件夹), 请检查 path : " + file.getPath());
-            return false;
-        } else {
-            // 确保文件所在文件夹存在
-            File parentFile = file.getParentFile();
-            insureFileDirExist(parentFile);
-            // 不存在则创建文件
-            try {
-                final boolean newFile = file.createNewFile();
-                Validate.isTrue(newFile, "文件创建失败 path : " + file.getPath());
-                return true;
-            } catch (IOException e) {
-                log.error("文件创建失败 path : " + file.getPath(), e);
-                return false;
-            }
-        }
-    }
-
-    /**
      * 往 savePath 路径 写入文件, 如果没有则新增
      *
      * @param image 图片
@@ -277,7 +233,7 @@ public class IoUtils {
     public static void savePic(Image image, @NonNull final File file, @NonNull String formatName) {
         Validate.isTrue(StringUtils.isNoneBlank(formatName), "formatName为空, 不知道该转换成什么图片格式");
 
-        insureFileExist(file);
+        FileSystemUtils.insureFileExist(file);
 
         int w = image.getWidth(null);
         int h = image.getHeight(null);

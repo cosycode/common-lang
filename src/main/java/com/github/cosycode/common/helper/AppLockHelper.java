@@ -1,5 +1,6 @@
 package com.github.cosycode.common.helper;
 
+import com.github.cosycode.common.util.io.FileSystemUtils;
 import lombok.Getter;
 
 import java.io.File;
@@ -12,8 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import static com.github.cosycode.common.util.io.IoUtils.insureFileExist;
 
 /**
  * <b>Description : </b> 该类的作用是为了防止应用多开而做的
@@ -53,7 +52,7 @@ public final class AppLockHelper {
         this.fileName = fileName;
         //获得实例标志文件
         File flagFile = new File(fileName);
-        final boolean create = insureFileExist(flagFile);
+        final boolean create = FileSystemUtils.insureFileExist(flagFile);
         // 此处不要关闭流，否则无法实现锁定文件的功能
         FileOutputStream fos = new FileOutputStream(flagFile, true);
         this.fileLock = fos.getChannel().tryLock();
