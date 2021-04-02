@@ -103,20 +103,31 @@ public class PrintTool {
         }
     }
 
-    public static String format(String str, Object... objects) {
-        if (objects == null || objects.length == 0) {
+    /**
+     * 将String中的{}转换为参数中指定的值
+     * <p>字符串中的 {} 和 params 中的参数由左至右一一匹配, 匹配上则替换, 匹配不上则不进行替换</p>
+     * <p>params中对象为null, 则转换为 EMPTY_STRING </p>
+     *
+     * @param str 待转换的字符串
+     * @param params 参数
+     * @return 转换后的字符串
+     */
+    public static String format(String str, Object... params) {
+        if (params == null || params.length == 0) {
             return str;
         }
         int from = 0;
         int end;
         StringBuilder sb = new StringBuilder();
-        for (Object object : objects) {
+        for (Object param : params) {
             end = str.indexOf("{}", from);
             if (end < 0) {
                 break;
             }
             sb.append(str, from, end);
-            sb.append(object);
+            if (param != null) {
+                sb.append(param);
+            }
             from = end + 2;
         }
         return sb.toString();
