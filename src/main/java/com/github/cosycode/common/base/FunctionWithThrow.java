@@ -13,7 +13,7 @@ import java.util.function.Function;
  * @since 1.0
  **/
 @FunctionalInterface
-public interface FunctionWithThrow<T, R, E extends Throwable> {
+public interface FunctionWithThrow<T, R, E extends Exception> extends SerialFunctional{
 
     /**
      * Applies this function to the given argument.
@@ -67,7 +67,7 @@ public interface FunctionWithThrow<T, R, E extends Throwable> {
      * @param <T> the type of the input and output of the operator
      * @return a unary operator that always returns its input argument
      */
-    static <T> FunctionWithThrow<T, T, Throwable> identity() {
+    static <T> FunctionWithThrow<T, T, Exception> identity() {
         return t -> t;
     }
 }

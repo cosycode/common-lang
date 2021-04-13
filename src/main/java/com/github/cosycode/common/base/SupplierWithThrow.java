@@ -10,7 +10,7 @@ package com.github.cosycode.common.base;
  * @since 1.0
  */
 @FunctionalInterface
-public interface SupplierWithThrow<T, E extends Throwable> {
+public interface SupplierWithThrow<T, E extends Exception> extends SerialFunctional{
 
     T get() throws E;
 }

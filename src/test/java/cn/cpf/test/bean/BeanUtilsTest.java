@@ -1,13 +1,10 @@
 package cn.cpf.test.bean;
 
-import com.github.cosycode.common.util.common.BeanUtils;
-import com.github.cosycode.common.util.otr.PrintTool;
-import com.github.cosycode.common.util.otr.TestUtils;
+import com.github.cosycode.common.base.ConsumerWithThrow;
+import com.github.cosycode.common.base.FunctionWithThrow;
+import com.github.cosycode.common.base.RunnableWithThrow;
+import com.github.cosycode.common.base.SupplierWithThrow;
 import lombok.extern.slf4j.Slf4j;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.stream.IntStream;
 
 /**
  * <b>Description : </b>
@@ -17,17 +14,39 @@ import java.util.stream.IntStream;
 @Slf4j
 public class BeanUtilsTest {
 
-    public static void main(String[] args) {
-        System.setProperty("java.util.logging.SimpleFormatter.format",
-                "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
-        for (int i = 11110; i > 0; i-=30) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void test(RunnableWithThrow<?> runnable) {
+        System.out.println("RunnableWithThrow");
+    }
 
+    public void test(FunctionWithThrow<?,?,?> runnable) {
+        System.out.println("FunctionWithThrow");
+    }
+
+    public void test(ConsumerWithThrow<?,?> runnable) {
+        System.out.println("ConsumerWithThrow");
+    }
+    public void test(SupplierWithThrow<?,?> runnable) {
+        System.out.println("SupplierWithThrow");
+    }
+
+
+    public static void main(String[] args) {
+        final BeanUtilsTest beanUtilsTest = new BeanUtilsTest();
+
+        RunnableWithThrow run = () -> System.out.println("RunnableWithThrow");
+        SupplierWithThrow sup = () -> {
+            System.out.println("SupplierWithThrow");
+            return "SupplierWithThrow Result";
+        };
+        ConsumerWithThrow consumer = (a) -> System.out.println("ConsumerWithThrow\n" + a);
+        FunctionWithThrow fun = (a) -> {
+            System.out.println("RunnableWithThrow");
+            return "FunctionWithThrow Result";
+        };
+        beanUtilsTest.test(run);
+        beanUtilsTest.test(sup);
+        beanUtilsTest.test(consumer);
+        beanUtilsTest.test(fun);
     }
 
 }

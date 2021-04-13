@@ -10,7 +10,7 @@ package com.github.cosycode.common.base;
  * @since 1.0
  */
 @FunctionalInterface
-public interface RunnableWithThrow<E extends Throwable> {
+public interface RunnableWithThrow<E extends Exception> extends SerialFunctional{
 
     void run() throws E;
 

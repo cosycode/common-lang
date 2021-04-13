@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  **/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
-public class Promise {
+public class Throws {
 
     /**
      * <b>Description : </b> 异常封装处理Bean, 用于没有返回值的异常封装
@@ -38,13 +38,13 @@ public class Promise {
     public static class PromiseForRunnable<E extends Exception> {
 
         @Getter
-        protected Exception throwable;
+        protected Exception exception;
 
         /**
          * 如果是 private的话, 子类之外无法调用该方法
          */
-        void setThrowable(Exception throwable) {
-            this.throwable = throwable;
+        void setThrowable(Exception exception) {
+            this.exception = exception;
         }
 
         /**
@@ -52,15 +52,15 @@ public class Promise {
          * <p>该方法中 E 不应该是runtimeException中的子类, 由于java语言特性, 在此很难直接通过语法进行限制.</p>
          * <p>但是我觉得, 应该不会有人在方法上直接声明 throw RuntimeException 及其子类吧 </p>
          *
-         * @param throwableConsumer 异常处理方法
+         * @param exceptionConsumer 异常处理方法
          * @return 链式调用, 返回对象本身
          */
-        public PromiseForRunnable<E> catCh(Consumer<E> throwableConsumer) {
-            if (this.throwable != null) {
-                if (this.throwable instanceof RuntimeException) {
-                    log.debug("throwable: {} 不应该是 RuntimeException 的子类, 建议不要声明 throws RuntimeException 及其子类", this.throwable.getClass());
+        public PromiseForRunnable<E> catCh(Consumer<E> exceptionConsumer) {
+            if (this.exception != null) {
+                if (this.exception instanceof RuntimeException) {
+                    log.debug("exception: {} 不应该是 RuntimeException 的子类, 建议不要声明 throws RuntimeException 及其子类", this.exception.getClass());
                 } else {
-                    throwableConsumer.accept((E) this.throwable);
+                    exceptionConsumer.accept((E) this.exception);
                 }
             }
             return this;
@@ -69,12 +69,12 @@ public class Promise {
         /**
          * 对指定异常进行捕获
          *
-         * @param throwableConsumer 异常处理方法
+         * @param exceptionConsumer 异常处理方法
          * @return 链式调用, 返回对象本身
          */
-        public <T extends E> PromiseForRunnable<E> catCh(@NonNull Class<T> catchEptType, Consumer<T> throwableConsumer) {
-            if (catchEptType.isInstance(this.throwable)) {
-                throwableConsumer.accept((T) this.throwable);
+        public <T extends E> PromiseForRunnable<E> catCh(@NonNull Class<T> catchEptType, Consumer<T> exceptionConsumer) {
+            if (catchEptType.isInstance(this.exception)) {
+                exceptionConsumer.accept((T) this.exception);
             }
             return this;
         }
@@ -82,12 +82,12 @@ public class Promise {
         /**
          * 如果有异常, 则对异常进行处理
          *
-         * @param throwableConsumer 异常处理方法
+         * @param exceptionConsumer 异常处理方法
          * @return 链式调用, 返回对象本身
          */
-        public PromiseForRunnable<E> catchAll(Consumer<Exception> throwableConsumer) {
-            if (this.throwable != null) {
-                throwableConsumer.accept(this.throwable);
+        public PromiseForRunnable<E> catchAll(Consumer<Exception> exceptionConsumer) {
+            if (this.exception != null) {
+                exceptionConsumer.accept(this.exception);
             }
             return this;
         }
@@ -96,8 +96,8 @@ public class Promise {
          * 使用JDK自带函数打印异常堆栈
          */
         public PromiseForRunnable<E> catchToPrintStackTrace() {
-            if (this.throwable != null) {
-                this.throwable.printStackTrace();
+            if (this.exception != null) {
+                this.exception.printStackTrace();
             }
             return this;
         }
@@ -106,8 +106,8 @@ public class Promise {
          * 如果有异常则打印异常信息
          */
         public PromiseForRunnable<E> logThrowable() {
-            if (this.throwable != null) {
-                log.error("", this.throwable);
+            if (this.exception != null) {
+                log.error("", this.exception);
             }
             return this;
         }
@@ -118,8 +118,8 @@ public class Promise {
          * @param message 异常标记文本
          */
         public PromiseForRunnable<E> logThrowable(String message) {
-            if (this.throwable != null) {
-                log.error(message, this.throwable);
+            if (this.exception != null) {
+                log.error(message, this.exception);
             }
             return this;
         }
@@ -128,8 +128,8 @@ public class Promise {
          * 将非运行时异常封装到运行时异常并抛出
          */
         public PromiseForRunnable<E> runtimeExp() {
-            if (this.throwable != null) {
-                throw new RuntimeExtException(this.throwable);
+            if (this.exception != null) {
+                throw new RuntimeExtException(this.exception);
             }
             return this;
         }
@@ -140,8 +140,8 @@ public class Promise {
          * @param message 异常文本
          */
         public PromiseForRunnable<E> runtimeExp(String message) {
-            if (this.throwable != null) {
-                throw new RuntimeExtException(message, this.throwable);
+            if (this.exception != null) {
+                throw new RuntimeExtException(message, this.exception);
             }
             return this;
         }
@@ -152,7 +152,7 @@ public class Promise {
          * @param runnable 执行函数
          */
         public PromiseForRunnable<E> then(Runnable runnable) {
-            if (this.throwable == null) {
+            if (this.exception == null) {
                 runnable.run();
             }
             return this;
@@ -171,7 +171,6 @@ public class Promise {
      **/
     public static class PromiseForSupplier<R, E extends Exception> extends PromiseForRunnable<E> {
 
-        @Getter
         private R returnVal;
 
         private void setReturnVal(R returnVal) {
@@ -182,7 +181,11 @@ public class Promise {
             return Optional.ofNullable(returnVal);
         }
 
-        public R getDefaultVal(R defaultVal) {
+        public R value() {
+            return returnVal;
+        }
+
+        public R defaultVal(R defaultVal) {
             return returnVal == null ? defaultVal : returnVal;
         }
 
@@ -190,8 +193,8 @@ public class Promise {
          * {@link PromiseForRunnable#catCh(java.util.function.Consumer)}
          */
         @Override
-        public PromiseForSupplier<R, E> catCh(Consumer<E> throwableConsumer) {
-            super.catCh(throwableConsumer);
+        public PromiseForSupplier<R, E> catCh(Consumer<E> exceptionConsumer) {
+            super.catCh(exceptionConsumer);
             return this;
         }
 
@@ -199,8 +202,8 @@ public class Promise {
          * {@link PromiseForRunnable#catCh(java.lang.Class, java.util.function.Consumer)}
          */
         @Override
-        public <T extends E> PromiseForSupplier<R, E> catCh(@NonNull Class<T> catchEptType, Consumer<T> throwableConsumer) {
-            super.catCh(catchEptType, throwableConsumer);
+        public <T extends E> PromiseForSupplier<R, E> catCh(@NonNull Class<T> catchEptType, Consumer<T> exceptionConsumer) {
+            super.catCh(catchEptType, exceptionConsumer);
             return this;
         }
 
@@ -208,8 +211,8 @@ public class Promise {
          * {@link PromiseForRunnable#catchAll(java.util.function.Consumer)}
          */
         @Override
-        public PromiseForSupplier<R, E> catchAll(Consumer<Exception> throwableConsumer) {
-            super.catchAll(throwableConsumer);
+        public PromiseForSupplier<R, E> catchAll(Consumer<Exception> exceptionConsumer) {
+            super.catchAll(exceptionConsumer);
             return this;
         }
 
@@ -227,8 +230,8 @@ public class Promise {
          */
         @Override
         public PromiseForSupplier<R, E> logThrowable() {
-            if (this.throwable != null) {
-                log.error("", this.throwable);
+            if (this.exception != null) {
+                log.error("exc", this.exception);
             }
             return this;
         }
@@ -238,8 +241,8 @@ public class Promise {
          */
         @Override
         public PromiseForSupplier<R, E> logThrowable(String message) {
-            if (this.throwable != null) {
-                log.error(message, this.throwable);
+            if (this.exception != null) {
+                log.error(message, this.exception);
             }
             return this;
         }
@@ -249,8 +252,8 @@ public class Promise {
          */
         @Override
         public PromiseForSupplier<R, E> runtimeExp() {
-            if (this.throwable != null) {
-                throw new RuntimeExtException(this.throwable);
+            if (this.exception != null) {
+                throw new RuntimeExtException(this.exception);
             }
             return this;
         }
@@ -260,8 +263,8 @@ public class Promise {
          */
         @Override
         public PromiseForSupplier<R, E> runtimeExp(String message) {
-            if (this.throwable != null) {
-                throw new RuntimeExtException(message, this.throwable);
+            if (this.exception != null) {
+                throw new RuntimeExtException(message, this.exception);
             }
             return this;
         }
@@ -273,7 +276,7 @@ public class Promise {
          */
         @Override
         public PromiseForSupplier<R, E> then(Runnable runnable) {
-            if (this.throwable == null) {
+            if (this.exception == null) {
                 runnable.run();
             }
             return this;
@@ -307,7 +310,7 @@ public class Promise {
      * @param <E>      需要抛出的异常
      * @return 对函数之后后的异常进行捕获, 并封装成类
      */
-    public static <P, E extends Exception> PromiseForRunnable<E> consume(P p, ConsumerWithThrow<P, E> consumer) {
+    public static <P, E extends Exception> PromiseForRunnable<E> con(P p, ConsumerWithThrow<P, E> consumer) {
         PromiseForRunnable<E> promise = new PromiseForRunnable<>();
         try {
             consumer.accept(p);

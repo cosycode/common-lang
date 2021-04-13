@@ -12,7 +12,7 @@ import java.util.Objects;
  * @since 1.0
  */
 @FunctionalInterface
-public interface ConsumerWithThrow<T, E extends Throwable> {
+public interface ConsumerWithThrow<T, E extends Exception> extends SerialFunctional{
 
     /**
      * Performs this operation on the given argument.

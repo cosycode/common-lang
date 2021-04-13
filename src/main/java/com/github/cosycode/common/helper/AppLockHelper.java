@@ -72,4 +72,7 @@ public final class AppLockHelper {
         return new File(AppLockHelper.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().trim();
     }
 
+
+
+
 }

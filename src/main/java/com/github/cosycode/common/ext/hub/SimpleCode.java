@@ -131,6 +131,7 @@ public class SimpleCode {
         return simpleExceptionForSup(supplier, null, message, true);
     }
 
+
     /**
      * 忽略运行的异常
      *
@@ -153,24 +154,8 @@ public class SimpleCode {
      * @return supplier 执行成功: supplier的返回值, supplier 执行失败: 返回 defaultValue
      */
     public static <T> T simpleException(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message, boolean throwException) {
-        return simpleExceptionForSup(supplier, defaultValue, message, true, throwException);
+        return simpleExceptionForSup(supplier, defaultValue, message, throwException);
     }
-
-    /**
-     * 忽略运行的异常
-     *
-     * @param supplier       带有返回值和throw的函数接口
-     * @param defaultValue   throwException为true时, supplier 发生错误后的默认返回值
-     * @param message        supplier 发生错误后的信息
-     * @param logException   输出异常
-     * @param throwException true: supplier 发生错误后抛出运行时异常, false: 仅仅打印日志
-     * @param <T>            返回值类型
-     * @return supplier 执行成功: supplier的返回值, supplier 执行失败: 返回 defaultValue
-     */
-    public static <T> T simpleException(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message, boolean logException, boolean throwException) {
-        return simpleExceptionForSup(supplier, defaultValue, message, logException, throwException);
-    }
-
 
     /**
      * 忽略运行的异常
@@ -311,31 +296,13 @@ public class SimpleCode {
      * @return supplier 执行成功: supplier的返回值, supplier 执行失败: 返回 defaultValue
      */
     public static <T> T simpleExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message, boolean throwException) {
-        return simpleExceptionForSup(supplier, defaultValue, message, true, throwException);
-    }
-
-    /**
-     * 忽略运行的异常
-     *
-     * @param supplier       带有返回值和throw的函数接口
-     * @param defaultValue   throwException为true时, supplier 发生错误后的默认返回值
-     * @param message        supplier 发生错误后的信息
-     * @param logException   输出异常
-     * @param throwException true: supplier 发生错误后抛出运行时异常, false: 仅仅打印日志
-     * @param <T>            返回值类型
-     * @return supplier 执行成功: supplier的返回值, supplier 执行失败: 返回 defaultValue
-     */
-    public static <T> T simpleExceptionForSup(SupplierWithThrow<T, ? extends Exception> supplier, T defaultValue, String message, boolean logException, boolean throwException) {
         try {
             return supplier.get();
         } catch (Exception e) {
-            if (logException) {
-                log.warn(message, e);
-            } else {
-                log.warn(message);
-            }
             if (throwException) {
                 throw new ActionExecException(message, e);
+            } else {
+                log.warn(message, e);
             }
         }
         return defaultValue;

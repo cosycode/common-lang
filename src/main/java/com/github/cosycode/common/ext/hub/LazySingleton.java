@@ -36,14 +36,16 @@ public class LazySingleton<T> {
      * @return 值
      */
     public T instance() {
-        if (t == null) {
+        T tmp = t;
+        if (tmp == null) {
             synchronized (this) {
                 if (t == null) {
                     t = supplier.get();
                 }
+                tmp = t;
             }
         }
-        return t;
+        return tmp;
     }
 
     /**
@@ -51,6 +53,7 @@ public class LazySingleton<T> {
      *
      * @return 原来有实例为 true, 没有则返回 false
      */
+    @Deprecated
     public boolean destroy() {
         if (t != null) {
             synchronized (this) {
