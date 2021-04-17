@@ -5,6 +5,7 @@ import com.github.cosycode.common.base.FunctionWithThrow;
 import com.github.cosycode.common.base.RunnableWithThrow;
 import com.github.cosycode.common.base.SupplierWithThrow;
 import com.github.cosycode.common.lang.RuntimeExtException;
+import com.github.cosycode.common.util.otr.PrintTool;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -139,9 +140,10 @@ public class Throws {
          *
          * @param message 异常文本
          */
-        public PromiseForRunnable<E> runtimeExp(String message) {
+        public PromiseForRunnable<E> runtimeExp(String message, Object... infos) {
             if (this.exception != null) {
-                throw new RuntimeExtException(message, this.exception);
+                final String msg = infos == null ? message : PrintTool.format(message, infos);
+                throw new RuntimeExtException(msg, this.exception);
             }
             return this;
         }
@@ -259,12 +261,13 @@ public class Throws {
         }
 
         /**
-         * {@link PromiseForRunnable#runtimeExp(java.lang.String)}
+         * {@link PromiseForRunnable#runtimeExp(java.lang.String, java.lang.Object...)}
          */
         @Override
-        public PromiseForSupplier<R, E> runtimeExp(String message) {
+        public PromiseForSupplier<R, E> runtimeExp(String message, Object... infos) {
             if (this.exception != null) {
-                throw new RuntimeExtException(message, this.exception);
+                final String msg = infos == null ? message : PrintTool.format(message, infos);
+                throw new RuntimeExtException(msg, this.exception);
             }
             return this;
         }

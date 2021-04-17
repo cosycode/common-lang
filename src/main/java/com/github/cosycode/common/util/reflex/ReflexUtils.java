@@ -1,11 +1,13 @@
 package com.github.cosycode.common.util.reflex;
 
+import com.github.cosycode.common.lang.ActionExecException;
 import com.github.cosycode.common.lang.ShouldNotHappenException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * <b>Description : </b> 反射工具类
@@ -36,6 +38,28 @@ public class ReflexUtils {
         } catch (IllegalAccessException e) {
             throw new ShouldNotHappenException(e);
         }
+    }
+
+    /**
+     * 创建一个实例
+     *
+     * @param cls 待创建的cls对象
+     * @param initArgs 参数
+     * @return 创建的实例
+     * @param <T> 新建类的类型
+     */
+    public static <T> T newInstance(@NonNull Class<T> cls, Object... initArgs) {
+        T instance;
+        try {
+            if (initArgs == null) {
+                instance = cls.getDeclaredConstructor().newInstance();
+            } else {
+                instance = cls.getDeclaredConstructor().newInstance(initArgs);
+            }
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ActionExecException("new Instance failure", e);
+        }
+        return instance;
     }
 
 }
