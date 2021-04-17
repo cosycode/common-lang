@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 
 /**
  * <b>Description : </b> 限流闭包代理类
- * <p>
+ * <p> 作用是经它代理过的方法(函数式接口实例)在同一时间内只能够允许几个线程运行, 其它的则阻塞等待.
  * <b>created in </b> 2021/4/7
  *
  * @author CPF
