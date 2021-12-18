@@ -1,9 +1,17 @@
 package com.github.cosycode.common.util.common;
 
+import com.github.cosycode.common.lang.ShouldNotHappenException;
+import com.github.cosycode.common.util.reflex.ReflexUtils;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +26,54 @@ import java.util.function.Consumer;
  * @since 1.2
  **/
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThreadUtils {
+
+    /**
+     * 获取 操作线程 所在的 线程组中 的 所有存活的线程
+     *
+     * @param thread 操作线程对象
+     * @return 操作线程所在线程组中的 所有存活的线程
+     */
+    @SuppressWarnings("java:S3014")
+    public static Thread[] getActiveThreadArrayInCurGroup(Thread thread) {
+        final ThreadGroup threadGroup = thread.getThreadGroup();
+        Thread[] lstThreads = new Thread[threadGroup.activeCount()];
+        threadGroup.enumerate(lstThreads);
+        return lstThreads;
+    }
+
+    /**
+     * 获取 操作线程 的 ThreadLocalMap 对象, 并将其中的值以 (key: ThreadLocal, val: value) 封装进一个 HashMap
+     *
+     * @param thread 操作线程
+     * @param <T> ThreadLocal 存值类型
+     * @return 用 thread 对应的 ThreadLocalMap 封装的 Map<ThreadLocal<T>, T>
+     */
+    @SuppressWarnings({"java:S3011", "unchecked"})
+    public static <T> Map<ThreadLocal<T>, T> getThreadLocalMap(Thread thread) {
+        Map<ThreadLocal<T>, T> threadLocals = new HashMap<>();
+        try {
+            final Object threadLocalMap = ReflexUtils.getAttributeFromObject(Thread.class, thread, "threadLocals");
+            if (threadLocalMap == null) {
+                return Collections.emptyMap();
+            }
+            final Object[] table = (Object[]) ReflexUtils.getAttributeFromObject(threadLocalMap, "table");
+            for (Object entry : table) {
+                if (entry != null) {
+                    WeakReference<ThreadLocal<T>> threadLocalRef = (WeakReference<ThreadLocal<T>>) entry;
+                    ThreadLocal<T> threadLocal = threadLocalRef.get();
+                    if (threadLocal != null) {
+                        final Object value = ReflexUtils.getAttributeFromObject(entry, "value");
+                        threadLocals.put(threadLocal, (T) value);
+                    }
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            throw new ShouldNotHappenException("一般情况不应该没有指定字段", e);
+        }
+        return threadLocals;
+    }
 
     /**
      * 同步多线程处理, 使用 consumer 消费 tList 中的数据;

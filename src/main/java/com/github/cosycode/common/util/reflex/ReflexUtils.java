@@ -21,6 +21,27 @@ import java.lang.reflect.InvocationTargetException;
 public class ReflexUtils {
 
     /**
+     * 通过反射从 对象中 获取 对应类 中 属性值
+     *
+     * @param clazz         指定类, 类可以是obj的类或其父类
+     * @param obj           带获取值的对象
+     * @param attributeName 属性名称
+     * @return 对象中对应属性的值
+     * @throws NoSuchFieldException 对象中没有对应属性
+     * @param <T>
+     */
+    @SuppressWarnings("java:S3011")
+    public static <T> Object getAttributeFromObject(@NonNull Class<? super T> clazz, @NonNull T obj, @NonNull String attributeName) throws NoSuchFieldException {
+        final Field declaredField = clazz.getDeclaredField(attributeName);
+        try {
+            declaredField.setAccessible(true);
+            return declaredField.get(obj);
+        } catch (IllegalAccessException e) {
+            throw new ShouldNotHappenException(e);
+        }
+    }
+
+    /**
      * 通过反射从 对象中 获取属性值
      *
      * @param obj           带获取值的对象
@@ -29,9 +50,9 @@ public class ReflexUtils {
      * @throws NoSuchFieldException 对象中没有对应属性
      */
     @SuppressWarnings("java:S3011")
-    public static Object getAttributeFromObject(@NonNull Object obj, @NonNull String attributeName) throws NoSuchFieldException {
-        final Class<?> aClass = obj.getClass();
-        final Field declaredField = aClass.getDeclaredField(attributeName);
+    public static <T> Object getAttributeFromObject(@NonNull T obj, @NonNull String attributeName) throws NoSuchFieldException {
+        final Class<?> clazz = obj.getClass();
+        final Field declaredField = clazz.getDeclaredField(attributeName);
         try {
             declaredField.setAccessible(true);
             return declaredField.get(obj);

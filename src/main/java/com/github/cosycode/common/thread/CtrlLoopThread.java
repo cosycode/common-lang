@@ -17,6 +17,7 @@ import java.util.function.BooleanSupplier;
  * @since 1.0
  */
 @Slf4j
+@Deprecated
 public final class CtrlLoopThread extends Thread {
 
     private static int threadInitNumber;

@@ -1,5 +1,7 @@
 package com.github.cosycode.common.ext.bean;
 
+import lombok.ToString;
+
 /**
  * <b>Description : </b> 用于封装两个对象的工具类
  * <p>
@@ -8,6 +10,7 @@ package com.github.cosycode.common.ext.bean;
  * @author CPF
  * @since 1.0
  */
+@ToString
 public class DoubleBean<O1, O2> {
 
     public static <O, T> DoubleBean<O, T> of(O o, T t) {

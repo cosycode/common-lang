@@ -29,7 +29,7 @@ public class Maps {
     /**
      * 返回的容量足以使地图不被调整为只要它的增长不超过ExpectedSize并且负载因子 >= 默认值（0.75）。
      */
-    static int capacity(int expectedSize) {
+    public static int calcExpectedSize(int expectedSize) {
         if (expectedSize < 3) {
             RequireUtil.requireBooleanTrue(expectedSize > 0);
             return expectedSize + 1;
@@ -53,7 +53,7 @@ public class Maps {
      * @return 生成的HashMap实例
      */
     public static <K, V> Map<K, V> newHashMapWithExpectedSize(int expectedSize) {
-        return new HashMap<>(capacity(expectedSize));
+        return new HashMap<>(calcExpectedSize(expectedSize));
     }
 
     /**

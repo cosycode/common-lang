@@ -3,7 +3,11 @@ package com.github.cosycode.common.util.common;
 import com.github.cosycode.common.lang.ShouldNotHappenException;
 import lombok.NonNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * <b>Description : </b> 数组工具类
@@ -25,10 +29,10 @@ public class ArrUtils {
      * @param number 相邻数量
      * @return throw new RuntimeException (arr.length &lt; number)
      */
-    public static int getMaxProductInArr(int[] arr, int number) {
+    public static int getMaxProductInArr(final int[] arr, final int number) {
         int len = arr.length;
         if (len < number) {
-            throw new RuntimeException("arr太小!");
+            throw new RuntimeException("arr太小: arr.length: " + arr.length + ", number: " + number);
         }
         int[] num = Arrays.copyOf(arr, number);
 
@@ -52,9 +56,9 @@ public class ArrUtils {
      *
      * @param matrix 矩阵数组
      */
-    public static void transposeMatrix(Object[][] matrix) {
+    public static void transposeMatrix(final Object[][] matrix) {
         if (matrix.length != matrix[0].length) {
-            throw new RuntimeException("matrix.length != matrix[0].length");
+            throw new RuntimeException("matrix.length != matrix[0].length ==> (" + matrix.length + ", " + matrix[0].length + ")");
         }
         int length = matrix.length;
         Object tmp;
@@ -72,9 +76,9 @@ public class ArrUtils {
      *
      * @param matrix 矩阵数组
      */
-    public static void transposeMatrix(int[][] matrix) {
+    public static void transposeMatrix(final int[][] matrix) {
         if (matrix.length != matrix[0].length) {
-            throw new RuntimeException("matrix.length != matrix[0].length");
+            throw new RuntimeException("matrix.length != matrix[0].length ==> (" + matrix.length + ", " + matrix[0].length + ")");
         }
         int length = matrix.length;
         int tmp;
@@ -94,7 +98,7 @@ public class ArrUtils {
      * @param strArr 待处理的字符串数组
      * @return 转换后的int数组
      */
-    public static int[] transStrArrToIntArr(String[] strArr) {
+    public static int[] transStrArrToIntArr(final String[] strArr) {
         int len = strArr.length;
         int[] intArr = new int[len];
         for (int i = 0; i < len; i++) {
@@ -112,7 +116,7 @@ public class ArrUtils {
      * @return 拷贝后的数组
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] fullClone(T[] arr) {
+    public static <T> T[] fullClone(final T[] arr) {
         int len = arr.length;
         T[] copy = arr.clone();
         for (int i = 0; i < len; i++) {
@@ -124,12 +128,11 @@ public class ArrUtils {
         return copy;
     }
 
-
     /**
      * @param arr 二维数组
      * @return 深拷贝的二维数组
      */
-    public static int[][] deepClone(int[][] arr) {
+    public static int[][] deepClone(final int[][] arr) {
         int len = arr.length;
         int[][] copy = arr.clone();
         for (int i = 0; i < len; i++) {
@@ -137,7 +140,6 @@ public class ArrUtils {
         }
         return copy;
     }
-
 
     /**
      * 数组填充, 注意T[]数组中对象必须全部都能够接收 val类型才可以, 否则可能抛出异常
@@ -218,14 +220,91 @@ public class ArrUtils {
      *
      * @param array 待判断的数组
      * @param <T>   数组类型
-     * @return true: 或数组元素全为null, false: 数组种有值存在
+     * @return true: 或数组元素全为null, false: 数组中有值存在
      */
     public static <T> boolean isEmpty(@NonNull T[] array) {
-        for (T t : array) {
-            if (t != null) {
+        for (int i = array.length; i >= 0 ; i--) {
+            if (array[i] != null) {
                 return false;
             }
         }
         return true;
     }
+
+
+    /**
+     * 操作数组切面, 有效操作范围是 [0, size)
+     * <p>
+     * 过滤掉数组中不符合 predicate 函数的对象, 并将有效切面范围内对象前移, 返回新的数组大小
+     * </p>
+     * <p>
+     *    <br/><b>eg: </b>
+     *    <br/><b>原始数组: </b>  collect = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     *    <br/><b>处理代码: </b> ArrayUtils.filter(collect, 5, n -> n % 2 == 0);
+     *    <br/><b>之后数组: </b>  [0, 2, 4, null, null, 5, 6, 7, 8, 9]
+     *    <br/><b>返回值: </b>  3
+     * </p>
+     *
+     * @param objects   数组
+     * @param size      大小
+     * @param predicate 过滤函数
+     * @param <E>       类型
+     * @return 新的数组有效大小
+     */
+    public static <E> int filter(final E[] objects, final int size, final Predicate<? super E> predicate) {
+        int j = 0;
+        for (int i = 0; i < size; i++) {
+            if (predicate.test(objects[i])) {
+                if (i != j) {
+                    objects[j] = objects[i];
+                    objects[i] = null;
+                }
+                j++;
+            } else {
+                objects[i] = null;
+            }
+        }
+        return j;
+    }
+
+    /**
+     * 将一个列表分割成最多指定指定数量个列表
+     * <p>
+     * 若 count > list.size() , 则分割成 list.size() 个列表
+     * <p>
+     *    <br/> eg: 源列表 [0, 1, 2, 3, 4]
+     *    <br/> <b>分成 1 个: </b> [[0, 1, 2, 3, 4]]
+     *    <br/> <b>分成 2 个: </b> [[0, 1, 2], [3, 4]]
+     *    <br/> <b>分成 3 个: </b> [[0, 1], [2, 3], [4]]
+     *    <br/> <b>分成 4 个: </b> [[0], [1], [2], [3], [4]]
+     *    <br/> <b>分成 5 个: </b> [[0], [1], [2], [3], [4]]
+     * </p>
+     *
+     * @param list  列表
+     * @param count 风格数量
+     * @param <T>   列表中对象类型
+     * @return 分割后的列表
+     */
+    public static <T> List<List<T>> partition(List<T> list, int count) {
+        if (count <= 0) {
+            throw new IllegalArgumentException("count should not letter than 0");
+        }
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (count == 1) {
+            return Collections.singletonList(list);
+        }
+        final int i = list.size() / count;
+        final int j = list.size() % count;
+        final int len = i <= 0 ? j : count;
+        final List<List<T>> pList = new ArrayList<>(len);
+        for (int k = 0, s = 0, e; k < len; k++) {
+            e = s + i + (k < j ? 1 : 0);
+            pList.add(list.subList(s, e));
+            s = e;
+        }
+        return pList;
+    }
+
 }

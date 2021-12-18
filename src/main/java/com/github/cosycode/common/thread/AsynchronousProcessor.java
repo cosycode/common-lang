@@ -46,7 +46,7 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
      * @param millisecond   线程多久处理一次(毫米), 为0, 表示不 sleep
      */
     public AsynchronousProcessor(@NonNull BlockingQueue<T> blockingQueue, @NonNull Predicate<T> thenFun, Consumer<T> catchFun, int millisecond) {
-        super(null, true, millisecond);
+        super(null, null, true, millisecond);
         this.blockingQueue = blockingQueue;
         this.thenFun = thenFun;
         this.catchFun = catchFun;
@@ -80,20 +80,19 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
     @Override
     protected boolean loop() {
         // 获取处理对象
-        T t;
         try {
-            t = blockingQueue.take();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("AsynchronousProcessor.take() 阻塞时, 线程中断", e);
-        }
-        // 处理对象
-        if (thenFun != null) {
-            boolean isSuccess = thenFun.test(t);
-            // 如果失败则执行错误消费函数接口
-            if (!isSuccess && catchFun != null) {
-                catchFun.accept(t);
+            T t = blockingQueue.take();
+            // 处理对象
+            if (thenFun != null) {
+                boolean isSuccess = thenFun.test(t);
+                // 如果失败则执行错误消费函数接口
+                if (!isSuccess && catchFun != null) {
+                    catchFun.accept(t);
+                }
             }
+        } catch (InterruptedException e) {
+            log.debug("AsynchronousProcessor [{}] was interrupted during blockingQueue.take()!!!", getName());
+            thread.interrupt();
         }
         return true;
     }
@@ -105,6 +104,10 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
      */
     public void add(T t) {
         if (t == null) {
+            return;
+        }
+        if (thread.isInterrupted()) {
+            log.warn("AsynchronousProcessor [{}] was interrupted, 不会再处理消息 : {}", getName(), t);
             return;
         }
         blockingQueue.add(t);
