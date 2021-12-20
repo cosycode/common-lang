@@ -1,6 +1,5 @@
 package com.github.cosycode.common.thread;
 
-import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,7 @@ import java.util.function.Consumer;
  */
 @Slf4j
 @Accessors(chain = true)
+@SuppressWarnings("unused")
 public class CtrlLoopThreadComp implements AutoCloseable {
 
     /**
@@ -36,10 +36,6 @@ public class CtrlLoopThreadComp implements AutoCloseable {
      */
     private static int threadInitNumber;
     /**
-     * 用于线程启停的锁
-     */
-    public final Object lock = new Object();
-    /**
      * 内置线程对象
      */
     protected final Thread thread;
@@ -48,24 +44,19 @@ public class CtrlLoopThreadComp implements AutoCloseable {
      */
     private final BooleanSupplier booleanSupplier;
     /**
-     * 线程是否暂停标记
-     */
-    @Getter
-    private volatile boolean suspend;
-    /**
      * 多长时间运行一次(while true 中的一个执行sleep多久)
      */
     @Setter
     private int millisecond;
     /**
+     * 运行类
+     */
+    private final CtrlLoopRunnable ctrlLoopRunnable;
+    /**
      * 处理函数对象, 此处使用 volatile 仅仅保证该引用的可见性
      */
     @SuppressWarnings("java:S3077")
     private volatile CtrlComp ctrlComp;
-    /**
-     * 等待时间, 这里使用 wait 和 notify 对线程进行唤醒
-     */
-    private long waitTime;
     /**
      * 返回 false 时调用方法
      */
@@ -74,6 +65,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
      * 出错时的消费函数接口
      */
     private BiConsumer<CtrlComp, RuntimeException> catchConsumer;
+
     /**
      * @param booleanSupplier     运行函数, 如果运行中返回 false, 则暂停运行.
      * @param name                线程名称, 若为 empty, 则会自动取一个名字(以 CtrlLoopThreadComp- 开头)
@@ -104,10 +96,8 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         this.falseConsumer = falseConsumer;
         this.catchConsumer = catchConsumer;
         this.millisecond = millisecond;
-        if (StringUtils.isBlank(name)) {
-            name = "CtrlLoopThreadComp-" + nextThreadNum();
-        }
-        thread = new Thread(new CtrlLoopRunnable(), name);
+        this.ctrlLoopRunnable = new CtrlLoopRunnable();
+        this.thread = new Thread(this.ctrlLoopRunnable, StringUtils.isBlank(name) ? "CtrlLoopThreadComp-" + nextThreadNum() : name);
     }
 
     /**
@@ -171,40 +161,59 @@ public class CtrlLoopThreadComp implements AutoCloseable {
     }
 
     /**
-     * 线程暂停指定毫秒, 同Object.wait()一样, 若等待时间为0，则表示永久暂停。
-     * 当线程正在暂停中时, 再次调用该方法, 线程在自动结束等待情况下, 将继续 wait 指定的时间
-     *
-     * @param waitTime 暂停的时间(毫秒)
-     */
-    public void pause(long waitTime) {
-        this.waitTime = waitTime;
-        suspend = true;
-    }
-
-    /**
      * 线程暂停
      */
     public void pause() {
-        pause(0);
+        ctrlLoopRunnable.changeState(3, 0, 0);
+    }
+
+    /**
+     * 线程暂停指定毫秒, 同Object.wait()一样, 若等待时间为0，则表示永久暂停。
+     * 当线程正在暂停中时, 再次调用该方法, 线程在自动结束等待情况下, 将继续 wait 指定的时间
+     *
+     * @param waitTime 暂停的时间(毫秒), 若为0，则表示永久暂停。
+     */
+    public void pause(long waitTime) {
+        ctrlLoopRunnable.changeState(3, waitTime, 0);
+    }
+
+    /**
+     * 多少次运行之后暂停.
+     *
+     * @param loopTime 次数
+     */
+    public void pauseAfterLoopTime(int loopTime) {
+        ctrlLoopRunnable.changeState(2, 0, loopTime);
     }
 
     /**
      * 线程恢复
      */
     public void wake() {
-        if (suspend) {
-            this.waitTime = 0;
-            synchronized (lock) {
-                if (suspend) {
-                    suspend = false;
-                }
-                lock.notifyAll();
-            }
+        ctrlLoopRunnable.changeState(1, 0, 0);
+    }
+
+    /**
+     * 内置线程启动
+     */
+    public void start() {
+        thread.start();
+    }
+
+    /**
+     * 若没有启动的话, 则启动
+     */
+    public void startIfNotStart() {
+        if (Thread.State.NEW == thread.getState()) {
+            thread.start();
         }
     }
 
-    public void start() {
-        thread.start();
+    /**
+     * @return 内置线程状态
+     */
+    public Thread.State getThreadState() {
+        return thread.getState();
     }
 
     /**
@@ -297,6 +306,11 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         return ctrlComp;
     }
 
+    /**
+     * @param continueIfException 发生异常后是否继续下一次循环
+     * @return 对象本身
+     * @deprecated 通过设置 catchConsumer 来控制异常后处理的方式
+     */
     @Deprecated
     public CtrlLoopThreadComp setContinueIfException(boolean continueIfException) {
         this.catchConsumer = CATCH_FUNCTION_CONTINUE;
@@ -312,38 +326,133 @@ public class CtrlLoopThreadComp implements AutoCloseable {
      * @since 1.0
      **/
     private class CtrlLoopRunnable implements Runnable {
+        /**
+         * 用于线程启停的锁
+         */
+        private final Object lock = new Object();
+        /**
+         * 添加了线程状态 state
+         * <p>
+         * <br/>添加 state 的好处是 使得更改 state 状态时变得容易理解, 最主要的目的就是方法 {@link CtrlLoopRunnable#changeState(int, long, int)}
+         * <br/>
+         * <br/> <b>0: </b>初始状态, 表示 state 还未被修改
+         * <br/> <b>1: </b>持续运行状态
+         * <br/> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义; 若 waitAfterLoopCount > 0, 则指定次数后转换为永久暂停状态, 否则马上转为永久暂停状态
+         * <br/> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义; 若 waitTime>0, 则转为临时暂停状态, 否则转为永久暂停状态.
+         * <br/> <b>4: </b>临时暂停状态, 指定时间后被唤醒
+         * <br/> <b>5: </b>永久暂停状态, 需要使用 notify 唤醒
+         * <br/> <b>-1: </b>终止状态, 此时修改 state 已经没有意义
+         */
+        private volatile int state;
+        /**
+         * 线程正处在 loop 方法循环里面
+         */
+        private volatile int codeRunLocation;
+        /**
+         * 等待时间, 这里使用 wait 和 notify 对线程进行唤醒
+         */
+        private long waitTime;
+        /**
+         * 在多少次循环后暂停标记
+         * <br/> <b>-1: </b> 持续运行标记
+         * <br/> <b>0: </b> 运行至检查点, 触发暂停事件, 该值转为 -1
+         * <br/> <b>n(>0): </b> 运行至检查点, 该值减1
+         */
+        @Setter
+        private int waitAfterLoopCount;
+
+        /**
+         * <br/> <b>1: </b>持续运行状态
+         * <br/> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义
+         * <br/> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义
+         *
+         * @param state             {@link CtrlLoopRunnable#state}
+         * @param waitTime          等待时间, state=3时有意义, 若 waitTime>0, 则转为临时暂停状态, 否则转为永久暂停状态.
+         * @param waitAfterLoopTime 循环指定次数后暂停, state=2时有意义, 若 waitAfterLoopCount > 0, 则指定次数后转换为永久暂停状态, 否则马上转为永久暂停状态
+         */
+        protected void changeState(final int state, final long waitTime, final int waitAfterLoopTime) {
+            synchronized (lock) {
+                switch (state) {
+                    case 1:
+                        this.waitTime = 0;
+                        this.waitAfterLoopCount = 0;
+                        lock.notifyAll();
+                        break;
+                    case 2:
+                        this.waitTime = 0;
+                        if (codeRunLocation == 2) {
+                            // 此时运行在执行自定义函数之前, 次数判定之后, 因此此时需要将次数 - 1
+                            this.waitAfterLoopCount = waitAfterLoopTime - 1;
+                        } else {
+                            this.waitAfterLoopCount = waitAfterLoopTime;
+                        }
+                        lock.notifyAll();
+                        break;
+                    case 3:
+                        this.waitTime = waitTime;
+                        this.waitAfterLoopCount = 0;
+                        lock.notifyAll();
+                        break;
+                    default:
+                }
+                this.state = state;
+            }
+        }
 
         @Override
         @SuppressWarnings({"java:S1119", "java:S112"})
         public void run() {
+            // 线程在启动之前, 可以不是0
+            if (state == 0) {
+                state = 1;
+            }
             final String name = thread.getName();
             log.debug("CtrlLoopThread [{}] start!!!", name);
             outer:
             while (!thread.isInterrupted()) {
-                /* 这个地方使用额外的对象锁停止线程, 而不是使用线程本身的停滞机制, 保证一次循环执行完毕后执行停止操作, 而不是一次循环正在执行 booleanSupplier 的时候停止*/
-                // 此处之所以使用 while 而不是 if 是因为想要在线程等待过程中或者结束后, 依然可以通过控制 suspend 使得线程可以再次陷入等待, 以及可以最佳等待时间.
-                while (suspend) {
-                    suspend = false;
+                // 临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义
+                if (state == 2) {
                     synchronized (lock) {
-                        try {
-                            log.debug("CtrlLoopThread [{}] pause!!!", name);
-                            if (waitTime > 0) {
-                                // 添加临时变量, 使能够在调用 wait 方法之前重置 waitTime 变量, 防止多次调用 暂停方法失效
-                                final long waitTmp = waitTime;
-                                waitTime = 0;
-                                lock.wait(waitTmp);
+                        if (state == 2) {
+                            if (waitAfterLoopCount > 0) {
+                                waitAfterLoopCount--;
                             } else {
-                                lock.wait();
+                                state = 3;
+                                waitTime = 0;
                             }
-                            log.debug("CtrlLoopThread [{}] wake!!!", name);
-                        } catch (InterruptedException e) {
-                            log.debug("CtrlLoopThread [{}] was interrupted during waiting!!!", name);
-                            thread.interrupt();
-                            /* 线程中断即意味着线程结束, 此时跳出最外层循环 */
-                            break outer;
                         }
                     }
                 }
+                codeRunLocation = 2;
+                /* 这个地方使用额外的对象锁停止线程, 而不是使用线程本身的停滞机制, 保证一次循环执行完毕后执行停止操作, 而不是一次循环正在执行 booleanSupplier 的时候停止*/
+                // 临时运行状态, 即将被暂停, 此时 waitTime 有意义, waitTime=0, 则转为永久暂停状态, waitTime>0, 则转为临时暂停状态
+                if (state == 3) {
+                    synchronized (lock) {
+                        // 此处之所以使用 while 而不是 if 是因为想要在线程等待过程中或者结束后, 依然可以通过控制 state 使得线程可以再次陷入等待, 以及可以最佳等待时间.
+                        while (state == 3) {
+                            log.debug("CtrlLoopThread [{}] pause!!!", name);
+                            try {
+                                // 添加添加临时变量防止幻读
+                                final long waitTmp = waitTime;
+                                if (waitTmp > 0) {
+                                    waitTime = 0;
+                                    state = 4;
+                                    lock.wait(waitTmp);
+                                } else {
+                                    state = 5;
+                                    lock.wait();
+                                }
+                            } catch (InterruptedException e) {
+                                log.debug("CtrlLoopThread [{}] was interrupted during waiting!!!", name);
+                                thread.interrupt();
+                                /* 线程中断即意味着线程结束, 此时跳出最外层循环 */
+                                break outer;
+                            }
+                            log.debug("CtrlLoopThread [{}] wake!!!", name);
+                        }
+                    }
+                }
+                codeRunLocation = 3;
                 /* 这个地方是正式执行线程的代码 */
                 try {
                     final boolean cont = loop();
@@ -370,6 +479,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
                 }
             }
             log.debug("CtrlLoopThread [{}] end!!!", name);
+            state = -1;
         }
     }
 

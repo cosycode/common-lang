@@ -149,7 +149,7 @@ public class BeanUtils {
      */
     public static <T> Map<String, Object> pojoToStringObjectMap(T pojo) {
         if (pojo == null) {
-            return null;
+            return Collections.emptyMap();
         }
         Map<String, Object> map = new HashMap<>();
         SimpleCode.runtimeException(() -> {

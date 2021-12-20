@@ -114,6 +114,29 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
     }
 
     /**
+     * 向异步缓存队列中添加处理对象
+     *
+     * @param t 处理对象
+     */
+    public boolean offer(T t) {
+        if (t == null) {
+            return false;
+        }
+        if (thread.isInterrupted()) {
+            log.warn("AsynchronousProcessor [{}] was interrupted, 不会再处理消息 : {}", getName(), t);
+            return false;
+        }
+        return blockingQueue.offer(t);
+    }
+
+    /**
+     * 清空队列中的消息
+     */
+    public void clear() {
+        blockingQueue.clear();
+    }
+
+    /**
      * 如果发生异常是否继续
      *
      * @param continueIfException 发生异常是否继续
@@ -121,7 +144,7 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
      */
     @Override
     public AsynchronousProcessor<T> setContinueIfException(boolean continueIfException) {
-        super.setContinueIfException(continueIfException);
+        super.catchFun(CATCH_FUNCTION_CONTINUE);
         return this;
     }
 
