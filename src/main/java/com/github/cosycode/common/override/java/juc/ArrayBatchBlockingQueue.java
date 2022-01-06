@@ -8,8 +8,10 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * <b>Description : </b>
  * <p>
- * <p> 由于有一个需求, 我需要一个能够批量存储和提取的缓存队列, 但是 java.util.concurrent.ArrayBlockingQueue, 无法实现这个需求,
- * <p> 而且 java.util.concurrent.ArrayBlockingQueue 是一个 final 类, 无法继承, 所以只好将 ArrayBlockingQueue 代码全部拷贝了出来, 并加了几个方法
+ *     由于有一个需求, 我需要一个能够批量存储和提取的缓存队列, 但是 java.util.concurrent.ArrayBlockingQueue, 无法实现这个需求,
+ *     <br>
+ *     而且 java.util.concurrent.ArrayBlockingQueue 是一个 final 类, 无法继承, 所以只好将 ArrayBlockingQueue 代码全部拷贝了出来, 并加了几个方法
+ * </p>
  * <b>created in </b> 2021/1/20
  *
  * @author CPF

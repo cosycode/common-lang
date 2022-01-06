@@ -149,15 +149,18 @@ public class IoUtils {
      */
     public static String readFile(final File file) throws IOException {
         Validate.isTrue(file.exists(), "文件不存在");
+        // 读出来的长度是文件所占据的内存字节大小
         final long length = file.length();
         char[] chars = new char[(int) length];
         try (final FileReader reader = new FileReader(file)) {
+            // 由于有中文的关系, read 和 length 会不一致, read 是占用 char 的数量, length 是占据内存字节数量
+            // 例如, 大多数汉字使用一个 char 就可以表示, 只有少数符号和汉字使用两个char
             final int read = reader.read(chars);
             log.info("read success length " + read);
+            return new String(chars, 0, read);
         } catch (IOException e) {
             throw new IOException("文件读取失败: filePath", e);
         }
-        return new String(chars);
     }
 
     /**
@@ -211,6 +214,39 @@ public class IoUtils {
         }
     }
 
+    /**
+     * 以字节流的形式 读取资源文件
+     *
+     * @param classPath 源文件路径
+     * @throws IOException 文件写入异常
+     * @return 字节流文件的字节数组
+     */
+    public static byte[] readFromResource(@NonNull ClassLoader classLoader, String classPath) throws IOException {
+        try (InputStream in = classLoader.getResourceAsStream(classPath)) {
+            if (in == null) {
+                throw new FileNotFoundException("未发现资源文件 : " + classPath);
+            }
+            return readByteArrayFromResource(in);
+        }
+    }
+
+    /**
+     * 从输入流里读取 动态字节流 文件(适用于无法获取文件大小)
+     *
+     * @param inputStream 输入流
+     * @throws IOException 文件写入异常
+     * @return 字节流文件的字节数组
+     */
+    public static byte[] readByteArrayFromResource(@NonNull InputStream inputStream) throws IOException {
+        byte[] buf = new byte[8 * 1024];
+        // 动态字节流
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        int len;
+        while ((len = inputStream.read(buf)) != -1) {
+            arrayOutputStream.write(buf, 0, len);
+        }
+        return arrayOutputStream.toByteArray();
+    }
 
     /**
      * 往 savePath 路径 写入文件, 如果没有则新增

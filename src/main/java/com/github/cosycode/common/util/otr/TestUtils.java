@@ -110,7 +110,7 @@ public class TestUtils {
         runnable.run();
         final long end = System.nanoTime();
         long inVal = end - start;
-        log.info("[{} : {}] ==> end, consume time: {} ", tag, end, inVal);
+        log.info("[{} : {}] ==> end, consume time: {} ", tag, end, numberStr(inVal));
         return inVal;
     }
 

@@ -48,7 +48,7 @@ public class ThreadUtils {
      *
      * @param thread 操作线程
      * @param <T> ThreadLocal 存值类型
-     * @return 用 thread 对应的 ThreadLocalMap 封装的 Map<ThreadLocal<T>, T>
+     * @return 用 thread 对应的 ThreadLocalMap 封装的 Map&lt;ThreadLocal&lt;T&gt;, T&gt;
      */
     @SuppressWarnings({"java:S3011", "unchecked"})
     public static <T> Map<ThreadLocal<T>, T> getThreadLocalMap(Thread thread) {

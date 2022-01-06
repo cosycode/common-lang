@@ -13,8 +13,8 @@ import java.util.function.Consumer;
  * <b>Description : </b> 可控制的循环线程(装饰模式), 对 Thread 采用了组合方式, 而不是继承方式
  * <p>
  * <b>设计如下: </b>
- * <br/> <b>线程终止: </b> 只要内置线程调用 interrupt() 方法即视为线程需要终止.
- * <br/> <b>线程等待和唤醒机制: </b> 因为线程调用 interrupt() 方法视为线程需要终止, 因此此处使用 wait + notify 来管理线程等待和唤醒.
+ * <br> <b>线程终止: </b> 只要内置线程调用 interrupt() 方法即视为线程需要终止.
+ * <br> <b>线程等待和唤醒机制: </b> 因为线程调用 interrupt() 方法视为线程需要终止, 因此此处使用 wait + notify 来管理线程等待和唤醒.
  * </p>
  * <b>created in </b> 2020/8/13
  *
@@ -79,10 +79,10 @@ public class CtrlLoopThreadComp implements AutoCloseable {
     /**
      * CtrlLoopThreadComp 主要构造方法
      * <p>
-     * <br/> CtrlLoopThreadComp 里面内置了一个线程, 线程会 每隔 millisecond 毫秒 循环调用 booleanSupplier 方法, 若 millisecond <= 0, 则表示不进行暂停.
-     * <br/> 当调用 booleanSupplier 结果返回 true, 则隔 millisecond 毫秒后继续调用 booleanSupplier 方法
-     * <br/> 当调用 booleanSupplier 结果返回 false, 则调用 falseConsumer 方法, 若 falseConsumer 为 null, 则不对返回值做任何处理, 继续下一次循环
-     * <br/> 当调用 booleanSupplier 时抛出运行时异常, 则调用 catchConsumer 方法, 若 catchConsumer 为 null, 则不对异常做任何处理, 等于将异常抛给虚拟机.
+     * <br> CtrlLoopThreadComp 里面内置了一个线程, 线程会 每隔 millisecond 毫秒 循环调用 booleanSupplier 方法, 若 millisecond <= 0, 则表示不进行暂停.
+     * <br> 当调用 booleanSupplier 结果返回 true, 则隔 millisecond 毫秒后继续调用 booleanSupplier 方法
+     * <br> 当调用 booleanSupplier 结果返回 false, 则调用 falseConsumer 方法, 若 falseConsumer 为 null, 则不对返回值做任何处理, 继续下一次循环
+     * <br> 当调用 booleanSupplier 时抛出运行时异常, 则调用 catchConsumer 方法, 若 catchConsumer 为 null, 则不对异常做任何处理, 等于将异常抛给虚拟机.
      * </p>
      *
      * @param booleanSupplier 运行函数(不可为 null)
@@ -309,9 +309,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
     /**
      * @param continueIfException 发生异常后是否继续下一次循环
      * @return 对象本身
-     * @deprecated 通过设置 catchConsumer 来控制异常后处理的方式
      */
-    @Deprecated
     public CtrlLoopThreadComp setContinueIfException(boolean continueIfException) {
         this.catchConsumer = CATCH_FUNCTION_CONTINUE;
         return this;
@@ -333,15 +331,15 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         /**
          * 添加了线程状态 state
          * <p>
-         * <br/>添加 state 的好处是 使得更改 state 状态时变得容易理解, 最主要的目的就是方法 {@link CtrlLoopRunnable#changeState(int, long, int)}
-         * <br/>
-         * <br/> <b>0: </b>初始状态, 表示 state 还未被修改
-         * <br/> <b>1: </b>持续运行状态
-         * <br/> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义; 若 waitAfterLoopCount > 0, 则指定次数后转换为永久暂停状态, 否则马上转为永久暂停状态
-         * <br/> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义; 若 waitTime>0, 则转为临时暂停状态, 否则转为永久暂停状态.
-         * <br/> <b>4: </b>临时暂停状态, 指定时间后被唤醒
-         * <br/> <b>5: </b>永久暂停状态, 需要使用 notify 唤醒
-         * <br/> <b>-1: </b>终止状态, 此时修改 state 已经没有意义
+         * <br>添加 state 的好处是 使得更改 state 状态时变得容易理解, 最主要的目的就是方法 {@link CtrlLoopRunnable#changeState(int, long, int)}
+         * <br>
+         * <br> <b>0: </b>初始状态, 表示 state 还未被修改
+         * <br> <b>1: </b>持续运行状态
+         * <br> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义; 若 waitAfterLoopCount > 0, 则指定次数后转换为永久暂停状态, 否则马上转为永久暂停状态
+         * <br> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义; 若 waitTime>0, 则转为临时暂停状态, 否则转为永久暂停状态.
+         * <br> <b>4: </b>临时暂停状态, 指定时间后被唤醒
+         * <br> <b>5: </b>永久暂停状态, 需要使用 notify 唤醒
+         * <br> <b>-1: </b>终止状态, 此时修改 state 已经没有意义
          */
         private volatile int state;
         /**
@@ -354,17 +352,17 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         private long waitTime;
         /**
          * 在多少次循环后暂停标记
-         * <br/> <b>-1: </b> 持续运行标记
-         * <br/> <b>0: </b> 运行至检查点, 触发暂停事件, 该值转为 -1
-         * <br/> <b>n(>0): </b> 运行至检查点, 该值减1
+         * <br> <b>-1: </b> 持续运行标记
+         * <br> <b>0: </b> 运行至检查点, 触发暂停事件, 该值转为 -1
+         * <br> <b>n(>0): </b> 运行至检查点, 该值减1
          */
         @Setter
         private int waitAfterLoopCount;
 
         /**
-         * <br/> <b>1: </b>持续运行状态
-         * <br/> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义
-         * <br/> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义
+         * <br> <b>1: </b>持续运行状态
+         * <br> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义
+         * <br> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义
          *
          * @param state             {@link CtrlLoopRunnable#state}
          * @param waitTime          等待时间, state=3时有意义, 若 waitTime>0, 则转为临时暂停状态, 否则转为永久暂停状态.
