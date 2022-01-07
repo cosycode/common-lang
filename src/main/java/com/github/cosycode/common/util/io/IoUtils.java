@@ -66,11 +66,6 @@ public class IoUtils {
      * @throws IOException 写入到流中的异常
      */
     public static void writeStringToOutputStream(@NonNull OutputStream outputStream, @NonNull String string, Charset charset) throws IOException {
-        string = string.trim();
-        if ("".equals(string)) {
-            return;
-        }
-        // 传输
         try (OutputStreamWriter out = charset == null ?
                 new OutputStreamWriter(outputStream) : new OutputStreamWriter(outputStream, charset)) {
             out.write(string);
@@ -103,7 +98,7 @@ public class IoUtils {
         try (InputStreamReader inputStreamReader = charset == null ?
                 new InputStreamReader(inputStream) : new InputStreamReader(inputStream, charset)) {
             char[] chars = new char[8 * 1024];
-            int read = 0;
+            int read;
             //字符串缓冲区
             StringBuilder stringBuilder = new StringBuilder();
             //按行读
