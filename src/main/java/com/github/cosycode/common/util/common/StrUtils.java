@@ -3,6 +3,7 @@ package com.github.cosycode.common.util.common;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
@@ -85,7 +86,7 @@ public class StrUtils {
      *
      * @param regex        正则表达式
      * @param content      文本
-     * @param callback     回调函数
+     * @param callback     Predicate 回调函数: 若回调函数中 返回 false, 则表示跳出查找.
      */
     public static void findAll(@NonNull String regex, @NonNull String content, @NonNull Predicate<String> callback) {
         final Pattern p = Pattern.compile(regex);
@@ -93,12 +94,25 @@ public class StrUtils {
         final Matcher m = p.matcher(content);
         while (m.find()) {
             final String group = m.group();
-            if (callback.test(group)) {
+            if (!callback.test(group)) {
                 break;
             }
         }
     }
 
+    /**
+     * 正则查找, 查找在 content 里面所有符合 regex 条件的字符串, 并调用回调函数
+     *
+     * @param regex        正则表达式
+     * @param content      文本
+     * @param callback     回调函数
+     */
+    public static void findAll(@NonNull String regex, @NonNull String content, @NonNull Consumer<String> callback) {
+        findAll(regex, content, match -> {
+            callback.accept(match);
+            return true;
+        });
+    }
 
     /**
      * 首字母变小写

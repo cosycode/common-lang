@@ -203,7 +203,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
     /**
      * 若没有启动的话, 则启动
      */
-    public void startIfNotStart() {
+    public synchronized void startIfNotStart() {
         if (Thread.State.NEW == thread.getState()) {
             thread.start();
         }
@@ -223,7 +223,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         final Thread.State state = thread.getState();
         switch (state) {
             case NEW:
-                start();
+                startIfNotStart();
                 break;
             case BLOCKED:
             case RUNNABLE:
@@ -243,11 +243,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (thread.isInterrupted()) {
-            log.warn("线程已经关闭, 请勿重复调用");
-        } else {
-            thread.interrupt();
-        }
+        ctrlLoopRunnable.closeWhenThisLoopEnd();
     }
 
     /**
@@ -343,6 +339,10 @@ public class CtrlLoopThreadComp implements AutoCloseable {
          */
         private volatile int state;
         /**
+         * 线程结束标记, 若该标记为 true, 则运行完当前 loop 则直接结束线程.
+         */
+        private volatile boolean endFlag;
+        /**
          * 线程正处在 loop 方法循环里面
          */
         private volatile int codeRunLocation;
@@ -360,6 +360,23 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         private int waitAfterLoopCount;
 
         /**
+         * 执行当前 loop 结束后, 关闭线程.
+         * <p>
+         * 如果在 loop 中, 则通过更改标记位, 结束线程.
+         * 如果不在 loop 中, 而是在线程循环控制处理逻辑内, 则直接调用 interrupt 关闭线程.
+         */
+        protected void closeWhenThisLoopEnd() {
+            synchronized (lock) {
+                this.endFlag = true;
+                // 如果不是在 loop 的处理中, 则直接使用 interrupt 关闭线程
+                if (codeRunLocation < 3 || codeRunLocation >= 5) {
+                    thread.interrupt();
+                }
+            }
+        }
+
+        /**
+         * <br> <b>-2: </b> 运行完这一次直接关闭线程
          * <br> <b>1: </b>持续运行状态
          * <br> <b>2: </b>临时运行状态, 指定次数后转换为暂停状态, 此时 waitAfterLoopCount 有意义
          * <br> <b>3: </b>临时运行状态, 即将被暂停, 此时 waitTime 有意义
@@ -451,9 +468,14 @@ public class CtrlLoopThreadComp implements AutoCloseable {
                     }
                 }
                 codeRunLocation = 3;
+                // 线程关闭标记为true, 则关闭线程
+                if (endFlag) {
+                    break;
+                }
                 /* 这个地方是正式执行线程的代码 */
                 try {
                     final boolean cont = loop();
+                    codeRunLocation = 4;
                     // 当结果返回 false 同时 falseConsumer 不为 null 时, 调用 falseConsumer 方法, 否则不做任何处理, 继续下一次循环
                     if (!cont && falseConsumer != null) {
                         falseConsumer.accept(getCtrlComp());
@@ -465,6 +487,11 @@ public class CtrlLoopThreadComp implements AutoCloseable {
                     } else {
                         throw new RuntimeException(String.format("CtrlLoopThread [%s] processing exception, the thread stop!", name), e);
                     }
+                }
+                codeRunLocation = 5;
+                // 线程关闭标记为true, 则关闭线程
+                if (endFlag) {
+                    break;
                 }
                 // 控制loop多久循环一次, 防止 CPU 过高占用
                 if (millisecond > 0) {

@@ -16,8 +16,24 @@ public class PrintTool {
 
     private static final String DIRECTOR_STRING = " ==> ";
 
+    /**
+     * <b>Description : </b>
+     * <p>
+     * <b>created in </b> 2021/3/19
+     * </p>
+     *
+     * @author CPF
+     **/
     enum Level {
-        OFF(Integer.MAX_VALUE), FATAL(50000), ERROR(40000), WARN(30000), INFO(30000), DEBUG(30000);
+        /**
+         * 关闭
+         */
+        OFF(Integer.MAX_VALUE),
+        FATAL(50000),
+        ERROR(40000),
+        WARN(30000),
+        INFO(20000),
+        DEBUG(10000);
 
         private final int val;
 
@@ -108,7 +124,7 @@ public class PrintTool {
      * <p>字符串中的 {} 和 params 中的参数由左至右一一匹配, 匹配上则替换, 匹配不上则不进行替换</p>
      * <p>params中对象为null, 则转换为 EMPTY_STRING </p>
      *
-     * @param str 待转换的字符串
+     * @param str    待转换的字符串
      * @param params 参数
      * @return 转换后的字符串
      */
@@ -130,6 +146,7 @@ public class PrintTool {
             }
             from = end + 2;
         }
+        sb.append(str, from, str.length());
         return sb.toString();
     }
 
