@@ -11,7 +11,8 @@
         <Console name="console_out_appender" target="SYSTEM_OUT">
             <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
             <!-- 输出日志的格式 -->
-            <PatternLayout charSet="UTF-8" pattern="[%p] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] (%F:%L) %m%n" />
+<!--            <PatternLayout charSet="UTF-8" pattern="[%p] %d{HH:mm:ss.SSS} [%t] (%F:%L) %m%n" />-->
+            <PatternLayout charSet="UTF-8" pattern="[%p] %d{HH:mm:ss.SSS} | %m%n" />
         </Console>
     </Appenders>
 

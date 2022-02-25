@@ -11,6 +11,33 @@ import java.util.stream.IntStream;
 @Slf4j
 public class OnceExecClosureProxyTest {
 
+    private void onClick(String msg) {
+        log.info("start {}", msg);
+
+        // ---- 业务逻辑可能有点长(用睡眠10 ms 表示) ----
+        Throws.con(10, Thread::sleep);
+
+        log.info(" end  {}", msg);
+    }
+
+    @Test
+    public void onClickTest1() {
+        IntStream.range(0, 5).parallel().forEach(num -> {
+            onClick(" time: " + num);
+            log.info("--------------- 线程 {} 调用完成", num);
+        });
+    }
+
+    @Test
+    public void onClickTest2() {
+        Consumer<String> consumer = OnceExecutorForConsumer.of(this::onClick);
+
+        IntStream.range(0, 10).parallel().forEach(num -> {
+            consumer.accept(" time: " + num);
+            log.info("--------------- 线程 {} 调用完成", num);
+        });
+    }
+
     /**
      * 当前方法在同一时间内只能够有一个线程执行业务逻辑
      */

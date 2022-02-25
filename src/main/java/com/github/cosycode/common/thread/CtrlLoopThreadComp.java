@@ -10,7 +10,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 /**
- * <b>Description : </b> 可控制的循环线程(装饰模式), 对 Thread 采用了组合方式, 而不是继承方式
+ * <b>Description : </b> 可控制的单循环线程, 和 CtrlLoopThread 的区别是对 Thread 采用了组合方式, 而不是继承方式
  * <p>
  * <b>设计如下: </b>
  * <br> <b>线程终止: </b> 只要内置线程调用 interrupt() 方法即视为线程需要终止.
