@@ -84,11 +84,11 @@ public class StrUtils {
     /**
      * 正则查找, 查找在 content 里面所有符合 regex 条件的字符串, 并调用回调函数
      *
-     * @param regex        正则表达式
-     * @param content      文本
-     * @param callback     Predicate 回调函数: 若回调函数中 返回 false, 则表示跳出查找.
+     * @param regex    正则表达式
+     * @param content  文本
+     * @param callback Predicate 回调函数: 若回调函数中 返回 false, 则表示跳出查找.
      */
-    public static void findAll(@NonNull String regex, @NonNull String content, @NonNull Predicate<String> callback) {
+    public static void findAllWithBreak(@NonNull String regex, @NonNull String content, @NonNull Predicate<String> callback) {
         final Pattern p = Pattern.compile(regex);
         // 获取 matcher 对象
         final Matcher m = p.matcher(content);
@@ -103,12 +103,12 @@ public class StrUtils {
     /**
      * 正则查找, 查找在 content 里面所有符合 regex 条件的字符串, 并调用回调函数
      *
-     * @param regex        正则表达式
-     * @param content      文本
-     * @param callback     回调函数
+     * @param regex    正则表达式
+     * @param content  文本
+     * @param callback 回调函数
      */
     public static void findAll(@NonNull String regex, @NonNull String content, @NonNull Consumer<String> callback) {
-        findAll(regex, content, match -> {
+        findAllWithBreak(regex, content, match -> {
             callback.accept(match);
             return true;
         });
@@ -254,13 +254,11 @@ public class StrUtils {
      */
     public static String concat(@NonNull String... strings) {
         if (strings.length <= 1) {
-            return strings[0] == null ? "" : strings[0];
+            return strings[0];
         }
         StringBuilder sb = new StringBuilder();
         for (String str : strings) {
-            if (str != null) {
-                sb.append(str);
-            }
+            sb.append(str);
         }
         return sb.toString();
     }

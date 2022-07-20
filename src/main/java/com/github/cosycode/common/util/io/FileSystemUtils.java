@@ -9,9 +9,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * <b>Description : </b> 文件系统工具类
@@ -106,6 +105,36 @@ public class FileSystemUtils {
                 return;
             }
         }
+    }
+
+    /**
+     * 将根路径里面符合条件的 markdown 文件添加到 list 表, 并返回list
+     *
+     * @param rootPath   根路径 url
+     * @param fileFilter 文件过滤器
+     * @param loadSubDir 是否加载子文件夹
+     * @param consumer   文件消费函数
+     */
+    public static void findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir, Consumer<File> consumer) {
+        // 获取根路径 url, 并将符合条件的 markdown 文件添加到 list 表
+        FileSystemUtils.fileDisposeByRecursion(rootPath, consumer::accept, f -> {
+            if (f.isDirectory()) {
+                return loadSubDir;
+            }
+            return f.isFile() && fileFilter.accept(f);
+        });
+    }
+
+    /**
+     * 将根路径里面符合条件的 markdown 文件添加到 list 表, 并返回list
+     *
+     * @param rootPath 根路径 url
+     * @return 根路径里面符合条件的 markdown 文件列表
+     */
+    public static List<File> findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir) {
+        List<File> list = new ArrayList<>();
+        findFileFromDir(rootPath, fileFilter, loadSubDir, list::add);
+        return list;
     }
 
     /**

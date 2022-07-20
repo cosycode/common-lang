@@ -31,10 +31,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PackageUtils {
 
+    public static final String CLASS_SUFFIX = ".class";
+
     private PackageUtils() {
     }
-
-    public static final String CLASS_SUFFIX = ".class";
 
     /**
      * 获取 clazz 所在 package 中的 经过 filter 过滤后的 class 对象的集合
@@ -74,10 +74,26 @@ public class PackageUtils {
      * @param packageName  包名: eg: com.github.common 或 com/github/common
      * @param loadChildren 是否加载子类
      * @return 加载的类Set集合
+     * @throws IOException 读取`通过class获取class所在jar包`出现IO异常
      */
-    public static Set<Class<?>> getClassesFromPackage(String packageName, boolean loadChildren) throws IOException {
+    @Deprecated
+    public static Set<Class<?>> getClassesFromPackage(final String packageName, final boolean loadChildren) throws IOException {
+        return getClassesFromPackage(packageName, loadChildren, true);
+    }
+
+    /**
+     * 获取某个包下的所有类(获取jar包中类可能会出错)
+     *
+     * @param packageName    包名: eg: com.github.common 或 com/github/common
+     * @param loadSubPackage 是否加载子包
+     * @param loadInnerClass 是否加载内部类
+     * @return 加载的类Set集合
+     * @throws IOException 读取`通过class获取class所在jar包`出现IO异常
+     */
+    public static Set<Class<?>> getClassesFromPackage(final String packageName, final boolean loadSubPackage, final boolean loadInnerClass) throws IOException {
         Set<Class<?>> classSet = new HashSet<>();
-        Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packageName.replace(".", File.separator));
+        final String packagePrefix = packageName.replace(".", File.separator);
+        Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packagePrefix);
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             if (url == null) {
@@ -98,13 +114,33 @@ public class PackageUtils {
                     classSet.add(aClass);
                 };
                 // 如果loadChildren为false, 则只获取包下class文件
-                FileFilter fileFilter = file -> (file.isFile() && file.getName().endsWith(CLASS_SUFFIX)) || (loadChildren && file.isDirectory());
+                FileFilter fileFilter = file -> {
+                    if (file.isFile() && file.getName().endsWith(CLASS_SUFFIX)) {
+                        return loadInnerClass || !file.getName().contains("$");
+                    }
+                    return loadSubPackage && file.isDirectory();
+                };
                 Arrays.stream(array).forEach(it -> FileSystemUtils.fileDisposeFromDir(it, disposer, fileFilter));
             } else if (protocol.equals("jar")) {
                 JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                 if (jarURLConnection != null) {
                     try (JarFile jarFile = jarURLConnection.getJarFile()) {
-                        jarFile.stream().filter(jarEntry -> jarEntry.getName().endsWith(CLASS_SUFFIX))
+                        int packagePrefixLength = packagePrefix.length();
+                        // 该 jarFile 里面包含了其中所有的文件夹和所有类(包括内部类)
+                        jarFile.stream().filter(jarEntry -> {
+                                    String name = jarEntry.getName();
+                                    if (!name.startsWith(packagePrefix)) {
+                                        return false;
+                                    }
+                                    if (!name.endsWith(CLASS_SUFFIX)) {
+                                        return false;
+                                    }
+                                    // 排除子类
+                                    if (!loadSubPackage && name.indexOf(".", packagePrefixLength) < name.length() - 6) {
+                                        return false;
+                                    }
+                                    return loadSubPackage || !name.contains("$");
+                                })
                                 .forEach(jarEntry -> {
                                     String jarEntryName = jarEntry.getName();
                                     String className = jarEntryName.substring(0, jarEntryName.lastIndexOf('.')).replace("/", ".");

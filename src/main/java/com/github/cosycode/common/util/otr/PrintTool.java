@@ -3,6 +3,8 @@ package com.github.cosycode.common.util.otr;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.MessageFormat;
+
 /**
  * <b>Description : </b>
  * <p>
@@ -15,44 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 public class PrintTool {
 
     private static final String DIRECTOR_STRING = " ==> ";
-
-    /**
-     * <b>Description : </b>
-     * <p>
-     * <b>created in </b> 2021/3/19
-     * </p>
-     *
-     * @author CPF
-     **/
-    enum Level {
-        /**
-         * 关闭
-         */
-        OFF(Integer.MAX_VALUE),
-        FATAL(50000),
-        ERROR(40000),
-        WARN(30000),
-        INFO(20000),
-        DEBUG(10000);
-
-        private final int val;
-
-        Level(int val) {
-            this.val = val;
-        }
-
-        public int toInt() {
-            return val;
-        }
-
-    }
-
     /**
      * 1: log, 0: 控制台
      */
     @Setter
     private static boolean logFlag;
-
     @Setter
     private static Level logLevel = Level.DEBUG;
 
@@ -148,6 +117,53 @@ public class PrintTool {
         }
         sb.append(str, from, str.length());
         return sb.toString();
+    }
+
+    /**
+     * 将String中的{0}, {1}, {2}转换为参数中指定的值
+     * <p>字符串中的 {n} 和 params 中的参数按照数字 以及位置匹配</p>
+     * {@link MessageFormat#format(String, Object...)}
+     *
+     * @param str    待转换的字符串
+     * @param params 参数
+     * @return 转换后的字符串
+     */
+    public static String formatWithNumber(String str, Object... params) {
+        if (params == null || params.length == 0) {
+            return str;
+        }
+        return MessageFormat.format(str, params);
+    }
+
+    /**
+     * <b>Description : </b>
+     * <p>
+     * <b>created in </b> 2021/3/19
+     * </p>
+     *
+     * @author CPF
+     **/
+    public enum Level {
+        /**
+         * 关闭
+         */
+        OFF(Integer.MAX_VALUE),
+        FATAL(50000),
+        ERROR(40000),
+        WARN(30000),
+        INFO(20000),
+        DEBUG(10000);
+
+        private final int val;
+
+        Level(int val) {
+            this.val = val;
+        }
+
+        public int toInt() {
+            return val;
+        }
+
     }
 
 }

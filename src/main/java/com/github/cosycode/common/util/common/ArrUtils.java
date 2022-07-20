@@ -32,7 +32,7 @@ public class ArrUtils {
     public static int getMaxProductInArr(final int[] arr, final int number) {
         int len = arr.length;
         if (len < number) {
-            throw new RuntimeException("arr太小: arr.length: " + arr.length + ", number: " + number);
+            throw new IllegalArgumentException("arr太小: arr.length: " + arr.length + ", number: " + number);
         }
         int[] num = Arrays.copyOf(arr, number);
 
@@ -58,7 +58,7 @@ public class ArrUtils {
      */
     public static void transposeMatrix(final Object[][] matrix) {
         if (matrix.length != matrix[0].length) {
-            throw new RuntimeException("matrix.length != matrix[0].length ==> (" + matrix.length + ", " + matrix[0].length + ")");
+            throw new IllegalArgumentException("matrix.length != matrix[0].length ==> (" + matrix.length + ", " + matrix[0].length + ")");
         }
         int length = matrix.length;
         Object tmp;
@@ -78,7 +78,7 @@ public class ArrUtils {
      */
     public static void transposeMatrix(final int[][] matrix) {
         if (matrix.length != matrix[0].length) {
-            throw new RuntimeException("matrix.length != matrix[0].length ==> (" + matrix.length + ", " + matrix[0].length + ")");
+            throw new IllegalArgumentException("matrix.length != matrix[0].length ==> (" + matrix.length + ", " + matrix[0].length + ")");
         }
         int length = matrix.length;
         int tmp;
@@ -201,7 +201,7 @@ public class ArrUtils {
     public static int[] getIntervalArr(int start, int end, int interval) {
         int len = (end - start) / interval;
         if (len < 0) {
-            throw new RuntimeException(String.format("start: %s -> end: %s 间隔不能为 : %s", start, end, interval));
+            throw new IllegalArgumentException(String.format("start: %s -> end: %s 间隔不能为 : %s", start, end, interval));
         }
         if (len == 0) {
             int[] arr = new int[1];
@@ -223,7 +223,7 @@ public class ArrUtils {
      * @return true: 或数组元素全为null, false: 数组中有值存在
      */
     public static <T> boolean isEmpty(@NonNull T[] array) {
-        for (int i = array.length; i >= 0 ; i--) {
+        for (int i = array.length - 1; i >= 0; i--) {
             if (array[i] != null) {
                 return false;
             }
@@ -231,18 +231,17 @@ public class ArrUtils {
         return true;
     }
 
-
     /**
      * 操作数组切面, 有效操作范围是 [0, size)
      * <p>
      * 过滤掉数组中不符合 predicate 函数的对象, 并将有效切面范围内对象前移, 返回新的数组大小
      * </p>
      * <p>
-     *    <br><b>eg: </b>
-     *    <br><b>原始数组: </b>  collect = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-     *    <br><b>处理代码: </b> ArrayUtils.filter(collect, 5, n -> n % 2 == 0);
-     *    <br><b>之后数组: </b>  [0, 2, 4, null, null, 5, 6, 7, 8, 9]
-     *    <br><b>返回值: </b>  3
+     * <br><b>eg: </b>
+     * <br><b>原始数组: </b>  collect = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     * <br><b>处理代码: </b> ArrayUtils.filter(collect, 5, n -> n % 2 == 0);
+     * <br><b>之后数组: </b>  [0, 2, 4, null, null, 5, 6, 7, 8, 9]
+     * <br><b>返回值: </b>  3
      * </p>
      *
      * @param objects   数组
@@ -272,12 +271,12 @@ public class ArrUtils {
      * <p>
      * 若 count > list.size() , 则分割成 list.size() 个列表
      * <p>
-     *    <br> eg: 源列表 [0, 1, 2, 3, 4]
-     *    <br> <b>分成 1 个: </b> [[0, 1, 2, 3, 4]]
-     *    <br> <b>分成 2 个: </b> [[0, 1, 2], [3, 4]]
-     *    <br> <b>分成 3 个: </b> [[0, 1], [2, 3], [4]]
-     *    <br> <b>分成 4 个: </b> [[0], [1], [2], [3], [4]]
-     *    <br> <b>分成 5 0信1息2信息3 个: </b> [[0], [1], [2], [3], [4]]
+     * <br> eg: 源列表 [0, 1, 2, 3, 4]
+     * <br> <b>分成 1 个: </b> [[0, 1, 2, 3, 4]]
+     * <br> <b>分成 2 个: </b> [[0, 1, 2], [3, 4]]
+     * <br> <b>分成 3 个: </b> [[0, 1], [2, 3], [4]]
+     * <br> <b>分成 4 个: </b> [[0], [1], [2], [3], [4]]
+     * <br> <b>分成 5 0信1息2信息3 个: </b> [[0], [1], [2], [3], [4]]
      * </p>
      *
      * @param list  列表
