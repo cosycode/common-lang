@@ -111,7 +111,7 @@ public class FileSystemUtils {
      * 将根路径里面符合条件的 markdown 文件添加到 list 表, 并返回list
      *
      * @param rootPath   根路径 url
-     * @param fileFilter 文件过滤器
+     * @param fileFilter 文件过滤器(null:表示不过滤任何文件)
      * @param loadSubDir 是否加载子文件夹
      * @param consumer   文件消费函数
      */
@@ -121,7 +121,7 @@ public class FileSystemUtils {
             if (f.isDirectory()) {
                 return loadSubDir;
             }
-            return f.isFile() && fileFilter.accept(f);
+            return fileFilter == null || (f.isFile() && fileFilter.accept(f));
         });
     }
 

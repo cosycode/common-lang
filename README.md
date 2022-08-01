@@ -6,7 +6,7 @@ A more powerful tool class based on `org.apache.commons:commons-lang3`
 
 ## repo
 
-最新1.6版本
+最新1.7版本
 
 1. Apache Maven
 
@@ -14,14 +14,14 @@ A more powerful tool class based on `org.apache.commons:commons-lang3`
     <dependency>
        <groupId>com.github.cosycode</groupId>
        <artifactId>common-lang</artifactId>
-       <version>1.6</version>
+       <version>1.7</version>
     </dependency>
     ```
 
 2. gradle
     
     ```yaml
-    implementation 'com.github.cosycode:common-lang:1.6'
+    implementation 'com.github.cosycode:common-lang:1.7'
     ```
 
 ## 闭包代理
