@@ -129,6 +129,8 @@ public class FileSystemUtils {
      * 将根路径里面符合条件的 markdown 文件添加到 list 表, 并返回list
      *
      * @param rootPath 根路径 url
+     * @param fileFilter 过滤器
+     * @param loadSubDir 是否加载子文件夹
      * @return 根路径里面符合条件的 markdown 文件列表
      */
     public static List<File> findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir) {
