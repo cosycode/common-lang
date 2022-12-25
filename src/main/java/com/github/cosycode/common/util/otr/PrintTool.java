@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 /**
  * <b>Description : </b>
@@ -25,23 +26,48 @@ public class PrintTool {
     @Setter
     private static Level logLevel = Level.DEBUG;
 
+    @Deprecated
     public static void printDebug(String s, Object... objects) {
         print(Level.DEBUG, s, objects);
     }
 
+    @Deprecated
     public static void printError(String s, Object... objects) {
         print(Level.ERROR, s, objects);
     }
 
+    @Deprecated
     public static void printWarning(String s, Object... objects) {
         print(Level.WARN, s, objects);
     }
 
+    @Deprecated
     public static void printInfo(String s, Object... objects) {
         print(Level.INFO, s, objects);
     }
 
+    @Deprecated
     public static void printSuccess(String s, Object... objects) {
+        print(Level.INFO, s, objects);
+    }
+
+    public static void debug(String s, Object... objects) {
+        print(Level.DEBUG, s, objects);
+    }
+
+    public static void error(String s, Object... objects) {
+        print(Level.ERROR, s, objects);
+    }
+
+    public static void warn(String s, Object... objects) {
+        print(Level.WARN, s, objects);
+    }
+
+    public static void info(String s, Object... objects) {
+        print(Level.INFO, s, objects);
+    }
+
+    public static void success(String s, Object... objects) {
         print(Level.INFO, s, objects);
     }
 
@@ -117,6 +143,23 @@ public class PrintTool {
         }
         sb.append(str, from, str.length());
         return sb.toString();
+    }
+
+    /**
+     * 将String中的{}转换为参数中指定的值
+     * <p>字符串中的 {} 和 params 中的参数由左至右一一匹配, 匹配上则替换, 匹配不上则不进行替换</p>
+     * <p>params中对象为null, 则转换为 EMPTY_STRING </p>
+     *
+     * @param str    待转换的字符串
+     * @param params 参数
+     * @return 转换后的字符串
+     */
+    public static String formatInStrict(String str, Object... params) {
+        String format = format(str, params);
+        if (format.contains("{}")) {
+            throw new IllegalArgumentException(format("str 中的占位 {}, 无法完全被 params 里面的值替代 ==> str: {}, params: {}", str, Arrays.toString(params)));
+        }
+        return format;
     }
 
     /**

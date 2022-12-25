@@ -117,8 +117,12 @@ public class Throws {
         public PromiseForRunnable runtimeExp(String message, Object... infos) {
             Exception ept = this.exception;
             if (ept != null) {
-                final String msg = infos == null ? message : PrintTool.format(message, infos);
-                throw new RuntimeExtException(msg, ept);
+                if (ept instanceof RuntimeException) {
+                    throw (RuntimeException)ept;
+                } else {
+                    final String msg = infos == null ? message : PrintTool.format(message, infos);
+                    throw new RuntimeExtException(msg, ept);
+                }
             }
             return this;
         }
@@ -335,5 +339,27 @@ public class Throws {
         } catch (NullPointerException e) {
             return null;
         }
+    }
+
+    /**
+     * 将 supplier 运行中发生的异常包装成为 运行时异常.
+     *
+     * @param supplier 运行函数
+     * @param <T> 返回值类型
+     * @param <E> 捕捉异常类型
+     * @return 运行函数的返回值.
+     */
+    public static <T, E extends Exception> T runtimeEpt(SupplierWithThrow<T, E> supplier) {
+        return Throws.sup(supplier).runtimeExp().value();
+    }
+
+    /**
+     * 将 runnableWithThrow 运行中发生的异常包装成为 运行时异常.
+     *
+     * @param runnableWithThrow 运行函数
+     * @param <E> 捕捉异常类型
+     */
+    public static <E extends Exception> void runtimeEpt(RunnableWithThrow<E> runnableWithThrow) {
+        Throws.run(runnableWithThrow).runtimeExp();
     }
 }

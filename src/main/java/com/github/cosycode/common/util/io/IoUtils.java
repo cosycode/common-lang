@@ -171,6 +171,28 @@ public class IoUtils {
     }
 
     /**
+     * 读取文件
+     *
+     * @param file 待处理的文件
+     * @return 从文件中读取的字符串
+     * @throws IOException 文件读取失败异常
+     */
+    public static byte[] readFileToByteArr(final String file) throws IOException {
+        // 读出来的长度是文件所占据的内存字节大小
+        final long length = file.length();
+        byte[] chars = new byte[(int) length];
+        try (final FileInputStream fileInputStream = new FileInputStream(file)) {
+            // 由于有中文的关系, read 和 length 会不一致, read 是占用 char 的数量, length 是占据内存字节数量
+            // 例如, 大多数汉字使用一个 char 就可以表示, 只有少数符号和汉字使用两个char
+            final int read = fileInputStream.read(chars);
+            log.info("read success length " + read);
+            return chars;
+        } catch (IOException e) {
+            throw new IOException("文件读取失败: filePath", e);
+        }
+    }
+
+    /**
      * 往 savePath 路径 写入文件, 如果没有则新增
      *
      * @param savePath 写入路径
