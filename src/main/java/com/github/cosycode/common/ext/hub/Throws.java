@@ -118,7 +118,7 @@ public class Throws {
             Exception ept = this.exception;
             if (ept != null) {
                 if (ept instanceof RuntimeException) {
-                    throw (RuntimeException)ept;
+                    throw (RuntimeException) ept;
                 } else {
                     final String msg = infos == null ? message : PrintTool.format(message, infos);
                     throw new RuntimeExtException(msg, ept);
@@ -306,12 +306,12 @@ public class Throws {
     /**
      * 忽略空指针异常, 存在空指针, 则直接返回 eptValue
      * <p>
-     *     使用于多层方法调用获取值的场景,
-     *     如下示例多级 get, 每一步都可能有空指针, 导致每一步都需要判空,
-     *     实际上只要发生空指针异常, 就可以终止了.
-     *     <br>
-     *     case:
-     *     o1.getO2().getO3().getO4().
+     * 使用于多层方法调用获取值的场景,
+     * 如下示例多级 get, 每一步都可能有空指针, 导致每一步都需要判空,
+     * 实际上只要发生空指针异常, 就可以终止了.
+     * <br>
+     * case:
+     * o1.getO2().getO3().getO4().
      * </p>
      *
      * @param supplier 运行函数
@@ -319,7 +319,7 @@ public class Throws {
      * @param <R>      返回值类型
      * @return 存在空指针, 则直接返回 null, 没有空指针, 则返回 supplier 返回值
      */
-    public static <R> R ignoreNpt(Supplier<R> supplier, R eptValue) {
+    public static <R> R ignoreNpe(Supplier<R> supplier, R eptValue) {
         try {
             return supplier.get();
         } catch (NullPointerException e) {
@@ -328,12 +328,12 @@ public class Throws {
     }
 
     /**
-     * 忽略空指针异常, 存在空指针, 则直接返回 null
+     * 忽略 NullPointerException, 存在空指针, 则直接返回 null
      *
      * @param supplier 运行函数
      * @return 存在空指针, 则直接返回 null, 没有空指针, 则返回 supplier 返回值
      */
-    public static <R> R ignoreNpt(Supplier<R> supplier) {
+    public static <R> R ignoreNpe(Supplier<R> supplier) {
         try {
             return supplier.get();
         } catch (NullPointerException e) {
@@ -342,11 +342,25 @@ public class Throws {
     }
 
     /**
+     * 忽略 NullPointerException & IndexOutOfBoundsException, 发生上述异常, 则直接返回 null
+     *
+     * @param supplier 运行函数
+     * @return 发生上述异常, 则直接返回 null, 没有上述异常, 则返回 supplier 返回值
+     */
+    public static <R> R ignoreNpeAndIoob(Supplier<R> supplier) {
+        try {
+            return supplier.get();
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    /**
      * 将 supplier 运行中发生的异常包装成为 运行时异常.
      *
      * @param supplier 运行函数
-     * @param <T> 返回值类型
-     * @param <E> 捕捉异常类型
+     * @param <T>      返回值类型
+     * @param <E>      捕捉异常类型
      * @return 运行函数的返回值.
      */
     public static <T, E extends Exception> T runtimeEpt(SupplierWithThrow<T, E> supplier) {
@@ -357,7 +371,7 @@ public class Throws {
      * 将 runnableWithThrow 运行中发生的异常包装成为 运行时异常.
      *
      * @param runnableWithThrow 运行函数
-     * @param <E> 捕捉异常类型
+     * @param <E>               捕捉异常类型
      */
     public static <E extends Exception> void runtimeEpt(RunnableWithThrow<E> runnableWithThrow) {
         Throws.run(runnableWithThrow).runtimeExp();

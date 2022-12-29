@@ -120,7 +120,9 @@ public class PackageUtils {
                     }
                     return loadSubPackage && file.isDirectory();
                 };
-                Arrays.stream(array).forEach(it -> FileSystemUtils.fileDisposeFromDir(it, disposer, fileFilter));
+                for (File file : array) {
+                    FileSystemUtils.fileDisposeFromDir(file, disposer, fileFilter);
+                }
             } else if (protocol.equals("jar")) {
                 JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                 if (jarURLConnection != null) {

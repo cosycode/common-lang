@@ -7,6 +7,7 @@ import org.apache.commons.lang3.Validate;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -36,7 +37,7 @@ public class FileSystemUtils {
      * @param fileDisposer 文件处理方式.
      * @param fileFilter   文件过滤器.
      */
-    public static void fileDisposeFromDir(File file, FileDisposer fileDisposer, FileFilter fileFilter) {
+    public static void fileDisposeFromDir(File file, FileDisposer fileDisposer, FileFilter fileFilter) throws FileNotFoundException {
         fileDisposeByRecursion(file, fileDisposer, fileFilter);
     }
 
@@ -50,9 +51,9 @@ public class FileSystemUtils {
      * @param fileDisposer 文件处理方式.
      * @param fileFilter   文件过滤器.
      */
-    public static void fileDisposeByRecursion(File file, FileDisposer fileDisposer, FileFilter fileFilter) {
-        if (file == null || !file.exists()) {
-            return;
+    public static void fileDisposeByRecursion(@NonNull File file, FileDisposer fileDisposer, FileFilter fileFilter) throws FileNotFoundException {
+        if (! file.exists()) {
+            throw new FileNotFoundException("the file {" + file.getPath() + "} is not exist.");
         }
         // 过滤
         if (fileFilter != null && !fileFilter.accept(file)) {
@@ -82,9 +83,9 @@ public class FileSystemUtils {
      * @param fileDisposer 文件处理方式.
      * @param fileFilter   文件过滤器.
      */
-    public static void fileDisposeByLoop(File file, FileDisposer fileDisposer, FileFilter fileFilter) {
-        if (file == null || !file.exists()) {
-            return;
+    public static void fileDisposeByLoop(@NonNull File file, FileDisposer fileDisposer, FileFilter fileFilter) throws FileNotFoundException {
+        if (! file.exists()) {
+            throw new FileNotFoundException("the file {" + file.getPath() + "} is not exist.");
         }
         if (fileFilter != null && !fileFilter.accept(file)) {
             return;
@@ -115,7 +116,7 @@ public class FileSystemUtils {
      * @param loadSubDir 是否加载子文件夹
      * @param consumer   文件消费函数
      */
-    public static void findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir, Consumer<File> consumer) {
+    public static void findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir, Consumer<File> consumer) throws FileNotFoundException {
         // 获取根路径 url, 并将符合条件的 markdown 文件添加到 list 表
         FileSystemUtils.fileDisposeByRecursion(rootPath, consumer::accept, f -> {
             if (f.isDirectory()) {
@@ -133,7 +134,7 @@ public class FileSystemUtils {
      * @param loadSubDir 是否加载子文件夹
      * @return 根路径里面符合条件的 markdown 文件列表
      */
-    public static List<File> findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir) {
+    public static List<File> findFileFromDir(File rootPath, FileFilter fileFilter, boolean loadSubDir) throws FileNotFoundException {
         List<File> list = new ArrayList<>();
         findFileFromDir(rootPath, fileFilter, loadSubDir, list::add);
         return list;
