@@ -102,7 +102,7 @@ public class BeanUtils {
      * @param target 目标 pojo 对象
      * @param source 源map对象
      */
-    @SuppressWarnings("java:S3011")
+    @SuppressWarnings({"java:S3011", "java:S135"})
     public static void populate(@NonNull Object target, @NonNull Map<String, Object> source) {
         // 初始化
         if (source.isEmpty()) {

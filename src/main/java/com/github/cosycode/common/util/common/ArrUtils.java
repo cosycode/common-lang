@@ -284,6 +284,7 @@ public class ArrUtils {
      * @param <T>   列表中对象类型
      * @return 分割后的列表
      */
+    @SuppressWarnings("java:S127")
     public static <T> List<List<T>> partition(List<T> list, int count) {
         if (count <= 0) {
             throw new IllegalArgumentException("count should not letter than 0");

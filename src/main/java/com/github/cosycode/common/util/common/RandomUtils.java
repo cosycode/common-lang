@@ -33,6 +33,7 @@ public class RandomUtils {
      * @param n     n 个随机数
      * @return n个随机数数组
      */
+    @SuppressWarnings("java:S127")
     public static int[] getNumbersInRange(int range, int n) {
         if (range < n) {
             throw new IllegalArgumentException("range 需要大于 n ==> range: " + range + ", n: " + n);

@@ -15,6 +15,7 @@ import java.util.function.Consumer;
  * @author pengfchen
  * @since 1.8
  **/
+@SuppressWarnings("all")
 public class LinkedListCopy<E> extends AbstractSequentialList<E>
     implements List<E>, Deque<E>, Cloneable, java.io.Serializable
 {

@@ -51,6 +51,7 @@ public class LazySingleton<T> {
     /**
      * 破环当前实例(适用于想要重新生成实例的情况)
      *
+     * @deprecated 取消该方法
      * @return 原来有实例为 true, 没有则返回 false
      */
     @Deprecated

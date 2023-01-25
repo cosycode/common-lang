@@ -11,10 +11,14 @@ import com.github.cosycode.common.util.otr.PrintTool;
  * @author pengfchen
  * @since 1.0
  **/
-public class BaseRuntimeException extends RuntimeException{
+public class BaseRuntimeException extends RuntimeException {
 
     public BaseRuntimeException(String message, Object... objects) {
         super(PrintTool.format(message, objects));
+    }
+
+    public BaseRuntimeException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
 }
