@@ -19,13 +19,13 @@ class MappingBeanPool {
     /**
      * 用于存储字典数据
      */
-    private static final Map<IMapping<?, ?>, MappingBean<?, ?>> dictItemMap = new ConcurrentHashMap<>();
+    private static final Map<IMapping<?, ?>, MappingBean<?, ?>> DICT_ITEM_MAP = new ConcurrentHashMap<>();
 
     /**
      * 往 map 中添加代码项
      */
     public static <K, V> void put(IMapping<K, V> iCodeItem, K key, V val) {
-        dictItemMap.put(iCodeItem, new MappingBean<>(key, val));
+        DICT_ITEM_MAP.put(iCodeItem, new MappingBean<>(key, val));
     }
 
     /**
@@ -33,7 +33,7 @@ class MappingBeanPool {
      */
     @SuppressWarnings("unchecked")
     public static <K, V> MappingBean<K, V> get(IMapping<K, V> iDictItem) {
-        return (MappingBean<K, V>) dictItemMap.get(iDictItem);
+        return (MappingBean<K, V>) DICT_ITEM_MAP.get(iDictItem);
     }
 
 }

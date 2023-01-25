@@ -24,7 +24,7 @@ public class SingletonPool {
      * 存放单例
      */
     @Getter
-    private static final Map<String, Object> pool = new ConcurrentHashMap<>();
+    private static final Map<String, Object> POOL = new ConcurrentHashMap<>();
 
     /**
      * 注册完成之后, 通过 get 方法获取, 如果 singleTonMap 中没有值, 则根据 supplier 创建一个对象, 存入 singleTonMap
@@ -33,7 +33,7 @@ public class SingletonPool {
      * @param supplier 函数接口
      */
     public static synchronized void registerSupplier(String key, Supplier<?> supplier) {
-        pool.put(key, LazySingleton.of(supplier));
+        POOL.put(key, LazySingleton.of(supplier));
     }
 
     /**
@@ -43,7 +43,7 @@ public class SingletonPool {
      * @param supplier 函数接口
      */
     public static synchronized void registerSupplierIfAbsent(String key, Supplier<?> supplier) {
-        pool.putIfAbsent(key, LazySingleton.of(supplier));
+        POOL.putIfAbsent(key, LazySingleton.of(supplier));
     }
 
     /**
@@ -53,7 +53,7 @@ public class SingletonPool {
      * @param object 注册对象
      */
     public static synchronized void registerObject(String key, Object object) {
-        pool.put(key, object);
+        POOL.put(key, object);
     }
 
     /**
@@ -63,7 +63,7 @@ public class SingletonPool {
      * @param object 注册对象
      */
     public static synchronized void registerObjectIfAbsent(String key, Object object) {
-        pool.putIfAbsent(key, object);
+        POOL.putIfAbsent(key, object);
     }
 
     /**
@@ -73,7 +73,7 @@ public class SingletonPool {
      * @return true: 包含, false: 不包含
      */
     public static synchronized boolean containsKey(String key) {
-        return pool.containsKey(key);
+        return POOL.containsKey(key);
     }
 
     /**
@@ -83,7 +83,7 @@ public class SingletonPool {
      * @return 移除的单例
      */
     public static Object remove(String key) {
-        final Object o = pool.remove(key);
+        final Object o = POOL.remove(key);
         if (o == null) {
             return null;
         }
@@ -100,7 +100,7 @@ public class SingletonPool {
      * @return pool中的单例
      */
     public static Object get(String key) {
-        Object o = pool.get(key);
+        Object o = POOL.get(key);
         if (o == null) {
             return null;
         }

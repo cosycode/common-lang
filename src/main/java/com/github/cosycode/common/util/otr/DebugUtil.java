@@ -1,5 +1,6 @@
 package com.github.cosycode.common.util.otr;
 
+import com.github.cosycode.common.lang.BaseRuntimeException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,7 @@ public class DebugUtil {
             return;
         }
         if (throwErrFlag) {
-            throw new RuntimeException(PrintTool.format(message, objects));
+            throw new BaseRuntimeException(message, objects);
         } else {
             log.error(message, objects);
         }

@@ -100,7 +100,7 @@ public class PackageUtils {
                 continue;
             }
             String protocol = url.getProtocol();
-            if (protocol.equals("file")) {
+            if ("file".equals(protocol)) {
                 String packagePath = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8.name());
                 File file1 = new File(packagePath);
                 final String packagePath0 = file1.getPath();
@@ -123,7 +123,7 @@ public class PackageUtils {
                 for (File file : array) {
                     FileSystemUtils.fileDisposeFromDir(file, disposer, fileFilter);
                 }
-            } else if (protocol.equals("jar")) {
+            } else if ("jar".equals(protocol)) {
                 JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                 if (jarURLConnection != null) {
                     try (JarFile jarFile = jarURLConnection.getJarFile()) {

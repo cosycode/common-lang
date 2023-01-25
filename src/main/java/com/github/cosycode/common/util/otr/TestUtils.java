@@ -122,7 +122,7 @@ public class TestUtils {
      * @param <R>      执行函数返回值类型
      * @return 执行函数的返回值
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "java:S1602"})
     public static <R> DoubleBean<Long, R> callTime(String tag, Supplier<R> supplier) {
         final Object[] r = new Object[1];
         final long time = callTime(tag, () -> {

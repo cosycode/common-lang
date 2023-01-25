@@ -1,5 +1,6 @@
 package com.github.cosycode.common.thread;
 
+import com.github.cosycode.common.lang.BaseRuntimeException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -103,7 +104,7 @@ public final class CtrlLoopThread extends Thread {
                 if (continueIfException) {
                     log.error("CtrlLoopThread [" + name + "] 循环处理异常, 继续执行下一轮", e);
                 } else {
-                    throw new RuntimeException("CtrlLoopThread [" + name + "] 循环处理异常, 线程停止执行!", e);
+                    throw new BaseRuntimeException("CtrlLoopThread [" + name + "] 循环处理异常, 线程停止执行!", e);
                 }
             }
             // 控制loop多久循环一次, 防止 CPU 过高占用
@@ -111,7 +112,7 @@ public final class CtrlLoopThread extends Thread {
                 try {
                     Thread.sleep(millisecond);
                 } catch (InterruptedException e) {
-                    log.error("CtrlLoopThread [\" + name + \"] 线程sleep中发生错误", e);
+                    log.error("CtrlLoopThread [" + name + "] 线程sleep中发生错误", e);
                     interrupt();
                 }
             }

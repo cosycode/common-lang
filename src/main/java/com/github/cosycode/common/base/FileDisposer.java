@@ -13,6 +13,9 @@ import java.io.File;
 @FunctionalInterface
 public interface FileDisposer {
 
+    /**
+     * @param file 待处理的文件对象
+     */
     void dispose(File file);
 
 }

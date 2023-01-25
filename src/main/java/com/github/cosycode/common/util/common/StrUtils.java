@@ -3,6 +3,8 @@ package com.github.cosycode.common.util.common;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -112,6 +114,21 @@ public class StrUtils {
             callback.accept(match);
             return true;
         });
+    }
+
+    /**
+     * 正则查找, 返回所有在 content 里面所有符合 regex 条件的字符串集合
+     *
+     * @param regex    正则表达式
+     * @param content  文本
+     */
+    public static List<String> findAllMatch(@NonNull String regex, @NonNull String content) {
+        List<String> list = new ArrayList<>();
+        findAllWithBreak(regex, content, match -> {
+            list.add(match);
+            return true;
+        });
+        return list;
     }
 
     /**

@@ -129,8 +129,9 @@ public class LimitStack<E extends Serializable> implements Serializable {
      * @throws EmptyStackException if this stack is empty.
      */
     public synchronized E peek() {
-        if (size() == 0)
+        if (size() == 0) {
             throw new EmptyStackException();
+        }
         return (E) objects[idx - 1];
     }
 

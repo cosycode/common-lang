@@ -12,6 +12,7 @@ import java.nio.file.FileSystemException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -25,10 +26,10 @@ import java.util.Set;
 public final class AppLockHelper {
 
     @Getter
-    private static final Set<AppLockHelper> fileLockOccupySet = new HashSet<>(2);
+    private static final Set<AppLockHelper> FILE_LOCK_OCCUPY_SET = new HashSet<>(2);
 
     public static void lockFile(String fileName) throws IOException {
-        fileLockOccupySet.add(new AppLockHelper(fileName));
+        FILE_LOCK_OCCUPY_SET.add(new AppLockHelper(fileName));
     }
 
     /**
@@ -72,7 +73,20 @@ public final class AppLockHelper {
         return new File(AppLockHelper.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().trim();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AppLockHelper that = (AppLockHelper) o;
+        return fileName.equals(that.fileName);
+    }
 
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileName);
+    }
 }

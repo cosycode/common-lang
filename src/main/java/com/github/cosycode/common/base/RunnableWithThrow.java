@@ -12,6 +12,10 @@ package com.github.cosycode.common.base;
 @FunctionalInterface
 public interface RunnableWithThrow<E extends Exception> extends SerialFunctional{
 
+    /**
+     * @see     java.lang.Thread#run()
+     * @throws E 函数式接口可以抛出的 Exception 类型
+     */
     void run() throws E;
 
 }

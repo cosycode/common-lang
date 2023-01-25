@@ -415,7 +415,7 @@ public class CtrlLoopThreadComp implements AutoCloseable {
         }
 
         @Override
-        @SuppressWarnings({"java:S1119", "java:S112"})
+        @SuppressWarnings({"java:S1119", "java:S135", "java:S112"})
         public void run() {
             // 线程在启动之前, 可以不是0
             if (state == 0) {

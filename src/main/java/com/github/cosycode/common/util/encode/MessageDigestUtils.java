@@ -89,7 +89,7 @@ public class MessageDigestUtils {
      * @return 转换成字符的字符串
      */
     public static String decodeUnicodeString(String unicodeString) {
-        unicodeString = unicodeString.replace("%", "\\");//这行酌情不要
+        unicodeString = unicodeString.replace("%", "\\");
         int start = 0;
         int end = 0;
         final StringBuilder stringBuilder = new StringBuilder();
