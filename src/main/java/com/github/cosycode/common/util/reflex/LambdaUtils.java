@@ -57,7 +57,7 @@ public class LambdaUtils {
             method.setAccessible(Boolean.TRUE);
             lambda = (SerializedLambda) method.invoke(fn);
         } catch (IllegalAccessException e) {
-            throw new BaseRuntimeException("反射调用对象的writeReplace方法出现异常, 关联对象: {}", fn);
+            throw new BaseRuntimeException("反射调用对象的writeReplace方法出现异常, 关联对象: %s", fn);
         }
         return lambda;
     }

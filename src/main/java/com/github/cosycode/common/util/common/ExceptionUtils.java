@@ -16,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionUtils {
 
+    public static String filerPrefix = "com.ebay";
+
     /**
      * Convert Exception Stack to String.
      *
@@ -46,7 +48,7 @@ public class ExceptionUtils {
             sb.append("{").append(message).append("}");
         } else {
             sb.append("[");
-            simplifyStackTrace(sb, e.getStackTrace());
+            simplifyStackTrace(sb, e.getStackTrace(), 100);
             sb.append("]");
         }
         return sb.toString();
@@ -65,7 +67,7 @@ public class ExceptionUtils {
         String message = e.getMessage();
         StringBuilder sb = new StringBuilder();
         sb.append(e.getClass().getSimpleName()).append("{").append(message).append("}[");
-        simplifyStackTrace(sb, e.getStackTrace());
+        simplifyStackTrace(sb, e.getStackTrace(), 5);
         sb.append("]");
         return sb.toString();
     }
@@ -73,21 +75,22 @@ public class ExceptionUtils {
     /**
      * convert StackTraceElement from Exception, and put result into a StringBuilder
      */
-    private static void simplifyStackTrace(StringBuilder sb, StackTraceElement[] stackTrace) {
-        boolean firstRow = true;
-        for (int row = 0; row < stackTrace.length; row++) {
+    private static void simplifyStackTrace(StringBuilder sb, StackTraceElement[] stackTrace, int limitCount) {
+        boolean flag = false;
+        for (int row = 0; limitCount > 0 && row < stackTrace.length; row++) {
             StackTraceElement element = stackTrace[row];
             String className = element.getClassName();
-            // filter non-ebay class
-            if (className.startsWith("com")) {
-                if (firstRow) {
-                    firstRow = false;
-                } else {
+            // filter class by prefix String
+            if (filerPrefix == null || className.startsWith(filerPrefix)) {
+                limitCount--;
+                if (flag) {
                     sb.append(", ");
+                } else {
+                    flag = true;
                 }
                 sb.append(row).append("=");
                 sb.append(className.substring(className.lastIndexOf('.') + 1));
-                sb.append("::").append(element.getMethodName()).append('(').append(element.getLineNumber()).append(')');
+                sb.append(":").append(element.getMethodName()).append('(').append(element.getLineNumber()).append(')');
             }
         }
     }
