@@ -1,7 +1,5 @@
 package com.github.cosycode.common.lang;
 
-import com.github.cosycode.common.util.otr.PrintTool;
-
 /**
  * <b>Description : </b>
  * <p>
@@ -14,7 +12,7 @@ import com.github.cosycode.common.util.otr.PrintTool;
 public class BaseRuntimeException extends RuntimeException {
 
     public BaseRuntimeException(String message, Object... objects) {
-        super(PrintTool.format(message, objects));
+        super(String.format(message, objects));
     }
 
     public BaseRuntimeException(String message, Throwable throwable) {

@@ -1,6 +1,6 @@
 package com.github.cosycode.common.util.reflex;
 
-import com.github.cosycode.common.ext.hub.SimpleCode;
+import com.github.cosycode.common.ext.hub.Throws;
 
 /**
  * <b>Description : </b> 类相关的工具类
@@ -23,7 +23,7 @@ public class ClassUtils {
      * @return 类class对象
      */
     public static Class<?> loadClass(String className, boolean isInitialized) {
-        return SimpleCode.ignoreException(() -> Class.forName(className, isInitialized, ClassLoader.getSystemClassLoader()));
+        return Throws.runtimeEpt(() -> Class.forName(className, isInitialized, ClassLoader.getSystemClassLoader()));
     }
 
     /**

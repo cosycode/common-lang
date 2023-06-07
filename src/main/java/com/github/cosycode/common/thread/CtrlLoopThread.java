@@ -102,9 +102,9 @@ public final class CtrlLoopThread extends Thread {
             } catch (RuntimeException e) {
                 // 如果发生异常是否继续执行下一回合
                 if (continueIfException) {
-                    log.error("CtrlLoopThread [" + name + "] 循环处理异常, 继续执行下一轮", e);
+                    log.error(String.format("CtrlLoopThread [%s] 循环处理异常, 继续执行下一轮", name), e);
                 } else {
-                    throw new BaseRuntimeException("CtrlLoopThread [" + name + "] 循环处理异常, 线程停止执行!", e);
+                    throw new BaseRuntimeException(String.format("CtrlLoopThread [%s] 循环处理异常, 线程停止执行!", name), e);
                 }
             }
             // 控制loop多久循环一次, 防止 CPU 过高占用
@@ -112,7 +112,7 @@ public final class CtrlLoopThread extends Thread {
                 try {
                     Thread.sleep(millisecond);
                 } catch (InterruptedException e) {
-                    log.error("CtrlLoopThread [" + name + "] 线程sleep中发生错误", e);
+                    log.error(String.format("CtrlLoopThread [%s] 线程sleep中发生错误", name), e);
                     interrupt();
                 }
             }

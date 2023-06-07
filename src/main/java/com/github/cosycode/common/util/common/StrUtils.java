@@ -266,7 +266,7 @@ public class StrUtils {
     /**
      * 将String对象组连接起来, 如果为 null, 则转换为 EMPTY_STRING 连接
      *
-     * @param strings string对象阻
+     * @param strings string对象组
      * @return 连接后的字符串
      */
     public static String concat(@NonNull String... strings) {

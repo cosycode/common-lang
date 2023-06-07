@@ -1,6 +1,6 @@
 package com.github.cosycode.common.util.encode;
 
-import com.github.cosycode.common.ext.hub.SimpleCode;
+import com.github.cosycode.common.ext.hub.Throws;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public class MessageDigestUtils {
      */
     public static String getMD5(File file) throws IOException {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
-            MessageDigest md5 = SimpleCode.runtimeException(() -> MessageDigest.getInstance("MD5"));
+            MessageDigest md5 = Throws.runtimeEpt(() -> MessageDigest.getInstance("MD5"));
             byte[] buffer = new byte[8192];
             int length;
             while ((length = fileInputStream.read(buffer)) != -1) {
@@ -50,7 +50,7 @@ public class MessageDigestUtils {
      * @return md5 value 文件的MD5值
      */
     public static String getMD5(byte[] data) {
-        MessageDigest md5 = SimpleCode.runtimeException(() -> MessageDigest.getInstance("MD5"));
+        MessageDigest md5 = Throws.runtimeEpt(() -> MessageDigest.getInstance("MD5"));
         byte[] digest = md5.digest(data);
         return new BigInteger(1, digest).toString(16);
     }
