@@ -1,6 +1,8 @@
 package com.github.cosycode.common.util.otr;
 
 import com.github.cosycode.common.lang.BaseRuntimeException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * <b>Description : </b>
@@ -10,6 +12,7 @@ import com.github.cosycode.common.lang.BaseRuntimeException;
  *
  * @author pengfchen
  **/
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SystemUtils {
 
     public static void setForkJoinPoolDefaultCount(int number) {

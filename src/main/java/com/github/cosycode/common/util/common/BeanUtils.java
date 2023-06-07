@@ -1,6 +1,6 @@
 package com.github.cosycode.common.util.common;
 
-import com.github.cosycode.common.ext.hub.SimpleCode;
+import com.github.cosycode.common.ext.hub.Throws;
 import com.github.cosycode.common.lang.RuntimeExtException;
 import com.github.cosycode.common.lang.ShouldNotHappenException;
 import lombok.NonNull;
@@ -152,7 +152,7 @@ public class BeanUtils {
             return Collections.emptyMap();
         }
         Map<String, Object> map = new HashMap<>();
-        SimpleCode.runtimeException(() -> {
+        Throws.runtimeEpt(() -> {
             BeanInfo beanInfo = Introspector.getBeanInfo(pojo.getClass());
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor property : propertyDescriptors) {

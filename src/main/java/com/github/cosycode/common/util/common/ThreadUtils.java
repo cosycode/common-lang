@@ -12,9 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 /**
@@ -86,13 +84,15 @@ public class ThreadUtils {
      * @param threadNum  线程池数量, 具体处理方式看方法说明
      * @param <T>        待处理的列表对象类型
      */
-    public <T> void multithreading(@NonNull Collection<T> collection, @NonNull Consumer<T> consumer, int threadNum) {
+    public static <T> void multithreading(@NonNull Collection<T> collection, @NonNull Consumer<T> consumer, int threadNum) {
         if (collection.isEmpty()) {
             return;
         }
         if (threadNum > 1) {
             // 新建 Math.min(threadNum, tList.size()) 个线程的线程池, 如果待处理列表数量小于线程池数量, 那么建立那么多的线程则没有必要
-            ExecutorService executor = Executors.newFixedThreadPool(Math.min(threadNum, collection.size()));
+            int threadCount = Math.min(threadNum, collection.size());
+            ExecutorService executor = new ThreadPoolExecutor(threadCount, threadCount, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>());
             // 循环
             for (final T t : collection) {
                 executor.submit(() -> consumer.accept(t));

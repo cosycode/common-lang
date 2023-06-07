@@ -2,7 +2,10 @@ package com.github.cosycode.common.util.common;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.function.Predicate;
 
 /**
  * <b>Description : </b>
@@ -16,7 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionUtils {
 
-    public static String filerPrefix = "com.ebay";
+    @Setter
+    private static Predicate<StackTraceElement> logFiler = null;
 
     /**
      * Convert Exception Stack to String.
@@ -34,6 +38,7 @@ public class ExceptionUtils {
 
     /**
      * 获取关键异常堆栈信息.
+     *
      * @param e 异常
      * @return String that convert from Exception Stack.
      */
@@ -79,9 +84,8 @@ public class ExceptionUtils {
         boolean flag = false;
         for (int row = 0; limitCount > 0 && row < stackTrace.length; row++) {
             StackTraceElement element = stackTrace[row];
-            String className = element.getClassName();
             // filter class by prefix String
-            if (filerPrefix == null || className.startsWith(filerPrefix)) {
+            if (logFiler == null || logFiler.test(element)) {
                 limitCount--;
                 if (flag) {
                     sb.append(", ");
@@ -89,6 +93,7 @@ public class ExceptionUtils {
                     flag = true;
                 }
                 sb.append(row).append("=");
+                String className = element.getClassName();
                 sb.append(className.substring(className.lastIndexOf('.') + 1));
                 sb.append(":").append(element.getMethodName()).append('(').append(element.getLineNumber()).append(')');
             }
