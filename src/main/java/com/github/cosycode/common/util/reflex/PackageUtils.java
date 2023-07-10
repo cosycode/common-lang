@@ -1,6 +1,7 @@
 package com.github.cosycode.common.util.reflex;
 
 import com.github.cosycode.common.base.FileDisposer;
+import com.github.cosycode.common.ext.hub.Throws;
 import com.github.cosycode.common.util.io.FileSystemUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,13 +40,14 @@ public class PackageUtils {
     /**
      * 获取 clazz 所在 package 中的 经过 filter 过滤后的 class 对象的集合
      *
+     * @param loader 类加载器, 加载包的时候一定要选对类加载器, 一般在没有自定义加载器的情况下, 同一个 module 下的类加载器是同一个.
      * @param clazz  类
      * @param filter 过滤器
      * @return clazz 所在 package 中的 经过 filter过滤后的 class 对象
      * @throws FileNotFoundException 通过class获取class所在jar包
      * @throws IOException           读取`通过class获取class所在jar包`出现IO异常
      */
-    public static List<Class<?>> getClassesFromJar(Class<?> clazz, Predicate<JarEntry> filter) throws IOException {
+    public static List<Class<?>> getClassesFromJar(ClassLoader loader, Class<?> clazz, Predicate<JarEntry> filter) throws IOException {
         if (clazz == null) {
             return Collections.emptyList();
         }
@@ -56,41 +58,34 @@ public class PackageUtils {
         // jarFile
         final File file1 = new File(jarPath);
         if (!file1.exists()) {
-            throw new FileNotFoundException(String.format("获取路径出错, clazz: %s, jarPath: %s, packagePath: %s", clazz.getName(), jarPath, packagePath));
+            throw new FileNotFoundException(String.format("jarPath: %s doesn't exist, clazz: %s, packagePath: %s", clazz.getName(), jarPath, packagePath));
         }
         try (JarFile file = new JarFile(file1)) {
             return file.stream()
                     .filter(jarEntry -> jarEntry.getName().startsWith(packagePath) && (filter == null || filter.test(jarEntry)))
-                    .map(jarEntry -> ClassUtils.loadClass(jarEntry.getName().replace(CLASS_SUFFIX, "").replace(File.separatorChar, '.')))
+                    .map(jarEntry -> {
+                        String className = jarEntry.getName().replace(CLASS_SUFFIX, "").replace(File.separatorChar, '.');
+                        return Throws.sup(() -> Class.forName(className, false, loader))
+                                .runtimeExp(String.format("failed to load class: %s, please check if the selection (%s) of classLoader is correct.", className, loader.getClass()))
+                                .value();
+                    })
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new IOException(String.format("获取路径出错, clazz: %s, jarPath: %s, packagePath: %s", clazz.getName(), jarPath, packagePath), e);
+            throw new IOException(String.format("failed to get class from jar, clazz: %s, jarPath: %s, packagePath: %s", clazz.getName(), jarPath, packagePath), e);
         }
     }
 
     /**
      * 获取某个包下的所有类(获取jar包中类可能会出错)
      *
-     * @param packageName  包名: eg: com.github.common 或 com/github/common
-     * @param loadChildren 是否加载子类
-     * @return 加载的类Set集合
-     * @throws IOException 读取`通过class获取class所在jar包`出现IO异常
-     */
-    @Deprecated
-    public static Set<Class<?>> getClassesFromPackage(final String packageName, final boolean loadChildren) throws IOException {
-        return getClassesFromPackage(packageName, loadChildren, true);
-    }
-
-    /**
-     * 获取某个包下的所有类(获取jar包中类可能会出错)
-     *
-     * @param packageName    包名: eg: com.github.common 或 com/github/common
+     * @param loader         类加载器, 加载包的时候一定要选对类加载器, 一般在没有自定义加载器的情况下, 同一个 module 下的类加载器是同一个.
+     * @param packageName    包名: eg: com.github.common 或 com/Github/common
      * @param loadSubPackage 是否加载子包
      * @param loadInnerClass 是否加载内部类
      * @return 加载的类Set集合
      * @throws IOException 读取`通过class获取class所在jar包`出现IO异常
      */
-    public static Set<Class<?>> getClassesFromPackage(final String packageName, final boolean loadSubPackage, final boolean loadInnerClass) throws IOException {
+    public static Set<Class<?>> getClassesFromPackage(ClassLoader loader, final String packageName, final boolean loadSubPackage, final boolean loadInnerClass) throws IOException {
         Set<Class<?>> classSet = new HashSet<>();
         final String packagePrefix = packageName.replace(".", File.separator);
         Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packagePrefix);
@@ -146,7 +141,9 @@ public class PackageUtils {
                                 .forEach(jarEntry -> {
                                     String jarEntryName = jarEntry.getName();
                                     String className = jarEntryName.substring(0, jarEntryName.lastIndexOf('.')).replace("/", ".");
-                                    Class<?> aClass = ClassUtils.loadClass(className);
+                                    Class<?> aClass = Throws.sup(() -> Class.forName(className, false, loader))
+                                            .runtimeExp(String.format("failed to load class: %s, please check if the selection (%s) of classLoader is correct.", className, loader.getClass()))
+                                            .value();
                                     classSet.add(aClass);
                                 });
                     }

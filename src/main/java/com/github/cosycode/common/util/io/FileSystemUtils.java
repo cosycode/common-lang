@@ -173,11 +173,9 @@ public class FileSystemUtils {
             insureFileDirExist(parentFile);
             // 不存在则创建文件
             try {
-                final boolean newFile = file.createNewFile();
-                Validate.isTrue(newFile, "文件创建失败 path : " + file.getPath());
-                return true;
+                return file.createNewFile();
             } catch (IOException e) {
-                log.error("文件创建失败 path : " + file.getPath(), e);
+                log.error("failed to create the file: " + file.getPath(), e);
                 return false;
             }
         }

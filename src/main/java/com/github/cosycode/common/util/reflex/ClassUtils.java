@@ -22,6 +22,7 @@ public class ClassUtils {
      * @param isInitialized 是否进行初始化操作
      * @return 类class对象
      */
+    @Deprecated
     public static Class<?> loadClass(String className, boolean isInitialized) {
         return Throws.runtimeEpt(() -> Class.forName(className, isInitialized, ClassLoader.getSystemClassLoader()));
     }
@@ -32,6 +33,7 @@ public class ClassUtils {
      * @param className 待加载的类全名
      * @return 加载的Class
      */
+    @Deprecated
     public static Class<?> loadClass(String className) {
         return loadClass(className, false);
     }
