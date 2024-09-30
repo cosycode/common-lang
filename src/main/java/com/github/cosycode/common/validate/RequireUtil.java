@@ -27,7 +27,7 @@ public class RequireUtil {
      */
     public static void requireStringNonBlank(String str) {
         if (str == null || str.length() == 0) {
-            throw new CheckException("字符串为空!");
+            throw new CheckException("string cannot be null or empty!");
         }
     }
 
@@ -51,7 +51,7 @@ public class RequireUtil {
     public static <T> void requireCollectNonBlank(Collection<T> collection) {
         Objects.requireNonNull(collection);
         if (collection.isEmpty()) {
-            throw new CheckException("集合为空!");
+            throw new CheckException("the collection is empty!");
         }
     }
 
@@ -63,7 +63,7 @@ public class RequireUtil {
     public static void requireMapNonBlank(Map<?, ?> map) {
         Objects.requireNonNull(map);
         if (map.isEmpty()) {
-            throw new CheckException("map为空!");
+            throw new CheckException("map is empty!");
         }
     }
 
@@ -74,7 +74,7 @@ public class RequireUtil {
      */
     public static void requireBooleanTrue(boolean flag) {
         if (!flag) {
-            throw new CheckException("boolean 为false");
+            throw new CheckException("boolean val is false");
         }
     }
 
@@ -98,7 +98,7 @@ public class RequireUtil {
      */
     public static void requireContainsTargetInArrays(Object target, Object... arrs) {
         if (!Arrays.asList(arrs).contains(target)) {
-            throw new CheckException("array 中不包含 target");
+            throw new CheckException("array does not contain target");
         }
     }
 }

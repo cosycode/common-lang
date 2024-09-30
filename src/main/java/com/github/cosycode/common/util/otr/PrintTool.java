@@ -157,7 +157,7 @@ public class PrintTool {
     public static String formatInStrict(String str, Object... params) {
         String format = format(str, params);
         if (format.contains("{}")) {
-            throw new IllegalArgumentException(format("str 中的占位 {}, 无法完全被 params 里面的值替代 ==> str: {}, params: {}", str, Arrays.toString(params)));
+            throw new IllegalArgumentException(format("The placeholder {} in str cannot be completely replaced by the value in params ==> str: {}, params: {}", str, Arrays.toString(params)));
         }
         return format;
     }

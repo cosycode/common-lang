@@ -93,7 +93,7 @@ public class ObjUtils {
             oo.writeObject(obj);
             bytes = bo.toByteArray();
         } catch (IOException e) {
-            throw new ActionExecException("将对象序列化为 byte[] 失败 对象: " + obj, e);
+            throw new ActionExecException("failed to convert to object to byte[]: " + obj, e);
         }
         return bytes;
     }

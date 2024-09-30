@@ -143,7 +143,9 @@ public class IoUtils {
      * @throws IOException 文件读取失败异常
      */
     public static String readFile(final File file) throws IOException {
-        Validate.isTrue(file.exists(), "文件不存在");
+        if (!file.exists()) {
+            throw new FileNotFoundException("not found the file: " + file.getPath());
+        }
         // 读出来的长度是文件所占据的内存字节大小
         final long length = file.length();
         char[] chars = new char[(int) length];
@@ -154,7 +156,7 @@ public class IoUtils {
             log.info("read success length " + read);
             return new String(chars, 0, read);
         } catch (IOException e) {
-            throw new IOException("文件读取失败: filePath", e);
+            throw new IOException("failed to read the file: filePath", e);
         }
     }
 
@@ -188,7 +190,7 @@ public class IoUtils {
             log.info("read success length " + read);
             return chars;
         } catch (IOException e) {
-            throw new IOException("文件读取失败: filePath", e);
+            throw new IOException("failed to read the file: filePath", e);
         }
     }
 
@@ -227,7 +229,7 @@ public class IoUtils {
         } catch (FileNotFoundException e) {
             throw e;
         } catch (IOException e) {
-            throw new IOException("文件读取或写入异常==> readPath: " + sourceFilePath + ", writePath: " + savePath, e);
+            throw new IOException("failed to copy file ==> readPath: " + sourceFilePath + ", writePath: " + savePath, e);
         }
     }
 
@@ -241,7 +243,7 @@ public class IoUtils {
     public static byte[] readFromResource(@NonNull ClassLoader classLoader, String classPath) throws IOException {
         try (InputStream in = classLoader.getResourceAsStream(classPath)) {
             if (in == null) {
-                throw new FileNotFoundException("未发现资源文件 : " + classPath);
+                throw new FileNotFoundException(classPath);
             }
             return readByteArrayFromResource(in);
         }
@@ -284,7 +286,7 @@ public class IoUtils {
      * @param formatName 文件格式
      */
     public static void savePic(Image image, @NonNull final File file, @NonNull String formatName) {
-        Validate.isTrue(StringUtils.isNoneBlank(formatName), "formatName为空, 不知道该转换成什么图片格式");
+        Validate.isTrue(StringUtils.isNoneBlank(formatName), "formatName cannot be empty");
 
         FileSystemUtils.insureFileExist(file);
 

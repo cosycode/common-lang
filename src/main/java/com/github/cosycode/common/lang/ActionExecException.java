@@ -15,11 +15,11 @@ public class ActionExecException extends RuntimeException {
     }
 
     public ActionExecException(String actionName) {
-        super("发生异常: " + actionName);
+        super("[ActionExecException]: " + actionName);
     }
 
     public ActionExecException(String actionName, Throwable cause) {
-        super("发生异常: " + (actionName == null ? "" : actionName), cause);
+        super("[ActionExecException]: " + (actionName == null ? "" : actionName), cause);
     }
 
     public ActionExecException(Throwable cause) {

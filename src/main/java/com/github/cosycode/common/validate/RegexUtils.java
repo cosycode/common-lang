@@ -75,7 +75,7 @@ public class RegexUtils {
      */
     public static String matchTheNrd(String regex, String content, int n) {
         if (n <= 0) {
-            throw new IllegalArgumentException("n 需要 >= 1");
+            throw new IllegalArgumentException("n cannot less than 0");
         }
         final Pattern p = Pattern.compile(regex);
         // 获取 matcher 对象

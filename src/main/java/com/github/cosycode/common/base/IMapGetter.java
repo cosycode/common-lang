@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Map 类型 get方法的增强扩展接口
+ * the enhanced interface of get method in Map
  * <p>
  * <b>created in </b> 2020/12/5
  *

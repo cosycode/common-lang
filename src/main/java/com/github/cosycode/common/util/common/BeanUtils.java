@@ -127,7 +127,7 @@ public class BeanUtils {
             final Class<?> type = tField.getType();
             Object value = TypeConvertUtils.convert(sValue, type);
             if (value == null) {
-                log.debug("类型不匹配! target: [{}], source: [{}@{}]", type, sValue.getClass(), sValue);
+                log.debug("type does not match! target: [{}], source: [{}@{}]", type, sValue.getClass(), sValue);
                 continue;
             }
             tField.setAccessible(true);
@@ -173,7 +173,7 @@ public class BeanUtils {
         try {
             t = beanClass.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException e) {
-            throw new RuntimeExtException(beanClass.getName() + "中未发现无参构造方法", e);
+            throw new RuntimeExtException("not found the constructor in " + beanClass.getName(), e);
         }
         populate(t, properties);
         return t;

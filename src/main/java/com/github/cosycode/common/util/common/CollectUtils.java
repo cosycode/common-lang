@@ -68,14 +68,14 @@ public class CollectUtils {
 
     public static void requireSize(@NonNull Collection<?> collections, int min, int max, Supplier<String> messageSupplier) {
         if (min > max) {
-            throw new IllegalArgumentException(String.format("min(%s) can't rather than max(%s) ==> message: [%s]", min, max, messageSupplier.get()));
+            throw new IllegalArgumentException(String.format("min(%s) can't rather than max(%s) ==> message: %s", min, max, messageSupplier.get()));
         }
         int size = collections.size();
         if (min == max && size != min) {
-            throw new BaseRuntimeException("collections size : %s, not equals %s ==> message: [%s] ==> %s", size, min, messageSupplier.get(), logCollection(collections, 10));
+            throw new BaseRuntimeException("collections size : %s, not equals %s ==> message: %s ==> %s", size, min, messageSupplier.get(), logCollection(collections, 10));
         }
         if ((min < max) && (size < min || size > max)) {
-            throw new BaseRuntimeException("collections size : %s, not in the range [%s, %s] ==> message: [%s] ==> %s", size, min, max, messageSupplier.get(), logCollection(collections, 10));
+            throw new BaseRuntimeException("collections size : %s, not in the range [%s, %s] ==> message: %s ==> %s", size, min, max, messageSupplier.get(), logCollection(collections, 10));
         }
     }
 

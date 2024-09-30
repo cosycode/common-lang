@@ -74,7 +74,7 @@ public class AsynchronousProcessorOld<T> {
         this.blockingQueue = blockingQueue;
         this.disposeFun = disposeFun;
         this.errFun = errFun;
-        Validate.isTrue(millisecond >= 0, "millisecond:%s 不能小于0", millisecond);
+        Validate.isTrue(millisecond >= 0, "millisecond:%s cannot less than 0", millisecond);
         this.millisecond = millisecond;
     }
 
@@ -98,11 +98,11 @@ public class AsynchronousProcessorOld<T> {
                 while (suspend) {
                     synchronized (lock) {
                         try {
-                            log.info("AsynchronousProcessorOld Thread 已经暂停!!!");
+                            log.info("AsynchronousProcessorOld Thread paused!!!");
                             lock.wait();
-                            log.info("AsynchronousProcessorOld Thread 已经恢复!!!");
+                            log.info("AsynchronousProcessorOld Thread resumed!!!");
                         } catch (InterruptedException e) {
-                            log.error("线程暂停发生错误", e);
+                            log.error("errors happened during waiting", e);
                             Thread.currentThread().interrupt();
                         }
                     }
@@ -124,14 +124,14 @@ public class AsynchronousProcessorOld<T> {
                         Thread.sleep(millisecond);
                     }
                 } catch (InterruptedException e) {
-                    log.error("线程发生错误", e);
+                    log.error("[InterruptedException]", e);
                     Thread.currentThread().interrupt();
                 } catch (RuntimeException e) {
                     // 添加运行时异常, 防止发生运行时异常县城停止
-                    log.error("异步处理器发生处理异常", e);
+                    log.error("[RuntimeException]", e);
                 }
             }
-            log.info("AsynchronousProcessorOld Thread 已经结束!!!");
+            log.info("AsynchronousProcessorOld Thread ended!!!");
         }
     }
 
@@ -148,7 +148,7 @@ public class AsynchronousProcessorOld<T> {
             }
             return;
         }
-        log.warn("线程已启动, 请勿重复调用");
+        log.warn("duplicate call start method!!!");
     }
 
     public void add(T t) {
@@ -173,7 +173,7 @@ public class AsynchronousProcessorOld<T> {
      */
     public void resume() {
         if (thread == null || thread.isInterrupted()) {
-            log.warn("线程不存在或已经调用线程关闭方法, 请勿重复调用");
+            log.warn("the thread is not exist or has been interrupted, please do not call the resume method repeatedly");
             return;
         }
         if (suspend) {
@@ -191,7 +191,7 @@ public class AsynchronousProcessorOld<T> {
      */
     public void closeThread() {
         if (thread == null || thread.isInterrupted()) {
-            log.warn("线程不存在或已经调用线程关闭方法, 请勿重复调用");
+            log.warn("the thread is not exist or has been interrupted, please do not call the resume method repeatedly");
             return;
         }
         thread.interrupt();

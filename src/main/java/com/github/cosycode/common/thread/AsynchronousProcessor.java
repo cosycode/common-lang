@@ -50,7 +50,7 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
         this.blockingQueue = blockingQueue;
         this.thenFun = thenFun;
         this.catchFun = catchFun;
-        Validate.isTrue(millisecond >= 0, "millisecond:%s 不能小于0", millisecond);
+        Validate.isTrue(millisecond >= 0, "millisecond:%s cannot < 0", millisecond);
     }
 
     /**
@@ -107,7 +107,7 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
             return;
         }
         if (thread.isInterrupted()) {
-            log.warn("AsynchronousProcessor [{}] was interrupted, 不会再处理消息 : {}", getName(), t);
+            log.warn("AsynchronousProcessor [{}] was interrupted, it won't deal with message again : {}", getName(), t);
             return;
         }
         blockingQueue.add(t);
@@ -123,7 +123,7 @@ public class AsynchronousProcessor<T> extends CtrlLoopThreadComp {
             return false;
         }
         if (thread.isInterrupted()) {
-            log.warn("AsynchronousProcessor [{}] was interrupted, 不会再处理消息 : {}", getName(), t);
+            log.warn("AsynchronousProcessor [{}] was interrupted, it won't deal with message again : {}", getName(), t);
             return false;
         }
         return blockingQueue.offer(t);

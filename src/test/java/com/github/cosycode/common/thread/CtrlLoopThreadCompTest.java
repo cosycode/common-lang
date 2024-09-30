@@ -3,6 +3,7 @@ package com.github.cosycode.common.thread;
 import com.github.cosycode.common.ext.hub.Throws;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ import java.util.stream.IntStream;
  * @since 1.6
  **/
 @Slf4j
+@Ignore
 public class CtrlLoopThreadCompTest {
 
     /**

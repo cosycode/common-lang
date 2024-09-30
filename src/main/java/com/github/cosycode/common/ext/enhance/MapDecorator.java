@@ -8,7 +8,6 @@ import lombok.NonNull;
 import java.util.Map;
 
 /**
- * <b>Description : </b> map的装饰类
  * <p>
  * <b>created in </b> 2020/7/28
  *

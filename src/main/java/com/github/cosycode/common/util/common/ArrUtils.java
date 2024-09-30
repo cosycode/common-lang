@@ -32,7 +32,7 @@ public class ArrUtils {
     public static int getMaxProductInArr(final int[] arr, final int number) {
         int len = arr.length;
         if (len < number) {
-            throw new IllegalArgumentException("arr太小: arr.length: " + arr.length + ", number: " + number);
+            throw new IllegalArgumentException("arr is too small: arr.length: " + arr.length + ", number: " + number);
         }
         int[] num = Arrays.copyOf(arr, number);
 
@@ -201,7 +201,7 @@ public class ArrUtils {
     public static int[] getIntervalArr(int start, int end, int interval) {
         int len = (end - start) / interval;
         if (len < 0) {
-            throw new IllegalArgumentException(String.format("start: %s -> end: %s 间隔不能为 : %s", start, end, interval));
+            throw new IllegalArgumentException(String.format("start: %s -> end: %s, Interval cannot be %s", start, end, interval));
         }
         if (len == 0) {
             int[] arr = new int[1];

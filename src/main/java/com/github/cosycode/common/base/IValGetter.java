@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 /**
- * 模板 T 类型 get方法的增强扩展接口
+ * the enhanced interface of get method with template T
  * <p>
  * <b>created in </b> 2020/8/12
  *

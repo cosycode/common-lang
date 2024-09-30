@@ -69,7 +69,7 @@ public class FileSystemUtils {
                 }
             }
         } else {
-            log.debug("非文件或文件夹, 跳过处理! filePath: {}", file.getPath());
+            log.debug("non-file and non-dir, skip! filePath: {}", file.getPath());
         }
     }
 
@@ -102,7 +102,7 @@ public class FileSystemUtils {
                     }
                 }
             } else {
-                log.debug("非文件或文件夹, 跳过处理! filePath: {}", file.getPath());
+                log.debug("non-file and non-dir, skip! filePath: {}", file.getPath());
                 return;
             }
         }
@@ -147,11 +147,11 @@ public class FileSystemUtils {
      */
     public static void insureFileDirExist(@NonNull final File dir) {
         if (dir.exists()) {
-            Validate.isTrue(dir.isDirectory(), "创建文件夹异常, 已存在同名非文件夹事物, 请检查 path : " + dir.getPath());
+            Validate.isTrue(dir.isDirectory(), "failed to create directory, please check if a non-dir file with the same name existing, " + dir.getPath());
         } else {
             final boolean mkDirs = dir.mkdirs();
-            Validate.isTrue(mkDirs, "文件夹创建失败, 请检查 path : " + dir.getPath());
-            log.info("文件夹创建成功: {} ", dir);
+            Validate.isTrue(mkDirs, "failed to create dir, path : " + dir.getPath());
+            log.info("created dir successfully: {} ", dir);
         }
     }
 
@@ -165,7 +165,7 @@ public class FileSystemUtils {
     public static boolean insureFileExist(@NonNull final File file) {
         final boolean exists = file.exists();
         if (exists) {
-            Validate.isTrue(file.isFile(), "创建文件异常, 已存在同名非文件事物(如存在和当前文件相同的文件夹), 请检查 path : " + file.getPath());
+            Validate.isTrue(file.isFile(), "failed to create file, please check if a non-file file with the same name existing" + file.getPath());
             return false;
         } else {
             // 确保文件所在文件夹存在
@@ -173,11 +173,9 @@ public class FileSystemUtils {
             insureFileDirExist(parentFile);
             // 不存在则创建文件
             try {
-                final boolean newFile = file.createNewFile();
-                Validate.isTrue(newFile, "文件创建失败 path : " + file.getPath());
-                return true;
+                return file.createNewFile();
             } catch (IOException e) {
-                log.error("文件创建失败 path : " + file.getPath(), e);
+                log.error("failed to create the file: " + file.getPath(), e);
                 return false;
             }
         }

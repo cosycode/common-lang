@@ -3,7 +3,7 @@ package com.github.cosycode.common.base;
 import java.util.Objects;
 
 /**
- * 带有 Throw 的 Consumer 函数式接口
+ * the Consumer interface with throw exception
  * <p>
  * <b>created in </b> 2020/5/12
  *
@@ -18,7 +18,6 @@ public interface ConsumerWithThrow<T, E extends Exception> extends SerialFunctio
      * Performs this operation on the given argument.
      *
      * @param t the input argument
-     * @throws E accept 中需要抛出的异常
      */
     void accept(T t) throws E;
 

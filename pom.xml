@@ -6,7 +6,7 @@
 
     <groupId>com.github.cosycode</groupId>
     <artifactId>common-lang</artifactId>
-    <version>1.10</version>
+    <version>1.12</version>
     <packaging>jar</packaging>
 
     <name>common-lang</name>

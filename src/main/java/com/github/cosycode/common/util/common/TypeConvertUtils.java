@@ -126,7 +126,7 @@ public class TypeConvertUtils {
         } else if (boolean.class.equals(clazz)) {
             return Boolean.class;
         } else {
-            throw new WrongBranchException("class: " + clazz.getName() + " 不是包装类型");
+            throw new WrongBranchException("class: " + clazz.getName() + " is not package type.");
         }
     }
 

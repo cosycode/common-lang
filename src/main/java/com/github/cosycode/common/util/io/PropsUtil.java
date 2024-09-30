@@ -78,13 +78,13 @@ public final class PropsUtil {
     public static Properties loadProps(@NonNull String filePath, Charset charset) throws IOException {
         final File file = FileSystemUtils.findFile(filePath);
         if (file == null) {
-            throw new IllegalArgumentException("文件路径识别失败: " + filePath);
+            throw new IllegalArgumentException("failed to find file: " + filePath);
         }
         if (!file.exists()) {
-            throw new FileNotFoundException("文件参数: " + filePath + ", 未发现文件: " + file.getCanonicalPath());
+            throw new FileNotFoundException("filePath: " + filePath + ", CanonicalPath: " + file.getCanonicalPath());
         }
         if (!file.canRead()) {
-            throw new IOException("文件没有读取权限 ==> 文件参数: " + filePath + ", 读取文件: " + file.getCanonicalPath());
+            throw new IOException("no access to read file ==> filePath: " + filePath + ", CanonicalPath: " + file.getCanonicalPath());
         }
         return loadProps(file, charset);
     }

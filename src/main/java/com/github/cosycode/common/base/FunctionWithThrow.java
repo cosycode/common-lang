@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * 带有 Throw 的 Function 函数式接口
  * <p>
  * <b>created in </b> 2020/11/18
  *
@@ -20,7 +19,6 @@ public interface FunctionWithThrow<T, R, E extends Exception> extends SerialFunc
      *
      * @param t the function argument
      * @return the function result
-     * @throws E apply 函数中需要抛出的异常
      */
     R apply(T t) throws E;
 
