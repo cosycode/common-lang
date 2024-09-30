@@ -28,7 +28,7 @@ public abstract class AbstractClosureProxy<T, P, R> {
     protected final BiFunction<T, P, R> biFunction;
 
     protected AbstractClosureProxy(T functional) {
-        Objects.requireNonNull(functional, "functional 不能为 null");
+        Objects.requireNonNull(functional, "functional cannot be null");
         this.functional = functional;
         this.biFunction = geneDefaultBiFunction();
     }
@@ -41,7 +41,7 @@ public abstract class AbstractClosureProxy<T, P, R> {
     }
 
     protected AbstractClosureProxy(T functional, BiFunction<T, P, R> biFunction) {
-        Objects.requireNonNull(functional, "functional 不能为 null");
+        Objects.requireNonNull(functional, "functional cannot be null");
         this.functional = functional;
         if (biFunction == null) {
             this.biFunction = geneDefaultBiFunction();
@@ -96,7 +96,7 @@ public abstract class AbstractClosureProxy<T, P, R> {
             final Runnable proxy = this::closureRunnable;
             return (T) proxy;
         }
-        throw new IllegalArgumentException("参数 functional" + functional + " 必须是支持的函数式接口");
+        throw new IllegalArgumentException("the parameter functional" + functional + " must be a supported functional interface");
     }
 
     /**
@@ -139,7 +139,7 @@ public abstract class AbstractClosureProxy<T, P, R> {
                 return null;
             };
         }
-        throw new IllegalArgumentException("参数 functional" + functional + " 必须是支持的函数式接口");
+        throw new IllegalArgumentException("the parameter functional" + functional + " must be a supported functional interface");
     }
 
 }

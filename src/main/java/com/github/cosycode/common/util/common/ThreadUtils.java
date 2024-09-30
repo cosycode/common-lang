@@ -68,7 +68,7 @@ public class ThreadUtils {
                 }
             }
         } catch (NoSuchFieldException e) {
-            throw new ShouldNotHappenException("一般情况不应该没有指定字段", e);
+            throw new ShouldNotHappenException("", e);
         }
         return threadLocals;
     }
@@ -105,7 +105,7 @@ public class ThreadUtils {
                         break;
                     }
                 } catch (InterruptedException e) {
-                    log.error("线程池指定发生异常", e);
+                    log.error("", e);
                     Thread.currentThread().interrupt();
                 }
             }

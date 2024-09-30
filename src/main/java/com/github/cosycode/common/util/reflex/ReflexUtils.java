@@ -49,6 +49,7 @@ public class ReflexUtils {
      * @return 对象中对应属性的值
      * @throws NoSuchFieldException 对象中没有对应属性
      */
+    @Deprecated
     @SuppressWarnings("java:S3011")
     public static <T> Object getAttributeFromObject(@NonNull T obj, @NonNull String attributeName) throws NoSuchFieldException {
         final Class<?> clazz = obj.getClass();
@@ -56,6 +57,17 @@ public class ReflexUtils {
         try {
             declaredField.setAccessible(true);
             return declaredField.get(obj);
+        } catch (IllegalAccessException e) {
+            throw new ShouldNotHappenException(e);
+        }
+    }
+
+    @SuppressWarnings("java:S3011")
+    public static <T> void setAttributeToObject(@NonNull Class<? super T> clazz, @NonNull T obj, @NonNull String attributeName, Object val) throws NoSuchFieldException {
+        final Field declaredField = clazz.getDeclaredField(attributeName);
+        try {
+            declaredField.setAccessible(true);
+            declaredField.set(obj, val);
         } catch (IllegalAccessException e) {
             throw new ShouldNotHappenException(e);
         }

@@ -5,7 +5,7 @@ import com.github.cosycode.common.base.IMapGetter;
 import java.util.HashMap;
 
 /**
- * <b>Description : </b> 记录, 继承于HashMap, 添加了增强方法
+ * <b>Description : </b> the class extends HashMap, and the key is automatically converted to lowercase camel case when inserting
  * <p>
  * <b>created in </b> 2019/4/3
  *

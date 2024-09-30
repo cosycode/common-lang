@@ -36,7 +36,7 @@ public class RandomUtils {
     @SuppressWarnings("java:S127")
     public static int[] getNumbersInRange(int range, int n) {
         if (range < n) {
-            throw new IllegalArgumentException("range 需要大于 n ==> range: " + range + ", n: " + n);
+            throw new IllegalArgumentException("range cannot less than n ==> range: " + range + ", n: " + n);
         }
         if (range > 3 && n * 3 >> 1 > range) {
             int t = range - n;
@@ -71,10 +71,10 @@ public class RandomUtils {
      */
     private static int[] getOrderNumbersInRange(int range, int n) {
         if (n < 0) {
-            throw new IllegalArgumentException("n 需要大于等于1 ==> n: " + n);
+            throw new IllegalArgumentException("n cannot less than 0 ==> n: " + n);
         }
         if (range < n) {
-            throw new IllegalArgumentException("range 需要大于 n ==> range: " + range + ", n: " + n);
+            throw new IllegalArgumentException("range cannot less than n ==> range: " + range + ", n: " + n);
         }
         if (n == 0) {
             return new int[]{};

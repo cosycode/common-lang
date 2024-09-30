@@ -26,7 +26,7 @@ public class LazySingleton<T> {
     }
 
     private LazySingleton(Supplier<T> supplier) {
-        Objects.requireNonNull(supplier, "构造器不能为空");
+        Objects.requireNonNull(supplier, "supplier cannot be null");
         this.supplier = supplier;
     }
 

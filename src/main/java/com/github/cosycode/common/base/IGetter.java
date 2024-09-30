@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 /**
- * get方法的增强扩展接口
+ * the enhanced interface of get method
  * <p>
  * <b>created in </b> 2020/12/5
  *

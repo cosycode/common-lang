@@ -58,14 +58,14 @@ public final class AppLockHelper {
         FileOutputStream fos = new FileOutputStream(flagFile, true);
         this.fileLock = fos.getChannel().tryLock();
         if (create) {
-            fos.write("这是一个应用锁文件,目的是防止应用多开,应用启动后会锁定这个文件,如果应用第二次开启,则会因为获取不到这个文件的锁而报错!\n".getBytes(StandardCharsets.UTF_8));
+            fos.write("this is a application lock file, the purpose is to prevent the application from opening multiple times, the application will lock this file after starting, if the application is opened for the second time, it will report an error because it cannot get the lock of this file!\n".getBytes());
         }
-        final String txt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()) + " : 启动了程序\n";
+        final String txt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()) + " : start\n";
         fos.write(txt.getBytes(StandardCharsets.UTF_8));
         fos.flush();
         //返回空表示文件已被运行的实例锁定
         if (fileLock == null) {
-            throw new FileSystemException("未获取到文件锁, 请确认程序是否打开了两次：" + fileName);
+            throw new FileSystemException("failed to get file lock, pleas confirm if the file is opened for the second time, " + fileName);
         }
     }
 

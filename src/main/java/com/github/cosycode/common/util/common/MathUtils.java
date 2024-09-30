@@ -20,7 +20,7 @@ public class MathUtils {
     }
 
     public static BigInteger factorial(int n) {
-        Validate.isTrue(n >= 0, "factorial() n不能小于0");
+        Validate.isTrue(n >= 0, "factorial() n cannot less than 0");
         if (n == 0) {
             return BigInteger.valueOf(1);
         }

@@ -29,7 +29,7 @@ public class BaseUtils {
     @SuppressWarnings("all")
     public static List<Integer> getRandomsFromRange(int range, int cnt) {
         if (range < cnt) {
-            throw new RuntimeException("range 不应该小于 cnt");
+            throw new RuntimeException("range cannot less than cnt");
         }
 
         int pointer = 0;
